@@ -1,0 +1,36 @@
+<resources>
+
+    //app-wide strings
+    <string name="app_name">CST2335 Final Project</string>
+
+    //launcher activity strings
+    <string name="activityTrackerButtonText">Launch Activity Tracker</string>
+    <string name="activityTrackerDescriptionText">Enter and track your workouts, including duration.</string>
+
+    <string name="nutritionTrackerButtonText">Launch Nutrition Tracker</string>
+    <string name="nutritionTrackerDescriptionText">Track your food intake and analyse its nutritional value.</string>
+
+    <string name="thermostatProgramButtonText">Launch Thermostat Programmer</string>
+    <string name="thermostatProgramDescriptionText">Create rules to manage your home\'s thermostat schedule.</string>
+
+    <string name="carTrackerButtonText">Launch Car Fuel Tracker</string>
+    <string name="carTrackerDescriptionText">Record gasoline purchases and view summary information and trends.</string>
+
+    //car activity strings
+
+
+
+    //nutrition strings
+
+
+
+    //thermostat strings
+
+
+
+    //activity tracker strings
+
+
+
+
+</resources>
