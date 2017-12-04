@@ -1,0 +1,140 @@
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+
+    <TextView
+        android:id="@+id/at_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/at_label"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/day_label"
+        android:layout_width="40dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/day_label"
+        android:textAlignment="viewStart"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/at_label" />
+
+    <Spinner
+        android:id="@+id/day_spinner"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/day_label"
+        app:layout_constraintStart_toEndOf="@+id/day_label"
+        app:layout_constraintTop_toTopOf="@+id/day_label"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/time_label"
+        android:layout_width="40dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/time_label"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/day_label" />
+
+    <Spinner
+        android:id="@+id/hour_spinner"
+        android:layout_width="60dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="24dp"
+        app:layout_constraintStart_toEndOf="@+id/time_label"
+        app:layout_constraintTop_toTopOf="@+id/time_label" />
+
+    <TextView
+        android:id="@+id/separator_label"
+        android:layout_width="10dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="16dp"
+        android:text="@string/separator_label"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@+id/hour_spinner"
+        app:layout_constraintTop_toTopOf="@+id/hour_spinner" />
+
+    <Spinner
+        android:id="@+id/minute_spinner"
+        android:layout_width="60dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintStart_toEndOf="@+id/separator_label"
+        app:layout_constraintTop_toTopOf="@+id/separator_label" />
+
+    <TextView
+        android:id="@+id/set_label"
+        android:layout_width="wrap_content"
+        android:layout_height="17dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/set_temp_label"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/time_label" />
+
+    <Spinner
+        android:id="@+id/temp_spinner"
+        android:layout_width="60dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@+id/set_label"
+        app:layout_constraintTop_toTopOf="@+id/set_label" />
+
+    <TextView
+        android:id="@+id/degrees_label"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_marginStart="8dp"
+        android:text="@string/degrees_label"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault"
+        app:layout_constraintStart_toEndOf="@+id/temp_spinner"
+        app:layout_constraintTop_toTopOf="@+id/temp_spinner" />
+
+    <TextView
+        android:id="@+id/manual_label"
+        android:layout_width="120dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/manual_entry_label"
+        android:textAlignment="center"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/set_label" />
+
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:hint="@string/manual_entry_hint_label"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@+id/manual_label"
+        app:layout_constraintTop_toTopOf="@+id/manual_label" />
+
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/manual_entry_format_label"
+        android:textAlignment="center"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@+id/manual_label"
+        app:layout_constraintTop_toBottomOf="@+id/manual_label" />
+
+</android.support.constraint.ConstraintLayout>

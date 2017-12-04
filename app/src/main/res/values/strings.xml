@@ -25,11 +25,33 @@
 
 
     //thermostat strings
+    <string name="currentActivityText"> </string>
+    <string name="addButtonText">Add</string>
+    <string name="editButtonText">Edit</string>
+    <string name="ruleText">test</string>
 
+    //thermostat dialog strings
+    <string name="at_label">At:</string>
+    <string name="day_label">Day:</string>
+    <string-array name="days_array">
+        <item>Sunday</item>
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+    </string-array>
+    <string name="time_label">Time:</string>
+    <string name="separator_label">:</string>
+    <string name="set_temp_label">Set Temperature To:</string>
+    <string name="degrees_label">°C</string>
+    <string name="manual_entry_label">Or, enter the Rule Manually:</string>
+    <string name="manual_entry_hint_label">Monday 6:00 Temp -> 20</string>
+    <string name="manual_entry_format_label">Follow Format: Monday 6:00 Temp -> 20</string>
 
 
     //activity tracker strings
-
 
 
 
