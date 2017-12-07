@@ -1,9 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="10dp">
+    android:layout_height="wrap_content">
 
 
     <TextView
@@ -11,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="@string/at_label"
+        android:text="@string/t_atLabel"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -22,7 +21,7 @@
         android:layout_height="20dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
-        android:text="@string/day_label"
+        android:text="@string/t_dayLabel"
         android:textAlignment="viewStart"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +43,7 @@
         android:layout_height="20dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
-        android:text="@string/time_label"
+        android:text="@string/t_timeLabel"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/day_label" />
@@ -62,7 +61,7 @@
         android:layout_width="10dp"
         android:layout_height="20dp"
         android:layout_marginStart="16dp"
-        android:text="@string/separator_label"
+        android:text="@string/t_separatorLabel"
         android:textAlignment="center"
         app:layout_constraintStart_toEndOf="@+id/hour_spinner"
         app:layout_constraintTop_toTopOf="@+id/hour_spinner" />
@@ -81,7 +80,7 @@
         android:layout_height="17dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:text="@string/set_temp_label"
+        android:text="@string/t_setTempLabel"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/time_label" />
@@ -99,42 +98,45 @@
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:layout_marginStart="8dp"
-        android:text="@string/degrees_label"
+        android:text="@string/t_degreesLabel"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault"
         app:layout_constraintStart_toEndOf="@+id/temp_spinner"
         app:layout_constraintTop_toTopOf="@+id/temp_spinner" />
 
     <TextView
-        android:id="@+id/manual_label"
-        android:layout_width="120dp"
-        android:layout_height="35dp"
+        android:id="@+id/set_manually_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
-        android:text="@string/manual_entry_label"
-        android:textAlignment="center"
+        android:text="@string/t_manualEntryLabelText"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/set_label" />
 
     <EditText
-        android:id="@+id/editText"
-        android:layout_width="wrap_content"
+        android:id="@+id/manual_text_entry"
+        android:layout_width="368dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:hint="@string/manual_entry_hint_label"
-        android:textSize="12sp"
-        app:layout_constraintStart_toEndOf="@+id/manual_label"
-        app:layout_constraintTop_toTopOf="@+id/manual_label" />
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:hint="@string/t_manualEntryHintText"
+        android:imeOptions="actionDone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/set_manually_label" />
 
     <TextView
-        android:id="@+id/textView11"
-        android:layout_width="300dp"
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="@string/manual_entry_format_label"
-        android:textAlignment="center"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="@+id/manual_label"
-        app:layout_constraintTop_toBottomOf="@+id/manual_label" />
+        android:text="@string/t_manualEntryFormatLabelText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/manual_text_entry" />
+
 
 </android.support.constraint.ConstraintLayout>

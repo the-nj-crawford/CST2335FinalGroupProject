@@ -3,7 +3,7 @@ package com.example.joe.cst2335finalgroupproject;
 import android.app.Activity;
 import android.os.Bundle;
 
-public class CarTrackerActivity extends Activity {
+public class n_NutritionTrackerActivity extends Activity {
 
     /**
      * Priorities for each Activity (suggested complete in this order in case Prof
@@ -27,15 +27,15 @@ public class CarTrackerActivity extends Activity {
      *          If you know a language other than English, then you can support that language in your application and don’t need to support American English.
      *
      * Activity Specific Requirements:
-     •	Create an application that records buying gasoline for a car. The user can select the number of litres, price, and kilometers of the gasoline they purchased. Display the entries in a ListView. The database should store the time that the information was recorded.
-     •	The user should be able to select items in the list view and edit them, or click a button to add a new purchase to the list.
-     •	The application should provide information including the average price of gas for the last month, how much gasoline the user purchased last month, and how much gasoline the user purchases per month.
+     •	Allow the user to enter nutritional information about food that they have eaten. It should include normal items that are found on a nutrition label: Calories, Total Fat, Total Carbohydrate. When the user enters the information, the database should also store the time and day that the user entered the information.
+     •	You should use fragments to show a ListView displays the items eaten, either ordered by time or as a daily summary of total calories, fat and carbohydrates. Users should be able to delete or edit previous entries, like changing the number of calories or carbohydrates.
+     •	The application should calculate the average calories eaten per day, and show how many calories were eaten in the last day that information was entered.
      *
      */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_car);
+        setContentView(R.layout.n_activity_nutrition);
     }
 }

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.joe.cst2335finalgroupproject.MainActivity">
+    tools:context="com.example.joe.cst2335finalgroupproject.m_MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,13 +24,13 @@
             android:id="@+id/activityTrackerButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/activityTrackerButtonText" />
+            android:text="@string/m_activityTrackerButtonText" />
 
         <TextView
             android:id="@+id/activityTrackerDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/activityTrackerDescriptionText"
+            android:text="@string/m_activityTrackerDescriptionText"
             android:textAlignment="center" />
 
         <Space
@@ -41,13 +41,13 @@
             android:id="@+id/nutritionTrackerButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/nutritionTrackerButtonText" />
+            android:text="@string/m_nutritionTrackerButtonText" />
 
         <TextView
             android:id="@+id/nutritionTrackerDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/nutritionTrackerDescriptionText"
+            android:text="@string/m_nutritionTrackerDescriptionText"
             android:textAlignment="center" />
 
         <Space
@@ -58,13 +58,13 @@
             android:id="@+id/thermostatProgramButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/thermostatProgramButtonText" />
+            android:text="@string/m_thermostatProgramButtonText" />
 
         <TextView
             android:id="@+id/thermostatProgramDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/thermostatProgramDescriptionText"
+            android:text="@string/m_thermostatProgramDescriptionText"
             android:textAlignment="center" />
 
         <Space
@@ -75,13 +75,13 @@
             android:id="@+id/carTrackerButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/carTrackerButtonText" />
+            android:text="@string/m_carTrackerButtonText" />
 
         <TextView
             android:id="@+id/carTrackerDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/carTrackerDescriptionText"
+            android:text="@string/m_carTrackerDescriptionText"
             android:textAlignment="center" />
 
     </LinearLayout>

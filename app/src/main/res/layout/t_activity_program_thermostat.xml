@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.joe.cst2335finalgroupproject.ThermostatProgramActivity">
+    tools:context="com.example.joe.cst2335finalgroupproject.t_ThermostatProgramActivity">
 
 
     <RelativeLayout
@@ -51,7 +51,7 @@
             android:layout_alignParentStart="true"
             android:layout_toEndOf="@+id/rulesView"
             android:layout_toStartOf="@id/centerShim"
-            android:text="@string/currentActivityText"
+            android:text="@string/t_currentActivityText"
             android:textAlignment="center" />
 
         <ProgressBar
@@ -70,7 +70,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
             android:layout_toStartOf="@id/centerShim"
-            android:text="@string/addButtonText" />
+            android:text="@string/t_addButtonText" />
 
         <Button
             android:id="@+id/editButton"
@@ -80,7 +80,7 @@
             android:layout_alignParentEnd="true"
 
             android:layout_toEndOf="@id/centerShim"
-            android:text="@string/editButtonText" />
+            android:text="@string/t_editButtonText" />
 
 
     </RelativeLayout>

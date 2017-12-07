@@ -1,0 +1,60 @@
+<android.widget.LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_centerHorizontal="true"
+    android:layout_centerVertical="false"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+
+    <!-- Idea for Center Shim borrowed from https://stackoverflow.com/questions/19983335/android-2-relative-layout-divided-in-half-screen -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/t_manualRuleEntryLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/t_manualEntryLabelText" />
+
+        <EditText
+            android:id="@+id/t_manualRuleEntryEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/t_manualEntryHintText"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/t_manualEntryLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/t_manualEntryFormatLabelText"
+        android:textAlignment="center"
+        android:textSize="12sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/t_cancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/t_cancelButtonText" />
+
+        <Button
+            android:id="@+id/t_saveButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/t_saveButtonText" />
+
+    </LinearLayout>
+
+</android.widget.LinearLayout>
