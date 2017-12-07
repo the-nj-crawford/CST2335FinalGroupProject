@@ -3,7 +3,7 @@ package com.example.joe.cst2335finalgroupproject;
 import java.util.Date;
 
 /**
- * Created by Nick on 2017-12-06.
+ * Created by Nick
  */
 
 public class a_TrackedActivity {
@@ -14,7 +14,7 @@ public class a_TrackedActivity {
     int duration;
     Date timeStamp;
 
-    public a_TrackedActivity(int newCol, String newType, int newDuration, String newNotes, Date newDate) {
+    a_TrackedActivity(int newCol, String newType, int newDuration, String newNotes, Date newDate) {
         colKey = newCol;
         notes = newNotes;
         type = newType;

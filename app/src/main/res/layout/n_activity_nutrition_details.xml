@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.joe.cst2335finalgroupproject.n_NutritionTrackerActivity">
+
+
+    <TextView
+        android:id="@+id/nutrition_detail_name_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Food Name or Description:" />
+
+    <TextView
+        android:id="@+id/nutrition_detail_name_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/nutrition_detail_name_header" />
+
+    <TextView
+        android:id="@+id/nutrition_detail_calories_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/nutrition_detail_name_value"
+        android:text="Calories:" />
+
+    <TextView
+        android:id="@+id/nutrition_detail_calories_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/nutrition_detail_calories_header"
+        android:inputType="number" />
+
+    <TextView
+        android:id="@+id/nutrition_detail_carbs_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/nutrition_detail_calories_value"
+        android:text="Carbohydrates:" />
+
+    <TextView
+        android:id="@+id/nutrition_detail_carbs_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/nutrition_detail_carbs_header"
+        android:inputType="number" />
+
+    <TextView
+        android:id="@+id/nutrition_detail_fat_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/nutrition_detail_carbs_value"
+        android:text="Fat:" />
+
+    <TextView
+        android:id="@+id/nutrition_detail_fat_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/nutrition_detail_fat_header"
+        android:inputType="number" />
+
+    <Button
+        android:id="@+id/nutrition_detail_log_new_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/nutrition_detail_fat_value"
+        android:layout_centerInParent="true"
+        android:text="Edit (To Do)" />
+
+    <Button
+        android:id="@+id/nutrition_detail_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/nutrition_log_new_button"
+        android:layout_centerInParent="true"
+        android:text="Close" />
+
+</RelativeLayout>

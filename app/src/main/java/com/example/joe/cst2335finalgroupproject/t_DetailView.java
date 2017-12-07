@@ -16,6 +16,14 @@ import java.util.List;
 
 public class t_DetailView extends Activity {
 
+    EditText et;
+    Spinner daySpinner;
+    Spinner hourSpinner;
+    Spinner minuteSpinner;
+    //Spinner ampmSpinner;
+    Spinner tempSpinner;
+    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,11 +31,26 @@ public class t_DetailView extends Activity {
 
         String rule = getIntent().getExtras().getString("rule");
 
-        final EditText et = findViewById(R.id.manual_text_entry);
+        et = findViewById(R.id.manual_text_entry);
 
         et.setText(rule);
 
-        final Spinner daySpinner = findViewById(R.id.day_spinner);
+        initializeDaySpinner();
+        initializeHourSpinner();
+        initializeMinuteSpinner();
+        //initializeAMPMSpinner();
+        initializeTempSpinner();
+
+
+    }
+
+    private void parseRule() {
+
+    }
+
+    private void initializeDaySpinner() {
+
+        daySpinner = findViewById(R.id.day_spinner);
         List<String> days = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.t_daysArray)));
         ArrayAdapter<String> dayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, days);
         dayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -44,8 +67,11 @@ public class t_DetailView extends Activity {
 
             }
         });
+    }
 
-        final Spinner hourSpinner = findViewById(R.id.hour_spinner);
+    private void initializeHourSpinner() {
+
+        hourSpinner = findViewById(R.id.hour_spinner);
         Integer[] hours_array = new Integer[24];
         for (int i = 0; i < hours_array.length; i++) {
             hours_array[i] = i;
@@ -66,8 +92,11 @@ public class t_DetailView extends Activity {
 
             }
         });
+    }
 
-        final Spinner minuteSpinner = findViewById(R.id.minute_spinner);
+    private void initializeMinuteSpinner() {
+
+        minuteSpinner = findViewById(R.id.minute_spinner);
         Integer[] minute_array = new Integer[4];
         for (int i = 0; i < minute_array.length; i++) {
             minute_array[i] = i * 15;
@@ -89,7 +118,13 @@ public class t_DetailView extends Activity {
             }
         });
 
-        final Spinner tempSpinner = findViewById(R.id.temp_spinner);
+    }
+
+    private void initializeAMPMSpinner() {
+    }
+
+    private void initializeTempSpinner() {
+        tempSpinner = findViewById(R.id.temp_spinner);
         Integer[] temp_array = new Integer[26];
         for (int i = 0; i < temp_array.length; i++) {
             temp_array[i] = i + 10;
@@ -110,6 +145,5 @@ public class t_DetailView extends Activity {
 
             }
         });
-
     }
 }

@@ -41,16 +41,19 @@ public class m_GlobalDatabaseHelper extends SQLiteOpenHelper {
     static final String NUTRITION_TABLE_NAME = "NUTRITION_INFO";
     public static final String DROP_NUTRITION_TABLE_SQL = "DROP TABLE IF EXISTS " + NUTRITION_TABLE_NAME;
     static final String FOOD_ID = "FOOD_ID";
+    static final String FOOD_ITEM_COL_NAME = "FOOD_NAME";
     static final String CALORIES_COL_NAME = "CALORIES";
     static final String CARB_COL_NAME = "CARBOHYDRATE";
     static final String FAT_COL_NAME = "FAT";
     public static final String CREATE_NUTRITION_TABLE_SQL
             = "CREATE TABLE " + NUTRITION_TABLE_NAME + " ( "
             + FOOD_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + FOOD_ITEM_COL_NAME + " TEXT, "
             + CALORIES_COL_NAME + " INTEGER, "
             + CARB_COL_NAME + " INTEGER, "
             + FAT_COL_NAME + " INTEGER "
             + " );";
+
     //Activity Database and Column Names
     static final String ACTIVITY_TABLE_NAME = "ACTIVITY_LOG";
     public static final String DROP_ACTIVITY_TABLE_SQL = "DROP TABLE IF EXISTS " + ACTIVITY_TABLE_NAME;
@@ -68,7 +71,7 @@ public class m_GlobalDatabaseHelper extends SQLiteOpenHelper {
             + TIME_COL_NAME + " DATETIME DEFAULT CURRENT_TIMESTAMP "
             + " );";
     //Database Version Number
-    private static final int DATABASE_VERSION_NUM = 2;  //WARNING: AVOID ALTERING THIS VALUE UNLESS REQUIRED. THIS WILL CLEAR ALL TABLES FOR ALL ACTIVITIES.
+    private static final int DATABASE_VERSION_NUM = 1;  //WARNING: AVOID ALTERING THIS VALUE UNLESS REQUIRED. THIS WILL CLEAR ALL TABLES FOR ALL ACTIVITIES.
 
 
     m_GlobalDatabaseHelper(Context ctx) {
