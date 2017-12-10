@@ -8,4 +8,21 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="c_DetailsEditText">
+        <item name="android:layout_marginRight">10dp</item>
+        <item name="android:textSize">20dp</item>
+    </style>
+
+    <style name="c_DetailsLabels">
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:textSize">20dp</item>
+    </style>
+
+    <style name="c_Title">
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">30dp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+
 </resources>

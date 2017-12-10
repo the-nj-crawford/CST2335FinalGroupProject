@@ -30,7 +30,7 @@ public class c_DatePickerFragment extends DialogFragment implements DatePickerDi
 
         // https://stackoverflow.com/questions/4854492/setting-width-to-wrap-content-for-textview-through-code
         // https://stackoverflow.com/questions/3060619/how-to-get-the-visible-size-on-an-activity
-
+        /*
         int newHeight = (int) (parentActivity.getWindow().getDecorView().getHeight() * 0.65);
         int newWidth = (int) (parentActivity.getWindow().getDecorView().getWidth() * 0.75);
         float newScaleX = 1.5f;
@@ -46,7 +46,7 @@ public class c_DatePickerFragment extends DialogFragment implements DatePickerDi
 
         // blow up the DatePicker contents so they fill the pop up window
         datePicker.setScaleX(newScaleX);
-        datePicker.setScaleY(newScaleY);
+        datePicker.setScaleY(newScaleY);*/
 
         return datePickerDialog;
     }
@@ -60,6 +60,7 @@ public class c_DatePickerFragment extends DialogFragment implements DatePickerDi
         calendar.set(Calendar.YEAR, year);
         calendar.set(Calendar.MONTH, monthOfYear);
         calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        display.setText("");
         display.setText(c_CarTrackerActivity.DD_MM_YYYY.format(calendar.getTime()));
     }
 

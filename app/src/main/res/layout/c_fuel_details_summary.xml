@@ -36,4 +36,17 @@
         android:layout_columnWeight="1"
         android:layout_gravity="fill"
         android:textAlignment="center" />
+
+    <ImageView
+        android:id="@+id/btnDeleteFuelDetails"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="fill"
+        android:src="@drawable/icons8_minus_50" />
+    <!--
+    <Button
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:layout_columnWeight="1"
+        android:layout_gravity="fill" />-->
 </GridLayout>

@@ -20,9 +20,9 @@ public class c_AddFuelDetailsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.c_activity_add_fuel_details);
 
-        etAddPrice = findViewById(R.id.etEditPrice);
-        etAddLitres = findViewById(R.id.etEditLitres);
-        etAddKilometers = findViewById(R.id.etEditKilometers);
+        etAddPrice = findViewById(R.id.etAddPrice);
+        etAddLitres = findViewById(R.id.etAddLitres);
+        etAddKilometers = findViewById(R.id.etAddKilometers);
 
         etAddDate = findViewById(R.id.etAddDate);
         etAddDate.setText(c_CarTrackerActivity.DD_MM_YYYY.format(Calendar.getInstance().getTime()));

@@ -17,18 +17,28 @@
     <string name="m_carTrackerDescriptionText">Record gasoline purchases and view summary information and trends.</string>
 
     //car activity strings
+
+    <string name="c_LblLoading">Loading</string>
+    <string name="c_changesSaved">Changes Saved Successfully</string>
+    <string name="c_Yes">Yes</string>
+    <string name="c_No">No</string>
+
     <string name="c_BtnAddPurchase">Add Purchase</string>
     <string name="c_BtnViewFuelStats">View Fuel Purchase Statistics</string>
-    <string name="c_LblPrice">Price($)</string>
-    <string name="c_LblLitres">Liters(L)</string>
-    <string name="c_LblKilometers">Kilometers(km)</string>
-    <string name="c_LblDate">Date</string>
+    <string name="c_LblPrice">Price ($)</string>
+    <string name="c_LblLitres">Liters (L)</string>
+    <string name="c_LblKilometers">Kilometers (km)</string>
+    <string name="c_LblDate">Date (mm/dd/yyyy)</string>
 
     <string name="c_AddDetailsTitle">Add Fuel Details</string>
     <string name="c_BtnAddDetails">Add</string>
 
     <string name="c_EditDetailsTitle">Edit Fuel Details</string>
     <string name="c_BtnSaveDetails">Save</string>
+
+    <string name="c_DeleteDetailsTitle">Delete Fuel Details</string>
+    <string name="c_AlertDeleteDetailsMsg">Are you sure you want to delete this entry?</string>
+    <string name="c_DeleteSuccessful">Entry deleted successfully</string>
 
 
 

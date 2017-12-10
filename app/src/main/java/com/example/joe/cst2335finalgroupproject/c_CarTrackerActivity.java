@@ -1,11 +1,14 @@
 package com.example.joe.cst2335finalgroupproject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,14 +16,19 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class c_CarTrackerActivity extends Activity {
 
@@ -57,13 +65,17 @@ public class c_CarTrackerActivity extends Activity {
     public static final int ADD_DETAILS_REQUEST = 1;
     public static final int EDIT_DETAILS_REQUEST = 2;
 
-    private ArrayList<c_FuelDetails> cFuelDetailsList;
     private ListView lvPurchaseHistory;
     private Button btnAddPurchase;
     private Button btnViewFuelStats;
-    private FuelDetailsAdapter adapter;
 
-    //private c_CarDatabaseHelper carDbHelper;
+    private GridLayout glLoading;
+    private ProgressBar pbLoadFuelDetails;
+    private TextView tvLoadingPercentage;
+
+
+    private ArrayList<c_FuelDetails> cFuelDetailsList;
+    private FuelDetailsAdapter adapter;
     private m_GlobalDatabaseHelper carDbHelper;
     private SQLiteDatabase db;
     private Cursor cursor;
@@ -72,55 +84,14 @@ public class c_CarTrackerActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.c_activity_car);
+        findControls();
+        setUpListeners();
 
         cFuelDetailsList = new ArrayList<c_FuelDetails>();
-        lvPurchaseHistory = findViewById(R.id.lvPurchaseHistory);
         adapter = new FuelDetailsAdapter(this);
         lvPurchaseHistory.setAdapter(adapter);
 
-        //carDbHelper = new c_CarDatabaseHelper(this);
-        //db = carDbHelper.getWritableDatabase();
-
-        carDbHelper = new m_GlobalDatabaseHelper(this);
-        db = carDbHelper.getWritableDatabase();
-
-        testFillDB();
-        fillFuelDetailsList();
-
-        btnAddPurchase = findViewById(R.id.btnAddPurchase);
-        btnAddPurchase.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(c_CarTrackerActivity.this,
-                        c_AddFuelDetailsActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        btnViewFuelStats = findViewById(R.id.btnViewFuelStats);
-        btnViewFuelStats.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // TODO - add stats activity
-            }
-        });
-
-        lvPurchaseHistory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                c_FuelDetails details = cFuelDetailsList.get(i);
-                Bundle extras = new Bundle();
-                extras.putDouble("price", details.getPrice());
-                extras.putDouble("litres", details.getLitres());
-                extras.putDouble("kilometers", details.getKilometers());
-                extras.putLong("date", details.getDate().getTime());
-
-                Intent intent = new Intent(c_CarTrackerActivity.this, c_EditFuelDetailsActivity.class);
-                intent.putExtra("fuelDetails", extras);
-                startActivityForResult(intent, EDIT_DETAILS_REQUEST);
-            }
-        });
+        new DataBaseQuery().execute();
     }
 
     @Override
@@ -128,6 +99,61 @@ public class c_CarTrackerActivity extends Activity {
         super.onDestroy();
         db.close();
         carDbHelper.close();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+
+        if (resultCode == Activity.RESULT_OK){
+
+            if (requestCode == EDIT_DETAILS_REQUEST){
+                Bundle extras = data.getExtras();
+                Bundle fuelDetails = extras.getBundle("fuelDetails");
+                updateFuelDetail(fuelDetails);
+            }
+
+        }
+    }
+
+    public void updateFuelDetail(Bundle fuelDetails){
+
+        if (fuelDetails != null){
+            double price = fuelDetails.getDouble("price");
+            double litres = fuelDetails.getDouble("litres");
+            double kilometers = fuelDetails.getDouble("kilometers");
+            long longDate = fuelDetails.getLong("date");
+            long id = fuelDetails.getLong("id");
+            int position = fuelDetails.getInt("position");
+
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(m_GlobalDatabaseHelper.KEY_PRICE, price);
+            contentValues.put(m_GlobalDatabaseHelper.KEY_LITRES, litres);
+            contentValues.put(m_GlobalDatabaseHelper.KEY_KILOMETERS, kilometers);
+            contentValues.put(m_GlobalDatabaseHelper.KEY_DATE, longDate);
+
+            db.update(m_GlobalDatabaseHelper.FUEL_DETAILS_TABLE,
+                    contentValues,
+                    m_GlobalDatabaseHelper.KEY_ID + "=" + id,
+                    null);
+
+            c_FuelDetails fd = new c_FuelDetails(price, litres, kilometers, new Date(longDate));
+            cFuelDetailsList.set(position, fd);
+            adapter.notifyDataSetChanged();
+            Toast.makeText(c_CarTrackerActivity.this,
+                    getResources().getString(R.string.c_changesSaved),
+                    Toast.LENGTH_LONG);
+        }
+    }
+
+    private void deleteFuelDetail(long id, int position){
+        cFuelDetailsList.remove(position);
+        db.delete(m_GlobalDatabaseHelper.FUEL_DETAILS_TABLE,
+                m_GlobalDatabaseHelper.KEY_ID + "=" + id,
+                null);
+        adapter.notifyDataSetChanged();
+        Toast.makeText(c_CarTrackerActivity.this,
+                getResources().getString(R.string.c_DeleteSuccessful),
+                Toast.LENGTH_LONG);
     }
 
     private void testFillDB() {
@@ -148,25 +174,74 @@ public class c_CarTrackerActivity extends Activity {
             values.put("date", testData[i].getDate().getTime());
             db.insert(m_GlobalDatabaseHelper.FUEL_DETAILS_TABLE, null, values);
         }
-
-        adapter.notifyDataSetChanged();
     }
 
-    private void fillFuelDetailsList() {
-        cursor = db.rawQuery(m_GlobalDatabaseHelper.SELECT_ALL_SQL, null);
 
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            double price = cursor.getDouble(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_PRICE));
-            double litres = cursor.getDouble(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_LITRES));
-            double kilometers = cursor.getDouble(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_KILOMETERS));
-            long longDateRepresentation = cursor.getLong(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_DATE));
-            Date date = new Date(longDateRepresentation);
+    // https://stackoverflow.com/questions/28171256/android-asynctask-that-fills-an-adapter-for-a-listview
+    private class DataBaseQuery extends AsyncTask<String, Integer, ArrayList<c_FuelDetails>>{
 
-            c_FuelDetails details = new c_FuelDetails(price, litres, kilometers, date);
-            cFuelDetailsList.add(details);
+        @Override
+        protected ArrayList<c_FuelDetails> doInBackground(String[] args){
+            carDbHelper = new m_GlobalDatabaseHelper(c_CarTrackerActivity.this);
+            db = carDbHelper.getWritableDatabase();
 
-            cursor.moveToNext();
+            //testFillDB();
+            cursor = db.rawQuery(m_GlobalDatabaseHelper.SELECT_ALL_SQL, null);
+
+            // build an array list in the background and pass it back to the GUI thread
+            //  after the resource intense processing is complete
+            ArrayList<c_FuelDetails> detailsList = new ArrayList<>();
+
+            // used double to perform division and display overall progress
+            double totalRecords = cursor.getCount();
+            double counter = 0;
+
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+
+                try {
+                    double price = cursor.getDouble(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_PRICE));
+                    double litres = cursor.getDouble(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_LITRES));
+                    double kilometers = cursor.getDouble(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_KILOMETERS));
+                    long longDateRepresentation = cursor.getLong(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_DATE));
+                    Date date = new Date(longDateRepresentation);
+
+                    c_FuelDetails details = new c_FuelDetails(price, litres, kilometers, date);
+                    detailsList.add(details);
+
+                    Integer progress = (int )Math.round((++counter / totalRecords) * 100);
+                    publishProgress(progress);
+
+                    Thread.sleep(250);
+
+                    cursor.moveToNext();
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            return detailsList;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer[] value){
+            int progress = value[0];
+
+            glLoading.setVisibility(View.VISIBLE);
+            tvLoadingPercentage.setText(String.valueOf(progress) + " %");
+            pbLoadFuelDetails.setProgress(progress);
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<c_FuelDetails> details){
+
+            cFuelDetailsList.clear();
+            for (c_FuelDetails fd : details)
+                cFuelDetailsList.add(fd);
+
+            adapter.notifyDataSetChanged();
+            glLoading.setVisibility(View.GONE);
+            lvPurchaseHistory.setVisibility(View.VISIBLE);
         }
     }
 
@@ -187,19 +262,58 @@ public class c_CarTrackerActivity extends Activity {
         }
 
         @Override
-        public long getItemId(int postion) {
+        public long getItemId(int position) {
             if (cursor == null)
                 throw new NullPointerException("ERROR: cursor is null");
 
             cursor = db.rawQuery(m_GlobalDatabaseHelper.SELECT_ALL_SQL, null);
-            cursor.moveToPosition(postion);
+            cursor.moveToPosition(position);
             return cursor.getLong(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_ID));
         }
 
+        // https://stackoverflow.com/questions/17525886/listview-with-add-and-delete-buttons-in-each-row-in-android
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            LayoutInflater inflater = c_CarTrackerActivity.this.getLayoutInflater();
-            View view = inflater.inflate(R.layout.c_fuel_details_summary, null);
+        public View getView(final int position, View convertView, ViewGroup parent) {
+
+            View view = convertView;
+
+            if (view == null){
+                LayoutInflater inflater = c_CarTrackerActivity.this.getLayoutInflater();
+                view = inflater.inflate(R.layout.c_fuel_details_summary, null);
+            }
+
+            ImageView btnDeleteFuelDetails = view.findViewById(R.id.btnDeleteFuelDetails);
+            btnDeleteFuelDetails.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(c_CarTrackerActivity.this);
+                    builder.setTitle(getResources().getString(R.string.c_DeleteDetailsTitle));
+                    builder.setMessage(getResources().getString(R.string.c_AlertDeleteDetailsMsg));
+
+                    builder.setPositiveButton(getResources().getString(R.string.c_Yes),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                long id = adapter.getItemId(position);
+                                deleteFuelDetail(id, position);
+                            }
+                        }
+                    );
+
+                    builder.setNegativeButton(getResources().getString(R.string.c_No),
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    return;
+                                }
+                            }
+                    );
+
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }
+            });
 
             c_FuelDetails details = getItem(position);
 
@@ -207,15 +321,62 @@ public class c_CarTrackerActivity extends Activity {
             tvPrice.setText(String.valueOf(details.getPrice()));
 
             TextView tvLitres = view.findViewById(R.id.tvLitres);
-            tvLitres.setText(String.valueOf(details.getPrice()));
+            tvLitres.setText(String.valueOf(details.getLitres()));
 
             TextView tvKilometers = view.findViewById(R.id.tvKilometers);
-            tvKilometers.setText(String.valueOf(details.getPrice()));
+            tvKilometers.setText(String.valueOf(details.getKilometers()));
 
             TextView tvDate = view.findViewById(R.id.tvDate);
             tvDate.setText(DD_MM_YYYY.format(details.getDate()));
 
             return view;
         }
+    }
+
+    private void findControls(){
+        lvPurchaseHistory = findViewById(R.id.lvPurchaseHistory);
+        btnAddPurchase = findViewById(R.id.btnAddPurchase);
+        btnViewFuelStats = findViewById(R.id.btnViewFuelStats);
+        pbLoadFuelDetails = findViewById(R.id.pbLoadFuelDetails);
+        glLoading = findViewById(R.id.glLoading);
+        tvLoadingPercentage = findViewById(R.id.tvLoadingPercentage);
+    }
+
+    private void setUpListeners(){
+        btnAddPurchase.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(c_CarTrackerActivity.this,
+                        c_AddFuelDetailsActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
+        btnViewFuelStats.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // TODO - add stats activity
+            }
+        });
+
+        lvPurchaseHistory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+
+                c_FuelDetails details = cFuelDetailsList.get(position);
+                Bundle extras = new Bundle();
+                extras.putDouble("price", details.getPrice());
+                extras.putDouble("litres", details.getLitres());
+                extras.putDouble("kilometers", details.getKilometers());
+                extras.putLong("date", details.getDate().getTime());
+                extras.putLong("id", id);
+                extras.putInt("position", position);
+
+                Intent intent = new Intent(c_CarTrackerActivity.this, c_EditFuelDetailsActivity.class);
+                intent.putExtra("fuelDetails", extras);
+                startActivityForResult(intent, EDIT_DETAILS_REQUEST);
+            }
+        });
     }
 }
