@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,8 +19,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,7 +69,7 @@ public class c_CarTrackerActivity extends Activity {
     public static final int EDIT_DETAILS_REQUEST = 2;
 
     private ListView lvPurchaseHistory;
-    private Button btnAddPurchase;
+    private LinearLayout btnAddPurchase;
     private Button btnViewFuelStats;
 
     private GridLayout glLoading;
@@ -282,6 +285,13 @@ public class c_CarTrackerActivity extends Activity {
                 view = inflater.inflate(R.layout.c_fuel_details_summary, null);
             }
 
+            TableRow fuelDetailRow = view.findViewById(R.id.fuelDetailRow);
+            if ((position % 2) == 0){   // white blue
+                fuelDetailRow.setBackgroundColor(Color.parseColor("#ECEFF1"));
+            } else { // blue
+                fuelDetailRow.setBackgroundColor(Color.parseColor("#CFD8DC"));
+            }
+
             ImageView btnDeleteFuelDetails = view.findViewById(R.id.btnDeleteFuelDetails);
             btnDeleteFuelDetails.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -340,6 +350,7 @@ public class c_CarTrackerActivity extends Activity {
         pbLoadFuelDetails = findViewById(R.id.pbLoadFuelDetails);
         glLoading = findViewById(R.id.glLoading);
         tvLoadingPercentage = findViewById(R.id.tvLoadingPercentage);
+
     }
 
     private void setUpListeners(){
