@@ -11,6 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -68,6 +70,7 @@ public class c_CarTrackerActivity extends Activity {
     public static final int ADD_DETAILS_REQUEST = 1;
     public static final int EDIT_DETAILS_REQUEST = 2;
 
+    private RelativeLayout parentLayout;
     private ListView lvPurchaseHistory;
     private LinearLayout btnAddPurchase;
     private Button btnViewFuelStats;
@@ -113,6 +116,13 @@ public class c_CarTrackerActivity extends Activity {
                 Bundle extras = data.getExtras();
                 Bundle fuelDetails = extras.getBundle("fuelDetails");
                 updateFuelDetail(fuelDetails);
+
+            }
+
+            if (requestCode == ADD_DETAILS_REQUEST){
+                Bundle extras = data.getExtras();
+                Bundle fuelDetails = extras.getBundle("fuelDetails");
+                addFuelDetail(fuelDetails);
             }
 
         }
@@ -144,7 +154,33 @@ public class c_CarTrackerActivity extends Activity {
             adapter.notifyDataSetChanged();
             Toast.makeText(c_CarTrackerActivity.this,
                     getResources().getString(R.string.c_changesSaved),
-                    Toast.LENGTH_LONG);
+                    Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void addFuelDetail(Bundle fuelDetails) {
+        if (fuelDetails != null) {
+            double price = fuelDetails.getDouble("price");
+            double litres = fuelDetails.getDouble("litres");
+            double kilometers = fuelDetails.getDouble("kilometers");
+            long longDate = fuelDetails.getLong("date");
+
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(m_GlobalDatabaseHelper.KEY_PRICE, price);
+            contentValues.put(m_GlobalDatabaseHelper.KEY_LITRES, litres);
+            contentValues.put(m_GlobalDatabaseHelper.KEY_KILOMETERS, kilometers);
+            contentValues.put(m_GlobalDatabaseHelper.KEY_DATE, longDate);
+
+            db.insert(m_GlobalDatabaseHelper.FUEL_DETAILS_TABLE,
+                    "",
+                    contentValues);
+
+            c_FuelDetails fd = new c_FuelDetails(price, litres, kilometers, new Date(longDate));
+            cFuelDetailsList.add(fd);
+            adapter.notifyDataSetChanged();
+            Toast.makeText(c_CarTrackerActivity.this,
+                    getResources().getString(R.string.c_detailsAdded),
+                    Toast.LENGTH_LONG).show();
         }
     }
 
@@ -154,9 +190,10 @@ public class c_CarTrackerActivity extends Activity {
                 m_GlobalDatabaseHelper.KEY_ID + "=" + id,
                 null);
         adapter.notifyDataSetChanged();
-        Toast.makeText(c_CarTrackerActivity.this,
+
+        Snackbar.make(parentLayout,
                 getResources().getString(R.string.c_DeleteSuccessful),
-                Toast.LENGTH_LONG);
+                Snackbar.LENGTH_LONG).show();
     }
 
     private void testFillDB() {
@@ -297,10 +334,15 @@ public class c_CarTrackerActivity extends Activity {
                 @Override
                 public void onClick(View view) {
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(c_CarTrackerActivity.this);
-                    builder.setTitle(getResources().getString(R.string.c_DeleteDetailsTitle));
-                    builder.setMessage(getResources().getString(R.string.c_AlertDeleteDetailsMsg));
+                    LayoutInflater inflater = getLayoutInflater();
+                    LinearLayout rootView
+                            = (LinearLayout) inflater.inflate(R.layout.c_custom_alert_dialog, null);
 
+                    ((TextView)rootView.findViewById(R.id.tvCarAlertMsg))
+                            .setText(getResources().getString(R.string.c_AlertDeleteDetailsMsg));
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(c_CarTrackerActivity.this);
+                    builder.setView(rootView);
                     builder.setPositiveButton(getResources().getString(R.string.c_Yes),
                         new DialogInterface.OnClickListener() {
                             @Override
@@ -344,13 +386,13 @@ public class c_CarTrackerActivity extends Activity {
     }
 
     private void findControls(){
+        parentLayout = findViewById(R.id.fuelDetailsParent);
         lvPurchaseHistory = findViewById(R.id.lvPurchaseHistory);
         btnAddPurchase = findViewById(R.id.btnAddPurchase);
         btnViewFuelStats = findViewById(R.id.btnViewFuelStats);
         pbLoadFuelDetails = findViewById(R.id.pbLoadFuelDetails);
         glLoading = findViewById(R.id.glLoading);
         tvLoadingPercentage = findViewById(R.id.tvLoadingPercentage);
-
     }
 
     private void setUpListeners(){
@@ -359,7 +401,7 @@ public class c_CarTrackerActivity extends Activity {
             public void onClick(View view) {
                 Intent intent = new Intent(c_CarTrackerActivity.this,
                         c_AddFuelDetailsActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, ADD_DETAILS_REQUEST);
             }
         });
 

@@ -18,17 +18,27 @@
 
     //car activity strings
 
+    <string name="c_CarTrackerActivity">Car Tracker Activity</string>
     <string name="c_LblLoading">Loading</string>
-    <string name="c_changesSaved">Changes Saved Successfully</string>
+    <string name="c_changesSaved">Changes saved successfully</string>
+    <string name="c_detailsAdded">Entry added successfully</string>
+
+    <string name="c_Ok">OK</string>
+    <string name="c_Cancel">Cancel</string>
+
     <string name="c_Yes">Yes</string>
     <string name="c_No">No</string>
 
-    <string name="c_BtnAddPurchase">Add Purchase</string>
+    <string name="c_BtnAddPurchase">Add Entry</string>
+    <string name="c_BtnAdd">Add</string>
     <string name="c_BtnViewFuelStats">View Fuel Purchase Statistics</string>
     <string name="c_LblPrice">Price ($)</string>
     <string name="c_LblLitres">Liters (L)</string>
     <string name="c_LblKilometers">Kilometers (km)</string>
     <string name="c_LblDate">Date (mm/dd/yyyy)</string>
+
+    <string name="c_AlertFillFieldsAdd">Please fill in all fields before adding an entry</string>
+    <string name="c_AlertFillFieldsEdit">Please fill in all fields before saving an entry</string>
 
     <string name="c_AddDetailsTitle">Add Fuel Details</string>
     <string name="c_BtnAddDetails">Add</string>
@@ -75,7 +85,5 @@
     <string name="t_degreesLabel">°C</string>
 
     //activity tracker strings
-
-
 
 </resources>

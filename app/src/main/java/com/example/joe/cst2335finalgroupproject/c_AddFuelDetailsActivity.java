@@ -1,38 +1,31 @@
 package com.example.joe.cst2335finalgroupproject;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.EditText;
 
-import java.util.Calendar;
-
-// https://android--examples.blogspot.ca/2015/05/how-to-use-datepickerdialog-in-android.html
 public class c_AddFuelDetailsActivity extends Activity {
-
-    private EditText etAddPrice;
-    private EditText etAddLitres;
-    private EditText etAddKilometers;
-    private EditText etAddDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.c_activity_add_fuel_details);
 
-        etAddPrice = findViewById(R.id.etAddPrice);
-        etAddLitres = findViewById(R.id.etAddLitres);
-        etAddKilometers = findViewById(R.id.etAddKilometers);
+        Bundle fragmentDetails = new Bundle();
+        fragmentDetails.putString("btnText", getResources().getString(R.string.c_BtnAdd));
+        fragmentDetails.putString("fragmentTitle", getResources().getString(R.string.c_AddDetailsTitle));
 
-        etAddDate = findViewById(R.id.etAddDate);
-        etAddDate.setText(c_CarTrackerActivity.DD_MM_YYYY.format(Calendar.getInstance().getTime()));
-        etAddDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                c_DatePickerFragment datePicker = new c_DatePickerFragment();
-                datePicker.setDisplay(etAddDate);
-                datePicker.show(getFragmentManager(), "Date Picker");
-            }
-        });
+        c_EnterFuelDetailsFragment loadedFragment = new c_EnterFuelDetailsFragment();
+        loadedFragment.setArguments(fragmentDetails);
+
+        getFragmentManager().beginTransaction()
+                .add(R.id.flAddDetails, loadedFragment).commit();
+    }
+
+    public void addFuelDetail(Bundle fuelDetails){
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("fuelDetails", fuelDetails);
+        setResult(Activity.RESULT_OK, resultIntent);
+        finish();
     }
 }

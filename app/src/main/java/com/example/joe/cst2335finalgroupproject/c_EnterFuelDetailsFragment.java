@@ -1,13 +1,16 @@
 package com.example.joe.cst2335finalgroupproject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.text.ParseException;
@@ -21,6 +24,7 @@ public class c_EnterFuelDetailsFragment extends Fragment {
 
     private Activity callingActivity;
     Bundle fuelDetails;
+    String alertMsgText;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState){
@@ -45,8 +49,7 @@ public class c_EnterFuelDetailsFragment extends Fragment {
 
             fuelDetails = fragmentDetails.getBundle("fuelDetails");
 
-            // There will be no fuel details if this fragment is used for adding a new set of
-            //   fuel details
+            // Edit request, populate the previous field values
             if (fuelDetails != null){
                 double price = fuelDetails.getDouble("price");
                 double litres = fuelDetails.getDouble("litres");
@@ -58,13 +61,16 @@ public class c_EnterFuelDetailsFragment extends Fragment {
                 etKilometers.setText(String.valueOf(kilometers));
                 etDate.setText(String.valueOf(c_CarTrackerActivity.DD_MM_YYYY.format(longDate)));
             }
+            // Add request, just populate today's date
+            else {
+                etDate.setText(String.valueOf(c_CarTrackerActivity.DD_MM_YYYY.format(new Date())));
+            }
         }
 
         btnEnterDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                // TODO handle blank data entered
                 try {
                     // get values in EditText fields
                     double price = Double.parseDouble(etPrice.getText().toString());
@@ -72,6 +78,11 @@ public class c_EnterFuelDetailsFragment extends Fragment {
                     double kilometers = Double.parseDouble(etKilometers.getText().toString());
                     String stringDate = etDate.getText().toString();
                     Date date =  c_CarTrackerActivity.DD_MM_YYYY.parse(stringDate);
+
+                    // add details request
+                    if (fuelDetails == null){
+                        fuelDetails = new Bundle();
+                    }
 
                     // update the fuel details bundle
                     fuelDetails.putDouble("price", price);
@@ -85,12 +96,32 @@ public class c_EnterFuelDetailsFragment extends Fragment {
                                 ((c_EditFuelDetailsActivity)callingActivity).updateFuelDetail(fuelDetails);
                                 break;
                             case "c_AddFuelDetailsActivity":
+                                ((c_AddFuelDetailsActivity)callingActivity).addFuelDetail(fuelDetails);
                                 break;
                         }
                     }
 
                 } catch (Exception e) {
-                    e.printStackTrace();
+
+                    LayoutInflater inflater = callingActivity.getLayoutInflater();
+                    LinearLayout rootView
+                            = (LinearLayout) inflater.inflate(R.layout.c_custom_alert_dialog, null);
+
+                    ((TextView)rootView.findViewById(R.id.tvCarAlertMsg)).setText(alertMsgText);
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(callingActivity);
+                    builder.setView(rootView);
+                    builder.setPositiveButton(getResources().getString(R.string.c_Ok),
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    return;
+                                }
+                            }
+                    );
+
+                    AlertDialog alert = builder.create();
+                    alert.show();
                 }
             }
         });
@@ -111,5 +142,14 @@ public class c_EnterFuelDetailsFragment extends Fragment {
     public void onAttach(Activity activity){
         super.onAttach(activity);
         this.callingActivity = activity;
+
+        switch(callingActivity.getLocalClassName()) {
+            case "c_EditFuelDetailsActivity":
+                alertMsgText = getResources().getString(R.string.c_AlertFillFieldsEdit);
+                break;
+            case "c_AddFuelDetailsActivity":
+                alertMsgText = getResources().getString(R.string.c_AlertFillFieldsAdd);
+                break;
+        }
     }
 }
