@@ -17,11 +17,19 @@
     <string name="m_carTrackerDescriptionText">Record gasoline purchases and view summary information and trends.</string>
 
     //car activity strings
+    <string-array name="c_instructions_array">
+        <item>Instructions:</item>
+        <item>  \u2022 Edit an entry by tapping a row</item>
+        <item>  \u2022 Delete an entry by tapping the red minus icon</item>
+        <item>  \u2022 Add an entry by tapping the green plus icon</item>
+        <item>  \u2022 View past fuel statistics by tapping the graph icon</item>
+    </string-array>
 
     <string name="c_CarTrackerActivity">Car Tracker Activity</string>
     <string name="c_LblLoading">Loading</string>
     <string name="c_changesSaved">Changes saved successfully</string>
     <string name="c_detailsAdded">Entry added successfully</string>
+
 
     <string name="c_Ok">OK</string>
     <string name="c_Cancel">Cancel</string>

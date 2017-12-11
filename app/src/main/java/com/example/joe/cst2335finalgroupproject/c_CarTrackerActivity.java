@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -17,13 +18,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,7 +32,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 public class c_CarTrackerActivity extends Activity {
 
@@ -70,10 +68,11 @@ public class c_CarTrackerActivity extends Activity {
     public static final int ADD_DETAILS_REQUEST = 1;
     public static final int EDIT_DETAILS_REQUEST = 2;
 
-    private RelativeLayout parentLayout;
+    private boolean frameLayoutExists;
+    private View parentLayout;
     private ListView lvPurchaseHistory;
     private LinearLayout btnAddPurchase;
-    private Button btnViewFuelStats;
+    private LinearLayout btnViewFuelStats;
 
     private GridLayout glLoading;
     private ProgressBar pbLoadFuelDetails;
@@ -90,6 +89,7 @@ public class c_CarTrackerActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.c_activity_car);
+
         findControls();
         setUpListeners();
 
@@ -105,6 +105,13 @@ public class c_CarTrackerActivity extends Activity {
         super.onDestroy();
         db.close();
         carDbHelper.close();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig)
+    {
+        super.onConfigurationChanged(newConfig);
+        startActivity(new Intent(this, c_CarTrackerActivity.class));
     }
 
     @Override
@@ -128,7 +135,7 @@ public class c_CarTrackerActivity extends Activity {
         }
     }
 
-    public void updateFuelDetail(Bundle fuelDetails){
+    protected void updateFuelDetail(Bundle fuelDetails){
 
         if (fuelDetails != null){
             double price = fuelDetails.getDouble("price");
@@ -158,7 +165,7 @@ public class c_CarTrackerActivity extends Activity {
         }
     }
 
-    private void addFuelDetail(Bundle fuelDetails) {
+    protected void addFuelDetail(Bundle fuelDetails) {
         if (fuelDetails != null) {
             double price = fuelDetails.getDouble("price");
             double litres = fuelDetails.getDouble("litres");
@@ -386,6 +393,7 @@ public class c_CarTrackerActivity extends Activity {
     }
 
     private void findControls(){
+        frameLayoutExists = (findViewById(R.id.flEnterFuelDetailsHolder) != null);
         parentLayout = findViewById(R.id.fuelDetailsParent);
         lvPurchaseHistory = findViewById(R.id.lvPurchaseHistory);
         btnAddPurchase = findViewById(R.id.btnAddPurchase);
@@ -399,9 +407,27 @@ public class c_CarTrackerActivity extends Activity {
         btnAddPurchase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(c_CarTrackerActivity.this,
-                        c_AddFuelDetailsActivity.class);
-                startActivityForResult(intent, ADD_DETAILS_REQUEST);
+
+                // landscape orientation
+                if (frameLayoutExists){
+                    Bundle fragmentDetails = new Bundle();
+                    fragmentDetails.putString("btnText", getResources().getString(R.string.c_BtnSaveDetails));
+                    fragmentDetails.putString("fragmentTitle", getResources().getString(R.string.c_EditDetailsTitle));
+
+                    c_EnterFuelDetailsFragment addFragment = new c_EnterFuelDetailsFragment();
+                    addFragment.setArguments(fragmentDetails);
+
+                    getFragmentManager().beginTransaction()
+                            .replace(R.id.flEnterFuelDetailsHolder, addFragment).commit();
+                }
+
+                // portrait orientation
+                else {
+                    Intent intent = new Intent(c_CarTrackerActivity.this,
+                            c_AddFuelDetailsActivity.class);
+                    startActivityForResult(intent, ADD_DETAILS_REQUEST);
+                }
+
             }
         });
 
@@ -418,17 +444,34 @@ public class c_CarTrackerActivity extends Activity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 
                 c_FuelDetails details = cFuelDetailsList.get(position);
-                Bundle extras = new Bundle();
-                extras.putDouble("price", details.getPrice());
-                extras.putDouble("litres", details.getLitres());
-                extras.putDouble("kilometers", details.getKilometers());
-                extras.putLong("date", details.getDate().getTime());
-                extras.putLong("id", id);
-                extras.putInt("position", position);
+                Bundle fuelDetails = new Bundle();
+                fuelDetails.putDouble("price", details.getPrice());
+                fuelDetails.putDouble("litres", details.getLitres());
+                fuelDetails.putDouble("kilometers", details.getKilometers());
+                fuelDetails.putLong("date", details.getDate().getTime());
+                fuelDetails.putLong("id", id);
+                fuelDetails.putInt("position", position);
 
-                Intent intent = new Intent(c_CarTrackerActivity.this, c_EditFuelDetailsActivity.class);
-                intent.putExtra("fuelDetails", extras);
-                startActivityForResult(intent, EDIT_DETAILS_REQUEST);
+                // the device is in landscape mode
+                if (frameLayoutExists){
+                    Bundle fragmentDetails = new Bundle();
+                    fragmentDetails.putString("btnText", getResources().getString(R.string.c_BtnSaveDetails));
+                    fragmentDetails.putString("fragmentTitle", getResources().getString(R.string.c_EditDetailsTitle));
+                    fragmentDetails.putBundle("fuelDetails", fuelDetails);
+
+                    c_EnterFuelDetailsFragment editFragment = new c_EnterFuelDetailsFragment();
+                    editFragment.setArguments(fragmentDetails);
+
+                    getFragmentManager().beginTransaction()
+                            .replace(R.id.flEnterFuelDetailsHolder, editFragment).commit();
+                }
+
+                // the device is in portrait mode
+                else {
+                    Intent intent = new Intent(c_CarTrackerActivity.this, c_EditFuelDetailsActivity.class);
+                    intent.putExtra("fuelDetails", fuelDetails);
+                    startActivityForResult(intent, EDIT_DETAILS_REQUEST);
+                }
             }
         });
     }

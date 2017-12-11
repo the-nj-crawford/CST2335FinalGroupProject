@@ -13,23 +13,23 @@
 
     <style name="c_DetailsEditText">
         <item name="android:layout_marginRight">10dp</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">17sp</item>
     </style>
 
     <style name="c_DetailsLabels">
         <item name="android:layout_marginLeft">10dp</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">17sp</item>
     </style>
 
     <style name="c_Title">
         <item name="android:textAlignment">center</item>
-        <item name="android:textSize">30sp</item>
+        <item name="android:textSize">17sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="c_ActionIcon">
-        <item name="android:layout_width">30sp</item>
-        <item name="android:layout_height">30sp</item>
+        <item name="android:layout_width">30dp</item>
+        <item name="android:layout_height">30dp</item>
     </style>
 
 
@@ -42,7 +42,7 @@
         <item name="android:paddingBottom">5dp</item>
     </style>
 
-    <!-- Table row colors are set programatically -->
+    <!-- Table row colors are set programmatically -->
 
     <style name="c_HeadingCell">
         <item name="android:textAlignment">center</item>

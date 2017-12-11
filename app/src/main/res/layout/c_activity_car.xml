@@ -29,17 +29,32 @@
             android:src="@drawable/icons8_plus_50"
             style="@style/c_ActionIcon"/>
 
-
     </LinearLayout>
 
 
-    <Button
+    <LinearLayout
         android:id="@+id/btnViewFuelStats"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:gravity="center_vertical"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:text="@string/c_BtnViewFuelStats" />
+        android:layout_centerInParent="true"
+        android:clickable="true">
+
+        <ImageView
+            android:src="@drawable/icons8_futures_50"
+            style="@style/c_ActionIcon" />
+
+        <TextView
+            android:text="@string/c_BtnViewFuelStats"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:textSize="17sp" />
+
+    </LinearLayout>
 
     <TableLayout
         android:id="@+id/glFuelSummaryHead"

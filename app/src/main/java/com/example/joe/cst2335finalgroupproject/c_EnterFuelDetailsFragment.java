@@ -92,11 +92,29 @@ public class c_EnterFuelDetailsFragment extends Fragment {
 
                     if (fuelDetails != null){
                         switch(callingActivity.getLocalClassName()){
+
+                            // The fragment was called from portrait orientation and navigated to a
+                            //   new activity
                             case "c_EditFuelDetailsActivity":
                                 ((c_EditFuelDetailsActivity)callingActivity).updateFuelDetail(fuelDetails);
                                 break;
                             case "c_AddFuelDetailsActivity":
                                 ((c_AddFuelDetailsActivity)callingActivity).addFuelDetail(fuelDetails);
+                                break;
+
+                            // The fragment was called from landscape orientation and was loaded
+                            //  into the FrameLayout view
+                            case "c_CarTrackerActivity":
+                                // no id present, add fuel detail
+                                if (fuelDetails.getLong("id", -1) == -1){
+                                    ((c_CarTrackerActivity)callingActivity).addFuelDetail(fuelDetails);
+                                }
+                                // id present, edit fuel detail
+                                else {
+                                    ((c_CarTrackerActivity)callingActivity).updateFuelDetail(fuelDetails);
+                                }
+                                callingActivity.getFragmentManager().beginTransaction()
+                                        .remove(c_EnterFuelDetailsFragment.this).commit();
                                 break;
                         }
                     }
