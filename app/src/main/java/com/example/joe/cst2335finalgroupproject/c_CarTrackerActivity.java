@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class c_CarTrackerActivity extends Activity {
 
@@ -68,6 +71,10 @@ public class c_CarTrackerActivity extends Activity {
     public static final int ADD_DETAILS_REQUEST = 1;
     public static final int EDIT_DETAILS_REQUEST = 2;
 
+    private static final String AVERAGE = "average";
+    private static final String TOTAL = "total";
+
+    private c_EnterFuelDetailsFragment loadedFragment = null;
     private boolean frameLayoutExists;
     private View parentLayout;
     private ListView lvPurchaseHistory;
@@ -90,6 +97,9 @@ public class c_CarTrackerActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.c_activity_car);
 
+        carDbHelper = new m_GlobalDatabaseHelper(c_CarTrackerActivity.this);
+        db = carDbHelper.getWritableDatabase();
+
         findControls();
         setUpListeners();
 
@@ -110,7 +120,11 @@ public class c_CarTrackerActivity extends Activity {
     @Override
     public void onConfigurationChanged(Configuration newConfig)
     {
+        if (loadedFragment != null){
+        getFragmentManager().beginTransaction().remove(loadedFragment).commit();
+    }
         super.onConfigurationChanged(newConfig);
+
         startActivity(new Intent(this, c_CarTrackerActivity.class));
     }
 
@@ -192,6 +206,12 @@ public class c_CarTrackerActivity extends Activity {
     }
 
     private void deleteFuelDetail(long id, int position){
+
+        // remove fragment (edit / add details) if it exsits
+        if (loadedFragment != null){
+            getFragmentManager().beginTransaction().remove(loadedFragment).commit();
+        }
+
         cFuelDetailsList.remove(position);
         db.delete(m_GlobalDatabaseHelper.FUEL_DETAILS_TABLE,
                 m_GlobalDatabaseHelper.KEY_ID + "=" + id,
@@ -223,17 +243,14 @@ public class c_CarTrackerActivity extends Activity {
         }
     }
 
-
     // https://stackoverflow.com/questions/28171256/android-asynctask-that-fills-an-adapter-for-a-listview
     private class DataBaseQuery extends AsyncTask<String, Integer, ArrayList<c_FuelDetails>>{
 
         @Override
         protected ArrayList<c_FuelDetails> doInBackground(String[] args){
-            carDbHelper = new m_GlobalDatabaseHelper(c_CarTrackerActivity.this);
-            db = carDbHelper.getWritableDatabase();
 
             //testFillDB();
-            cursor = db.rawQuery(m_GlobalDatabaseHelper.SELECT_ALL_SQL, null);
+            cursor = db.rawQuery(m_GlobalDatabaseHelper.C_SELECT_ALL_SQL, null);
 
             // build an array list in the background and pass it back to the GUI thread
             //  after the resource intense processing is complete
@@ -259,7 +276,7 @@ public class c_CarTrackerActivity extends Activity {
                     Integer progress = (int )Math.round((++counter / totalRecords) * 100);
                     publishProgress(progress);
 
-                    Thread.sleep(250);
+                    Thread.sleep(100);
 
                     cursor.moveToNext();
 
@@ -313,7 +330,7 @@ public class c_CarTrackerActivity extends Activity {
             if (cursor == null)
                 throw new NullPointerException("ERROR: cursor is null");
 
-            cursor = db.rawQuery(m_GlobalDatabaseHelper.SELECT_ALL_SQL, null);
+            cursor = db.rawQuery(m_GlobalDatabaseHelper.C_SELECT_ALL_SQL, null);
             cursor.moveToPosition(position);
             return cursor.getLong(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_ID));
         }
@@ -411,11 +428,14 @@ public class c_CarTrackerActivity extends Activity {
                 // landscape orientation
                 if (frameLayoutExists){
                     Bundle fragmentDetails = new Bundle();
-                    fragmentDetails.putString("btnText", getResources().getString(R.string.c_BtnSaveDetails));
-                    fragmentDetails.putString("fragmentTitle", getResources().getString(R.string.c_EditDetailsTitle));
+                    fragmentDetails.putString("btnText", getResources().getString(R.string.c_BtnAddPurchase));
+                    fragmentDetails.putString("fragmentTitle", getResources().getString(R.string.c_AddDetailsTitle));
 
                     c_EnterFuelDetailsFragment addFragment = new c_EnterFuelDetailsFragment();
                     addFragment.setArguments(fragmentDetails);
+
+                    // cache the fragment so it can be removed
+                    loadedFragment = addFragment;
 
                     getFragmentManager().beginTransaction()
                             .replace(R.id.flEnterFuelDetailsHolder, addFragment).commit();
@@ -427,7 +447,6 @@ public class c_CarTrackerActivity extends Activity {
                             c_AddFuelDetailsActivity.class);
                     startActivityForResult(intent, ADD_DETAILS_REQUEST);
                 }
-
             }
         });
 
@@ -435,7 +454,19 @@ public class c_CarTrackerActivity extends Activity {
         btnViewFuelStats.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO - add stats activity
+                Intent intent = new Intent(c_CarTrackerActivity.this,
+                        c_FuelStatisticsActivity.class);
+
+                ArrayList<c_FuelStats> testList = new ArrayList<>();
+
+                Bundle data = new Bundle();
+                data.putParcelableArrayList("gasPurchasesPerMonth", getPrevGasPurchasesByMonth());
+                data.putDouble("prevMonthGasPriceAvg", getPrevMonthGasStat(AVERAGE));
+                data.putDouble("prevMonthGasPriceTot", getPrevMonthGasStat(TOTAL));
+
+                testMaps();
+                intent.putExtra("data", data);
+                startActivity(intent);
             }
         });
 
@@ -462,6 +493,9 @@ public class c_CarTrackerActivity extends Activity {
                     c_EnterFuelDetailsFragment editFragment = new c_EnterFuelDetailsFragment();
                     editFragment.setArguments(fragmentDetails);
 
+                    // cache the fragment so it can be removed
+                    loadedFragment = editFragment;
+
                     getFragmentManager().beginTransaction()
                             .replace(R.id.flEnterFuelDetailsHolder, editFragment).commit();
                 }
@@ -474,5 +508,141 @@ public class c_CarTrackerActivity extends Activity {
                 }
             }
         });
+    }
+
+    private void testMaps(){
+
+        LinkedHashMap<String, Double> mappings = new LinkedHashMap<>();
+
+        mappings.put("TEST", 0d);
+        mappings.put("FILLER", -1d);
+
+
+        for (int i = 1; i <= 5; i++){
+            double d = mappings.get("TEST");
+            mappings.put("TEST", d+1);
+        }
+
+        double d = mappings.get("TEST");
+
+        Log.i("TEST MAPS", "*******");
+
+        for (Map.Entry<String, Double> entry : mappings.entrySet()) {
+            String key = entry.getKey();
+            double value = entry.getValue();
+            Log.i(key, String.valueOf(value));
+        }
+    }
+
+    //     STATISTICS FUNCTIONS
+    private ArrayList<c_FuelStats> getPrevGasPurchasesByMonth(){
+        // LinkedHashMaps are immutable and will keep their order
+        // example mapping: "January 2017" : [233, 5]
+        // int[0] = total price, int[1] is the number of for the month year combination
+        LinkedHashMap<String, double[]> mappings = new LinkedHashMap<>();
+
+        Calendar calendar = Calendar.getInstance();
+        cursor = db.rawQuery(m_GlobalDatabaseHelper.C_SELECT_ALL_SQL, null);
+        cursor.moveToFirst();
+
+        while(!cursor.isAfterLast()) {
+            long lDate = cursor.getLong(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_DATE));
+            calendar.setTime(new Date(lDate));
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+
+            String key = getResources().getStringArray(R.array.c_months)[month] + " " + String.valueOf(year);
+
+            // if the first entry for the year and month
+            if (mappings.get(key) == null) {
+                mappings.put(key, new double[]{0,0});
+            }
+
+            double[] sumAndNumEntries = mappings.get(key);
+
+            // add price to the running total
+            sumAndNumEntries[0] += cursor.getDouble(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_PRICE));
+
+            // increment the total number of entries
+            sumAndNumEntries[1]++;
+
+            mappings.put(key, sumAndNumEntries);
+
+            cursor.moveToNext();
+        }
+
+        // Since Android will not preserve order when passing LinkedHashMap to different activities,
+        //   create an array of order c_FuelStats objects which will be passed
+        ArrayList<c_FuelStats> purchases = new ArrayList<>();
+
+        for (Map.Entry<String, double[]> entry : mappings.entrySet()) {
+            String key = entry.getKey();
+            double[] sumAndNumEntries = entry.getValue();
+            purchases.add(new c_FuelStats(key, (sumAndNumEntries[0] / sumAndNumEntries[1])));
+        }
+        return purchases;
+    }
+
+
+    private double getPrevMonthGasStat(String stat){
+        String table = m_GlobalDatabaseHelper.FUEL_DETAILS_TABLE;
+        String[] columns = null; // SELECT *
+        String where = m_GlobalDatabaseHelper.KEY_DATE + " >= ? AND " + m_GlobalDatabaseHelper.KEY_DATE + " <= ?";
+        String[] whereArgs = {
+                String.valueOf(getFirstTimestampOfPrevMonth()),
+                String.valueOf(getLastTimestampOfPrevMonth())
+        };
+
+        cursor = db.query(table, columns, where, whereArgs, null, null, null);
+        double total = 0;
+
+        cursor.moveToFirst();
+        while(!cursor.isAfterLast()){
+            total += cursor.getDouble(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_PRICE));
+            cursor.moveToNext();
+        }
+
+        if (stat == TOTAL){
+            return total;
+        } else if (stat == AVERAGE){
+            return total / (double)cursor.getCount();
+        }
+
+        return -1; // no results
+    }
+
+    private long getFirstTimestampOfPrevMonth(){
+        Calendar calendar = getPrevMonthAndYear();
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        Date firstDateOfPrevMonth = calendar.getTime();
+        return firstDateOfPrevMonth.getTime();
+    }
+
+    // java2s getthelastdayofamonth
+    private long getLastTimestampOfPrevMonth(){
+        Calendar calendar = getPrevMonthAndYear();
+        int lastDate = calendar.getActualMaximum(Calendar.DATE);
+        calendar.set(Calendar.DATE, lastDate);
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MILLISECOND, 999);
+        Date lastDayOfPrevMonth = calendar.getTime();
+        return lastDayOfPrevMonth.getTime();
+    }
+
+    private Calendar getPrevMonthAndYear(){
+        Calendar calendar = Calendar.getInstance();
+        int currMonth = calendar.get(Calendar.MONTH);
+        int prevMonth = currMonth == 0 ? 11 : currMonth-1;
+        int currYear = calendar.get(Calendar.YEAR);
+        int prevYear = currMonth == 0 ? currYear-1 : currYear;
+        calendar.set(Calendar.MONTH, prevMonth);
+        calendar.set(Calendar.YEAR, prevYear);
+        return calendar;
     }
 }

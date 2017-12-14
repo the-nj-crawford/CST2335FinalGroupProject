@@ -43,7 +43,7 @@
     <string name="c_LblPrice">Price ($)</string>
     <string name="c_LblLitres">Liters (L)</string>
     <string name="c_LblKilometers">Kilometers (km)</string>
-    <string name="c_LblDate">Date (mm/dd/yyyy)</string>
+    <string name="c_LblDate">Date (dd/mm/yyyy)</string>
 
     <string name="c_AlertFillFieldsAdd">Please fill in all fields before adding an entry</string>
     <string name="c_AlertFillFieldsEdit">Please fill in all fields before saving an entry</string>
@@ -59,9 +59,26 @@
     <string name="c_DeleteSuccessful">Entry deleted successfully</string>
 
 
+    <string name="c_PriceLastMonth">Average Gas Price Last Month:</string>
+    <string name="c_PurhcasedLastMonth">Gas Purchased Last Month:</string>
+
+
+    <string-array name="c_months">
+        <item>January</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>December</item>
+    </string-array>
 
     //nutrition strings
-
 
 
     //thermostat strings
