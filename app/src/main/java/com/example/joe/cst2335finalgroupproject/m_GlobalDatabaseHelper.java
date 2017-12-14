@@ -23,9 +23,8 @@ public class m_GlobalDatabaseHelper extends SQLiteOpenHelper {
             + KEY_DATE + " INTEGER"
             + " );";  // can convert to timestamp later
     public static final String DROP_FUEL_TABLE_SQL = "DROP TABLE IF EXISTS " + FUEL_DETAILS_TABLE;
-    public static final String SELECT_ALL_SQL
-            = String.format("SELECT %s, %s, %s, %s, %s FROM %s",
-            KEY_ID, KEY_PRICE, KEY_LITRES, KEY_KILOMETERS, KEY_DATE, FUEL_DETAILS_TABLE);
+    public static final String C_SELECT_ALL_SQL
+            = String.format("SELECT * FROM %s ORDER BY %s", FUEL_DETAILS_TABLE, KEY_DATE);
     //Database and Table Names
     static final String DATABASE_NAME = "GlobalDatabase.db";
     //Thermostat Database and Column Names

@@ -8,4 +8,73 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+
+
+
+    <style name="c_DetailsEditText">
+        <item name="android:layout_marginRight">10dp</item>
+        <item name="android:textSize">17sp</item>
+    </style>
+
+    <style name="c_DetailsLabels">
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:textSize">17sp</item>
+    </style>
+
+    <style name="c_Title">
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="c_ActionIcon">
+        <item name="android:layout_width">30dp</item>
+        <item name="android:layout_height">30dp</item>
+    </style>
+
+
+
+    <!-- Table styles -->
+
+    <style name="c_HeadingBlue">
+        <item name="android:background">#607D8B</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+    </style>
+
+    <!-- Table row colors are set programmatically -->
+
+    <style name="c_HeadingCell">
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:layout_height">30dp</item>
+    </style>
+    <style name="c_PriceCell" parent="c_HeadingCell">
+        <item name="android:layout_width">100dp</item>
+    </style>
+
+    <style name="c_LitresCell" parent="c_HeadingCell">
+        <item name="android:layout_width">100dp</item>
+    </style>
+
+    <style name="c_KilometersCell" parent="c_HeadingCell">
+        <item name="android:layout_width">150dp</item>
+    </style>
+
+    <style name="c_DateCell" parent="c_HeadingCell">
+        <item name="android:layout_width">200dp</item>
+    </style>
+
+    <style name="c_PurchaseCell">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_columnWeight">1</item>
+        <item name="android:layout_gravity">fill</item>
+        <item name="android:textSize">17sp</item>
+    </style>
+
+    <style name="c_PurchaseLabel" parent="c_PurchaseCell">
+        <item name="android:textStyle">bold</item>
+    </style>
+
 </resources>

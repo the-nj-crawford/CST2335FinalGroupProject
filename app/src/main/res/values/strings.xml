@@ -17,12 +17,36 @@
     <string name="m_carTrackerDescriptionText">Record gasoline purchases and view summary information and trends.</string>
 
     //car activity strings
-    <string name="c_BtnAddPurchase">Add Purchase</string>
+    <string-array name="c_instructions_array">
+        <item>Instructions:</item>
+        <item>  \u2022 Edit an entry by tapping a row</item>
+        <item>  \u2022 Delete an entry by tapping the red minus icon</item>
+        <item>  \u2022 Add an entry by tapping the green plus icon</item>
+        <item>  \u2022 View past fuel statistics by tapping the graph icon</item>
+    </string-array>
+
+    <string name="c_CarTrackerActivity">Car Tracker Activity</string>
+    <string name="c_LblLoading">Loading</string>
+    <string name="c_changesSaved">Changes saved successfully</string>
+    <string name="c_detailsAdded">Entry added successfully</string>
+
+
+    <string name="c_Ok">OK</string>
+    <string name="c_Cancel">Cancel</string>
+
+    <string name="c_Yes">Yes</string>
+    <string name="c_No">No</string>
+
+    <string name="c_BtnAddPurchase">Add Entry</string>
+    <string name="c_BtnAdd">Add</string>
     <string name="c_BtnViewFuelStats">View Fuel Purchase Statistics</string>
-    <string name="c_LblPrice">Price($)</string>
-    <string name="c_LblLitres">Liters(L)</string>
-    <string name="c_LblKilometers">Kilometers(km)</string>
-    <string name="c_LblDate">Date</string>
+    <string name="c_LblPrice">Price ($)</string>
+    <string name="c_LblLitres">Liters (L)</string>
+    <string name="c_LblKilometers">Kilometers (km)</string>
+    <string name="c_LblDate">Date (dd/mm/yyyy)</string>
+
+    <string name="c_AlertFillFieldsAdd">Please fill in all fields before adding an entry</string>
+    <string name="c_AlertFillFieldsEdit">Please fill in all fields before saving an entry</string>
 
     <string name="c_AddDetailsTitle">Add Fuel Details</string>
     <string name="c_BtnAddDetails">Add</string>
@@ -30,10 +54,31 @@
     <string name="c_EditDetailsTitle">Edit Fuel Details</string>
     <string name="c_BtnSaveDetails">Save</string>
 
+    <string name="c_DeleteDetailsTitle">Delete Fuel Details</string>
+    <string name="c_AlertDeleteDetailsMsg">Are you sure you want to delete this entry?</string>
+    <string name="c_DeleteSuccessful">Entry deleted successfully</string>
 
+
+    <string name="c_PriceLastMonth">Average Gas Price Last Month:</string>
+    <string name="c_PurhcasedLastMonth">Gas Purchased Last Month:</string>
+
+
+    <string-array name="c_months">
+        <item>January</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>December</item>
+    </string-array>
 
     //nutrition strings
-
 
 
     //thermostat strings
@@ -73,7 +118,5 @@
 
 
     //activity tracker strings
-
-
 
 </resources>
