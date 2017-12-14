@@ -45,11 +45,9 @@
     <string name="t_manualEntryLabelText">Or, type the rule in manually:</string>
     <string name="t_manualEntryHintText">Monday 6:00 Temp -> 20</string>
     <string name="t_manualEntryFormatLabelText">Follow Format: Monday 6:00 Temp -> 20</string>
-    <string name="t_saveButtonText">Save Changes</string>
-    <string name="t_cancelButtonText">Discard Changes</string>
 
-    <string name="t_atLabel">At:</string>
-    <string name="t_dayLabel">Day:</string>
+    <!-- Strings shared by Thermostat Add and Edit dialogs-->
+    <string name="t_dayLabel">On: </string>
     <string-array name="t_daysArray">
         <item>Sunday</item>
         <item>Monday</item>
@@ -59,10 +57,20 @@
         <item>Friday</item>
         <item>Saturday</item>
     </string-array>
-    <string name="t_timeLabel">Time:</string>
+    <string name="t_timeLabel">At: </string>
     <string name="t_separatorLabel">:</string>
     <string name="t_setTempLabel">Set Temperature To:</string>
     <string name="t_degreesLabel">°C</string>
+
+    <!-- for edit dialog-->
+    <string name="t_saveEditChangesButtonText">Save\nChanges</string>
+    <string name="t_discardEditChangesButtonText">Discard\nChanges</string>
+    <string name="t_saveNewRuleEditChangesButtonText">Save Changes\nAs New Rule</string>
+
+    <!-- for add dialog-->
+    <string name="t_saveAddRuleButtonText">Save\nNew Rule</string>
+    <string name="t_discardAddRuleButtonText">Discard\nNew Rule</string>
+
 
     //activity tracker strings
 

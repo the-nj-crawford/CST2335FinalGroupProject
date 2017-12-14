@@ -32,6 +32,7 @@ public class c_CarTrackerActivity extends Activity {
      *          3.	Each Activity must have a ListView to present items. Selecting an item from the ListView must show detailed information about the item selected.
      *          7.	Each activity must have at least 1 button
      *          8.	Each activity must have at least 1 edit text with appropriate text input method.
+     *
      * Milestone 2 (Must be demonstrated December 14th):
      *          2.	Each Activity must use a fragment in its graphical interface.
      *          5.	Each activity must use an AsyncTask in the code. This can be to open a Database, retrieve data from a server, save data, or any other reasonable circumstance.

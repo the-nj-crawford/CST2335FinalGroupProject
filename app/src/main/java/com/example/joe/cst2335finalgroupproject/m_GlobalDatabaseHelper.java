@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class m_GlobalDatabaseHelper extends SQLiteOpenHelper {
 
+
     //Car Database and Column Names
     public static final String FUEL_DETAILS_TABLE = "FUEL_DETAILS_TABLE";
     public static final String KEY_ID = "_id";
@@ -37,6 +38,8 @@ public class m_GlobalDatabaseHelper extends SQLiteOpenHelper {
             + RULE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
             + RULE_COL_NAME + " TEXT "
             + " );";
+
+
     //Nurition Database and Column Names
     static final String NUTRITION_TABLE_NAME = "NUTRITION_INFO";
     public static final String DROP_NUTRITION_TABLE_SQL = "DROP TABLE IF EXISTS " + NUTRITION_TABLE_NAME;
@@ -54,6 +57,7 @@ public class m_GlobalDatabaseHelper extends SQLiteOpenHelper {
             + FAT_COL_NAME + " INTEGER "
             + " );";
 
+
     //Activity Database and Column Names
     static final String ACTIVITY_TABLE_NAME = "ACTIVITY_LOG";
     public static final String DROP_ACTIVITY_TABLE_SQL = "DROP TABLE IF EXISTS " + ACTIVITY_TABLE_NAME;
@@ -70,6 +74,8 @@ public class m_GlobalDatabaseHelper extends SQLiteOpenHelper {
             + NOTE_COL_NAME + " INTEGER, "
             + TIME_COL_NAME + " DATETIME DEFAULT CURRENT_TIMESTAMP "
             + " );";
+
+
     //Database Version Number
     private static final int DATABASE_VERSION_NUM = 1;  //WARNING: AVOID ALTERING THIS VALUE UNLESS REQUIRED. THIS WILL CLEAR ALL TABLES FOR ALL ACTIVITIES.
 

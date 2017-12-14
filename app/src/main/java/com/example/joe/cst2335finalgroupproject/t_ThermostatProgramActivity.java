@@ -1,8 +1,10 @@
 package com.example.joe.cst2335finalgroupproject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -19,6 +21,7 @@ import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -29,7 +32,7 @@ import java.util.ArrayList;
  * X 8.	Each activity must have at least 1 edit text with appropriate text input method.
  *
  * Milestone 2 (Must be demonstrated December 14th):
- * O 2.	Each Activity must use a fragment in its graphical interface.
+ * X 2.	Each Activity must use a fragment in its graphical interface.
  * X 5.	Each activity must use an AsyncTask in the code. This can be to open a Database, retrieve data from a server, save data, or any other reasonable circumstance.
  * X 6.	Each activity must have at least 1 progress bar
  * O 9.	Each activity must have at least 1 Toast, Snackbar, and custom dialog notification.
@@ -55,31 +58,35 @@ import java.util.ArrayList;
  */
 
 public class t_ThermostatProgramActivity extends Activity {
+    public static final int SAVE_AS_NEW_RESULT = 20;
+    public static final int SAVE_RESULT = 21;
 
+    //TODO: 2.2 - Add a fragment
     //TODO: 1.3/1.8/2.9 - Create window for rule popup - This will be a very similar popup dialog for add and "details" (ie tapping a row).  Window needs "Save as New Rule" button.  This is my custom dialog.
-    //TODO: 2.5 - Write ASync for Database 1) reads and 2) writes
-    //TODO: 2.9 - Add a Toast somewhere.  On ASync postexecute?
     //TODO: 2.9 - Add a Snackbar somewhere.
     //TODO: 3.10 - Help menu (snackbar? custom dialog?) shows author ane, activity version number?, and instructions
     //TODO: 3.11 - Add Translation
 
     //local ArrayList to handle the rules_list being read from the database and displayed on screen
     final ArrayList<String> rules_list = new ArrayList<>();
+    final ArrayList<CheckBox> checkbox_list = new ArrayList<>();
 
     //database references
     m_GlobalDatabaseHelper tdh;
     SQLiteDatabase db;
     Cursor c;
 
-    //create handles to asyncTask objects (database interactions)
+    //create handles to asyncTask object (database read)
     asyncRead aRead;
-    asyncWrite aWrite;
 
     //create handles to the objects on the screen
     ListView lv;
     Button addButton;
     Button editButton;
+    Button helpButton;
+    TextView pbtv;
     ProgressBar pb;
+    RuleAdapter rulesAdapter;
 
     ViewHolder vh = new ViewHolder();
 
@@ -94,41 +101,17 @@ public class t_ThermostatProgramActivity extends Activity {
         db = tdh.getWritableDatabase();
 
         aRead = new asyncRead();
-        aWrite = new asyncWrite();
 
+        pbtv = findViewById(R.id.t_taskTextView);
         pb = findViewById(R.id.progressBar);
         addButton = findViewById(R.id.addButton);
         editButton = findViewById(R.id.editButton);
+        helpButton = findViewById(R.id.help);
 
         aRead.execute();
 
-        final RuleAdapter rulesAdapter = new RuleAdapter(this);
+        rulesAdapter = new RuleAdapter(this);
         lv.setAdapter(rulesAdapter);
-
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //this is going to be called by the window created by clicking the "Add" button
-                //set up a window with a day picker, a time picker, an edit text
-                //remember to reset text to .setText("");
-                String newRuleText = "test #" + String.valueOf(rules_list.size() + 1);
-                rules_list.add(newRuleText);
-                ContentValues newRule = new ContentValues();
-                newRule.put(m_GlobalDatabaseHelper.RULE_COL_NAME, newRuleText);
-                db.insert(m_GlobalDatabaseHelper.THERMOSTAT_TABLE_NAME, null, newRule);
-                Log.i("Adding Dummy Rule", newRule.toString());
-                //lv.notify();
-                rulesAdapter.notifyDataSetChanged();
-            }
-        });
-
-        editButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleCheckboxesVisible();
-                Log.i("checkboxes", "toggling");
-            }
-        });
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -136,11 +119,64 @@ public class t_ThermostatProgramActivity extends Activity {
                 Log.i("Rule Row Clicked", rules_list.get(position));
                 Intent detailsIntent = new Intent(t_ThermostatProgramActivity.this, t_DetailView.class);
 
-                detailsIntent.putExtra("rule", rules_list.get(position));
+                Bundle info = new Bundle();
+                info.putInt("mode", 1);
+                info.putString("rule", rules_list.get(position));
+                info.putInt("listPosition", position);
+                info.putLong("database_id", id);
 
-                startActivity(detailsIntent);
+                detailsIntent.putExtras(info);
+
+                startActivityForResult(detailsIntent, 13);
             }
         });
+
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent detailsIntent = new Intent(t_ThermostatProgramActivity.this, t_DetailView.class);
+
+                Bundle info = new Bundle();
+                info.putInt("mode", 2);
+                info.putString("rule", "");
+                info.putInt("listPosition", 0);
+
+                detailsIntent.putExtras(info);
+                startActivityForResult(detailsIntent, 12);
+            }
+        });
+
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleCheckboxesVisible();
+            }
+        });
+
+        helpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog alertDialog = new AlertDialog.Builder(t_ThermostatProgramActivity.this).create();
+                alertDialog.setTitle("Instructions");
+                alertDialog.setMessage("Instructions will be shown here in a future version.");
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
+            }
+        });
+
+//        final FloatingActionButton snackbarLauncher = (FloatingActionButton) findViewById(R.id.launchSnackbar);
+//        snackbarLauncher.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make((new View(findViewById(R.layout.t_activity_program_thermostat))).getContext(), "This is a Snackbar message!", Snackbar.LENGTH_LONG)
+//                        .show();
+//            }
+//        });
     }
 
     @Override
@@ -148,6 +184,48 @@ public class t_ThermostatProgramActivity extends Activity {
         super.onDestroy();
         db.close();
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 12) { //the add button started an activity
+            if (resultCode == SAVE_RESULT) {
+                Bundle extras = data.getExtras();
+                String rule = extras.getString("ruleToAdd");
+                rules_list.add(rule);
+                ContentValues newRule = new ContentValues();
+                newRule.put(m_GlobalDatabaseHelper.RULE_COL_NAME, rule);
+
+                db.insert(m_GlobalDatabaseHelper.THERMOSTAT_TABLE_NAME, null, newRule);
+
+                rulesAdapter.notifyDataSetChanged();
+            }
+        } else if (requestCode == 13) {
+            if (resultCode == SAVE_AS_NEW_RESULT) {
+                Bundle extras = data.getExtras();
+                String rule = extras.getString("ruleToAdd");
+                rules_list.add(rule);
+                ContentValues newRule = new ContentValues();
+                newRule.put(m_GlobalDatabaseHelper.RULE_COL_NAME, rule);
+
+                db.insert(m_GlobalDatabaseHelper.THERMOSTAT_TABLE_NAME, null, newRule);
+
+                rulesAdapter.notifyDataSetChanged();
+            } else if (resultCode == SAVE_RESULT) { //this functions as save-in-place, ie overwrite
+                Bundle extras = data.getExtras();
+                String rule = extras.getString("ruleToAdd");
+                rules_list.remove(extras.getInt("listPosition"));
+                rules_list.add(rule);
+                ContentValues newRule = new ContentValues();
+                newRule.put(m_GlobalDatabaseHelper.RULE_COL_NAME, rule);
+
+                db.insert(m_GlobalDatabaseHelper.THERMOSTAT_TABLE_NAME, null, newRule);
+
+                rulesAdapter.notifyDataSetChanged();
+
+            }
+        }
+    }
+
 
     void setCheckboxesVisible() {
         vh.selected.setVisibility(View.VISIBLE);
@@ -190,7 +268,6 @@ public class t_ThermostatProgramActivity extends Activity {
             return rules_list.get(position);
         }
 
-        //TODO: make sure this is recycling correctly - Rule data is wrong on click and check
         @Override
         public View getView(int position, View recycled, ViewGroup parent) {
 
@@ -202,20 +279,9 @@ public class t_ThermostatProgramActivity extends Activity {
             vh.ruleView = layout.findViewById(R.id.ruleTextView);
             vh.ruleView.setText(getItem(position));
 
-            vh.selected = layout.findViewById(R.id.ruleCheckbox);
-
             layout.setTag(vh);
 
             return layout;
-        }
-    }
-
-    private class asyncWrite extends AsyncTask<String, Integer, String> {
-
-        @Override
-        protected String doInBackground(String... args) {
-
-            return "Database Write Complete.";
         }
     }
 
@@ -223,6 +289,9 @@ public class t_ThermostatProgramActivity extends Activity {
 
         @Override
         protected String doInBackground(String... args) {
+
+            pbtv.setText("Reading Database:");
+            pb.setVisibility(View.VISIBLE);
 
             c = db.query(false, m_GlobalDatabaseHelper.THERMOSTAT_TABLE_NAME, new String[]{m_GlobalDatabaseHelper.RULE_COL_NAME}, null, null, null, null, null, null);
             c.moveToFirst();
@@ -237,19 +306,28 @@ public class t_ThermostatProgramActivity extends Activity {
             for (int i = 0; i < 100; i++) {
                 publishProgress(i);
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(30);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
 
-            return "Database Read Complete.";
+            return "Database Read Complete!";
         }
 
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
             pb.setProgress(values[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            pbtv.setText("");
+            pb.setVisibility(View.INVISIBLE);
+            Toast.makeText(t_ThermostatProgramActivity.this, result, Toast.LENGTH_LONG)
+                    .show();
+
         }
     }
 }

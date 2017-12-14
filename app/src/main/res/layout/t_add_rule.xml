@@ -6,26 +6,17 @@
 
 
     <TextView
-        android:id="@+id/at_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="@string/t_atLabel"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
         android:id="@+id/day_label"
         android:layout_width="40dp"
         android:layout_height="20dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
         android:text="@string/t_dayLabel"
         android:textAlignment="viewStart"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/at_label" />
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <Spinner
         android:id="@+id/day_spinner"
@@ -41,7 +32,7 @@
         android:id="@+id/time_label"
         android:layout_width="40dp"
         android:layout_height="20dp"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:text="@string/t_timeLabel"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault"
@@ -57,10 +48,10 @@
         app:layout_constraintTop_toTopOf="@+id/time_label" />
 
     <TextView
-        android:id="@+id/separator_label"
+        android:id="@+id/separator_label1"
         android:layout_width="10dp"
         android:layout_height="20dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:text="@string/t_separatorLabel"
         android:textAlignment="center"
         app:layout_constraintStart_toEndOf="@+id/hour_spinner"
@@ -70,15 +61,15 @@
         android:id="@+id/minute_spinner"
         android:layout_width="60dp"
         android:layout_height="20dp"
-        android:layout_marginStart="16dp"
-        app:layout_constraintStart_toEndOf="@+id/separator_label"
-        app:layout_constraintTop_toTopOf="@+id/separator_label" />
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@+id/separator_label1"
+        app:layout_constraintTop_toTopOf="@+id/separator_label1" />
 
     <TextView
         android:id="@+id/set_label"
         android:layout_width="wrap_content"
         android:layout_height="17dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:text="@string/t_setTempLabel"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault"
@@ -126,7 +117,7 @@
         app:layout_constraintTop_toBottomOf="@+id/set_manually_label" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/manual_text_entry_format_hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -137,6 +128,30 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/manual_text_entry" />
+
+    <Button
+        android:id="@+id/t_discardAddRuleButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_weight="1"
+        android:text="@string/t_discardAddRuleButtonText"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/manual_text_entry_format_hint" />
+
+    <Button
+        android:id="@+id/t_saveAddRuleButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_weight="1"
+        android:text="@string/t_saveAddRuleButtonText"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/manual_text_entry_format_hint" />
 
 
 </android.support.constraint.ConstraintLayout>

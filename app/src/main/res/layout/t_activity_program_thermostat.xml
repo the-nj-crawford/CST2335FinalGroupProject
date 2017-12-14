@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -23,7 +24,19 @@
                 android:id="@+id/help"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="help" />
+                android:text="help"
+                android:textAlignment="center" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/launchSnackbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:clickable="true"
+                android:elevation="6dp"
+                android:focusable="true"
+                app:elevation="6dp"
+                app:pressedTranslationZ="12dp" />
 
         </android.support.v7.widget.Toolbar>
 
@@ -32,7 +45,7 @@
             android:id="@+id/rulesView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/activityText"
+            android:layout_above="@+id/t_taskTextView"
             android:layout_below="@id/toolbar2" />
 
         <!-- Idea for Center Shim borrowed from https://stackoverflow.com/questions/19983335/android-2-relative-layout-divided-in-half-screen -->
@@ -44,7 +57,7 @@
             android:visibility="invisible" />
 
         <TextView
-            android:id="@+id/activityText"
+            android:id="@+id/t_taskTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@+id/addButton"
@@ -61,7 +74,8 @@
             android:layout_height="18dp"
             android:layout_above="@+id/editButton"
             android:layout_alignParentEnd="true"
-            android:layout_toEndOf="@id/centerShim" />
+            android:layout_toEndOf="@id/centerShim"
+            android:visibility="invisible" />
 
         <Button
             android:id="@+id/addButton"
@@ -78,7 +92,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-
             android:layout_toEndOf="@id/centerShim"
             android:text="@string/t_editButtonText" />
 
