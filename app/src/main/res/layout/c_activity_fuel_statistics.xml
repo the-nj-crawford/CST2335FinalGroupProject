@@ -12,27 +12,54 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:columnCount="2"
-        android:rowCount="4"
+        android:rowCount="3"
         android:layout_marginBottom="50dp">
 
         <TextView
+            android:text="@string/c_lastMonthStats"
+            android:layout_columnSpan="2"
+            android:textStyle="bold"
+            style="@style/c_PurchaseCell"
+            android:background="@color/c_headingBlue"/>
+        <TextView
             android:text="@string/c_PriceLastMonth"
-            style="@style/c_PurchaseLabel"/>
+            style="@style/c_PurchaseLabel"
+            android:background="@color/c_rowWhite"/>
 
         <TextView
             android:id="@+id/tvPrevMonthAvgGasPrice"
-            style="@style/c_PurchaseCell"/>
+            style="@style/c_PurchaseCell"
+            android:background="@color/c_rowWhite"/>
 
         <TextView
-            android:text="@string/c_PurhcasedLastMonth"
-            style="@style/c_PurchaseLabel"/>
+            android:text="@string/c_PurchasedLastMonth"
+            style="@style/c_PurchaseLabel"
+            android:background="@color/c_rowBlue"/>
 
         <TextView
             android:id="@+id/tvPrevMonthTotalGas"
-            style="@style/c_PurchaseCell"/>
+            style="@style/c_PurchaseCell"
+            android:background="@color/c_rowBlue"/>
     </GridLayout>
 
+    <TextView
+        android:text="@string/c_avgGasPurchHist"
+        android:layout_width="match_parent"
+        android:textStyle="bold"
+        style="@style/c_PurchaseCell"
+        android:background="@color/c_headingBlue"/>
+
+    <TextView
+        android:id="@+id/c_tvNoHistory"
+        android:text="@string/c_avgGasPurchHistNone"
+        android:textSize="17sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/c_rowWhite"
+        android:visibility="gone"/>
+
     <ListView
+        android:layout_marginBottom="10dp"
         android:id="@+id/lvFuelStatistics"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

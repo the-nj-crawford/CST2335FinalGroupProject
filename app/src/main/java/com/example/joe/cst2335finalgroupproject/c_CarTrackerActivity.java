@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -347,13 +348,13 @@ public class c_CarTrackerActivity extends Activity {
             }
 
             TableRow fuelDetailRow = view.findViewById(R.id.fuelDetailRow);
-            if ((position % 2) == 0){   // white blue
-                fuelDetailRow.setBackgroundColor(Color.parseColor("#ECEFF1"));
-            } else { // blue
-                fuelDetailRow.setBackgroundColor(Color.parseColor("#CFD8DC"));
+            if ((position % 2) == 0){
+                fuelDetailRow.setBackgroundColor(getResources().getColor(R.color.c_rowWhite));
+            } else {
+                fuelDetailRow.setBackgroundColor(getResources().getColor(R.color.c_rowBlue));
             }
 
-            ImageView btnDeleteFuelDetails = view.findViewById(R.id.btnDeleteFuelDetails);
+            RelativeLayout btnDeleteFuelDetails = view.findViewById(R.id.btnDeleteFuelDetails);
             btnDeleteFuelDetails.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -538,7 +539,7 @@ public class c_CarTrackerActivity extends Activity {
     private ArrayList<c_FuelStats> getPrevGasPurchasesByMonth(){
         // LinkedHashMaps are immutable and will keep their order
         // example mapping: "January 2017" : [233, 5]
-        // int[0] = total price, int[1] is the number of for the month year combination
+        // int[0] = total price, int[1] is the number of entries for the month year combination
         LinkedHashMap<String, double[]> mappings = new LinkedHashMap<>();
 
         Calendar calendar = Calendar.getInstance();
@@ -604,7 +605,7 @@ public class c_CarTrackerActivity extends Activity {
 
         if (stat == TOTAL){
             return total;
-        } else if (stat == AVERAGE){
+        } else if (stat == AVERAGE && cursor.getCount() != 0){
             return total / (double)cursor.getCount();
         }
 

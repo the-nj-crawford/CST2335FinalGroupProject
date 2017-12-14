@@ -2,12 +2,14 @@ package com.example.joe.cst2335finalgroupproject;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.GridLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -26,11 +28,17 @@ public class c_FuelStatisticsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.c_activity_fuel_statistics);
 
-
         Bundle extras = getIntent().getExtras();
         Bundle data = extras.getBundle("data");
 
+        final TextView tvNoHistory = findViewById(R.id.c_tvNoHistory);
         gasPurchasesPerMonth = data.getParcelableArrayList("gasPurchasesPerMonth");
+
+        if(gasPurchasesPerMonth.isEmpty()){
+            tvNoHistory.setText(getResources().getString(R.string.c_avgGasPurchHistNone));
+            tvNoHistory.setVisibility(View.VISIBLE);
+        }
+
         lvFuelStatistics = findViewById(R.id.lvFuelStatistics);
         adapter = new FuelStatisticsAdapter(this);
         lvFuelStatistics.setAdapter(adapter);
@@ -38,8 +46,8 @@ public class c_FuelStatisticsActivity extends Activity {
 
         double prevMonthGasPriceAvg = data.getDouble("prevMonthGasPriceAvg");
         final TextView tvPrevMonthAvgGasPrice = findViewById(R.id.tvPrevMonthAvgGasPrice);
-        tvPrevMonthAvgGasPrice.setText(String.format("$ %.2f", prevMonthGasPriceAvg));
-
+        tvPrevMonthAvgGasPrice.setText(prevMonthGasPriceAvg == -1 ? "N/A"
+                : String.format("$ %.2f", prevMonthGasPriceAvg));
 
         double prevMonthGasPriceTot = data.getDouble("prevMonthGasPriceTot");
         final TextView tvPrevMonthTotalGas = findViewById(R.id.tvPrevMonthTotalGas);
@@ -76,6 +84,14 @@ public class c_FuelStatisticsActivity extends Activity {
                 LayoutInflater inflater = c_FuelStatisticsActivity.this.getLayoutInflater();
                 view = inflater.inflate(R.layout.c_fuel_statistic_row, null);
             }
+
+            GridLayout glFuelStatRow = view.findViewById(R.id.c_glFuelStatRow);
+            if ((position % 2) == 0){
+                glFuelStatRow.setBackgroundColor(getResources().getColor(R.color.c_rowWhite));
+            } else {
+                glFuelStatRow.setBackgroundColor(getResources().getColor(R.color.c_rowBlue));
+            }
+
 
             c_FuelStats stats = getItem(position);
 

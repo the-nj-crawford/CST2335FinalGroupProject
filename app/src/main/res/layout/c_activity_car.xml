@@ -4,6 +4,7 @@
     android:id="@+id/fuelDetailsParent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="10dp"
     tools:context="com.example.joe.cst2335finalgroupproject.c_CarTrackerActivity">
 
 
@@ -16,7 +17,8 @@
         android:gravity="center_vertical"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:clickable="true">
+        android:clickable="true"
+        android:background="@drawable/c_custom_button">
 
         <TextView
             android:text="@string/c_BtnAddPurchase"
@@ -36,11 +38,12 @@
         android:id="@+id/btnViewFuelStats"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="30dp"
         android:layout_marginBottom="20dp"
         android:gravity="center_vertical"
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
+        android:background="@drawable/c_custom_button"
         android:clickable="true">
 
         <ImageView
@@ -68,23 +71,23 @@
             style="@style/c_HeadingBlue">
 
             <TextView
-                android:text="@string/c_LblPrice"
+                android:text="@string/c_LblPriceHeading"
                 style="@style/c_PriceCell"/>
 
             <TextView
-                android:text="@string/c_LblLitres"
+                android:text="@string/c_LblLitresHeading"
                 style="@style/c_LitresCell" />
 
             <TextView
-                android:text="@string/c_LblKilometers"
+                android:text="@string/c_LblKilometersHeading"
                 style="@style/c_KilometersCell" />
 
             <TextView
-                android:text="@string/c_LblDate"
+                android:text="@string/c_LblDateHeading"
                 style="@style/c_DateCell" />
 
             <TextView
-                android:layout_width="30dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAlignment="center" />
 
