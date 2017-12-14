@@ -11,24 +11,22 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-
-
-        <activity android:name="com.example.joe.cst2335finalgroupproject.m_MainActivity">
+        <activity android:name=".m_MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name="com.example.joe.cst2335finalgroupproject.a_ActivityTrackerActivity" />
-        <activity android:name="com.example.joe.cst2335finalgroupproject.t_ThermostatProgramActivity" />
-        <activity android:name="com.example.joe.cst2335finalgroupproject.c_CarTrackerActivity" />
-
+        <activity android:name=".a_ActivityTrackerActivity" />
+        <activity android:name=".t_ThermostatProgramActivity" />
+        <activity android:name=".c_CarTrackerActivity" />
         <activity android:name=".a_DetailView" />
         <activity android:name=".t_DetailView" />
         <activity android:name=".c_AddFuelDetailsActivity" />
         <activity android:name=".c_EditFuelDetailsActivity" />
         <activity android:name=".n_NutritionTrackerActivity" />
-
+        <activity android:name=".c_FuelStatisticsActivity"></activity>
     </application>
+
 </manifest>

@@ -1,90 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/flEditDetails"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:columnCount="2"
-    android:rowCount="6"
-    tools:context="com.example.joe.cst2335finalgroupproject.c_AddFuelDetailsActivity">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_columnSpan="2"
-        android:gravity="fill"
-        android:text="@string/c_EditDetailsTitle"
-        android:textAlignment="center" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_columnWeight="1"
-        android:layout_gravity="fill"
-        android:text="@string/c_LblPrice" />
-
-    <EditText
-        android:id="@+id/etEditPrice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_columnWeight="1"
-        android:layout_gravity="fill"
-        android:inputType="numberDecimal"
-        android:textAlignment="center" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_columnWeight="1"
-        android:layout_gravity="fill"
-        android:text="@string/c_LblLitres" />
-
-    <EditText
-        android:id="@+id/etEditLitres"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_columnWeight="1"
-        android:layout_gravity="fill"
-        android:inputType="numberDecimal"
-        android:textAlignment="center" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_columnWeight="1"
-        android:layout_gravity="fill"
-        android:text="@string/c_LblKilometers" />
-
-    <EditText
-        android:id="@+id/etEditKilometers"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_columnWeight="1"
-        android:layout_gravity="fill"
-        android:inputType="numberDecimal"
-        android:textAlignment="center" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_columnWeight="1"
-        android:layout_gravity="fill"
-        android:text="@string/c_LblDate" />
-
-    <EditText
-        android:id="@+id/etEditDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_columnWeight="1"
-        android:layout_gravity="fill"
-        android:clickable="true"
-        android:focusable="false"
-        android:inputType="none"
-        android:textAlignment="center" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_columnSpan="2"
-        android:layout_gravity="right"
-        android:text="@string/c_BtnSaveDetails" />
-</GridLayout>
+    android:layout_height="match_parent"
+    tools:context="com.example.joe.cst2335finalgroupproject.c_EditFuelDetailsActivity">
+</FrameLayout>

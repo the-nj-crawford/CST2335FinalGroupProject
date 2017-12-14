@@ -1,39 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:columnCount="5"
     android:rowCount="1">
 
-    <TextView
-        android:id="@+id/tvPrice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_columnWeight="1"
-        android:layout_gravity="fill"
-        android:textAlignment="center" />
+    <TableRow
+        android:id="@+id/fuelDetailRow">
 
-    <TextView
-        android:id="@+id/tvLitres"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_columnWeight="1"
-        android:layout_gravity="fill"
-        android:textAlignment="center" />
+        <TextView
+            android:id="@+id/tvPrice"
+            style="@style/c_PriceCell"/>
 
-    <TextView
-        android:id="@+id/tvKilometers"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_columnWeight="1"
-        android:layout_gravity="fill"
-        android:textAlignment="center" />
+        <TextView
+            android:id="@+id/tvLitres"
+            style="@style/c_LitresCell"/>
 
-    <TextView
-        android:id="@+id/tvDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_columnWeight="1"
-        android:layout_gravity="fill"
-        android:textAlignment="center" />
-</GridLayout>
+        <TextView
+            android:id="@+id/tvKilometers"
+            style="@style/c_KilometersCell" />
+
+        <TextView
+            android:id="@+id/tvDate"
+            style="@style/c_DateCell" />
+
+        <ImageView
+            android:id="@+id/btnDeleteFuelDetails"
+            android:src="@drawable/icons8_minus_50"
+            style="@style/c_ActionIcon"/>
+
+    </TableRow>
+
+</TableLayout>

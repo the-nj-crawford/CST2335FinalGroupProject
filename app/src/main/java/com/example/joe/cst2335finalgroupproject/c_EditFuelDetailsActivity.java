@@ -1,57 +1,40 @@
 package com.example.joe.cst2335finalgroupproject;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 
 public class c_EditFuelDetailsActivity extends Activity {
-
-    private EditText etEditPrice;
-    private EditText etEditLitres;
-    private EditText etEditKilometers;
-    private EditText etEditDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.c_activity_edit_fuel_details);
 
-        etEditPrice = findViewById(R.id.etEditPrice);
-        etEditLitres = findViewById(R.id.etEditLitres);
-        etEditKilometers = findViewById(R.id.etEditKilometers);
-        etEditDate = findViewById(R.id.etEditDate);
-        etEditDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                c_DatePickerFragment datePicker = new c_DatePickerFragment();
-                datePicker.setDisplay(etEditDate);
-                datePicker.show(getFragmentManager(), "Date Picker");
-            }
-        });
+        Bundle fragmentDetails = getIntent().getExtras();
+        if (fragmentDetails != null){
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
+            // add title of the fragment and button text
+            fragmentDetails.putString("btnText", getResources().getString(R.string.c_BtnSaveDetails));
+            fragmentDetails.putString("fragmentTitle", getResources().getString(R.string.c_EditDetailsTitle));
 
-            Bundle fuelDetails = extras.getBundle("fuelDetails");
-            double price = fuelDetails.getDouble("price");
-            double litres = fuelDetails.getDouble("litres");
-            double kilometers = fuelDetails.getDouble("kilometers");
-            long longDate = fuelDetails.getLong("date");
+            c_EnterFuelDetailsFragment loadedFragment = new c_EnterFuelDetailsFragment();
+            loadedFragment.setArguments(fragmentDetails);
 
-            // move cursor to end of the EditText
-            // references:
-            // https://stackoverflow.com/questions/6217378/place-cursor-at-the-end-of-text-in-edittext
-            etEditPrice.setText(String.valueOf(price));
-            etEditPrice.setSelection(etEditPrice.getText().length());
-
-            etEditLitres.setText(String.valueOf(litres));
-            etEditLitres.setSelection(etEditLitres.getText().length());
-
-            etEditKilometers.setText(String.valueOf(kilometers));
-            etEditKilometers.setSelection(etEditKilometers.getText().length());
-
-            etEditDate.setText(c_CarTrackerActivity.DD_MM_YYYY.format(longDate));
+            getFragmentManager().beginTransaction().
+                    add(R.id.flEditDetails, loadedFragment).commit();
         }
+    }
+
+    public void updateFuelDetail(Bundle fuelDetails){
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("fuelDetails", fuelDetails);
+        setResult(Activity.RESULT_OK, resultIntent);
+        finish();
     }
 }

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="30dp"
+    tools:context="com.example.joe.cst2335finalgroupproject.c_FuelStatisticsActivity">
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="2"
+        android:rowCount="4"
+        android:layout_marginBottom="50dp">
+
+        <TextView
+            android:text="@string/c_PriceLastMonth"
+            style="@style/c_PurchaseLabel"/>
+
+        <TextView
+            android:id="@+id/tvPrevMonthAvgGasPrice"
+            style="@style/c_PurchaseCell"/>
+
+        <TextView
+            android:text="@string/c_PurhcasedLastMonth"
+            style="@style/c_PurchaseLabel"/>
+
+        <TextView
+            android:id="@+id/tvPrevMonthTotalGas"
+            style="@style/c_PurchaseCell"/>
+    </GridLayout>
+
+    <ListView
+        android:id="@+id/lvFuelStatistics"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>
