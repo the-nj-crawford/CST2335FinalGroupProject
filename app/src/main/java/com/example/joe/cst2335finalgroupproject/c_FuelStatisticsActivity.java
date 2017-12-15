@@ -2,9 +2,7 @@ package com.example.joe.cst2335finalgroupproject;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.GridLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -55,7 +51,7 @@ public class c_FuelStatisticsActivity extends Activity {
 
         // TODO TESTING
         /* for (c_FuelStats cfs : gasPurchasesPerMonth){
-            Log.i(cfs.getMonth(), String.valueOf(cfs.getAvg()));
+            Log.i(cfs.getMonthYear(), String.valueOf(cfs.getTotalPurchases()));
         } */
     }
 
@@ -96,10 +92,10 @@ public class c_FuelStatisticsActivity extends Activity {
             c_FuelStats stats = getItem(position);
 
             TextView c_StatsLabel = view.findViewById(R.id.c_StatsLabel);
-            c_StatsLabel.setText(stats.getMonth());
+            c_StatsLabel.setText(stats.getMonthYear());
 
             TextView c_StatsPurchase = view.findViewById(R.id.c_StatsPurchase);
-            c_StatsPurchase.setText(String.format("$ %.2f", stats.getAvg()));
+            c_StatsPurchase.setText(String.format("$ %.2f", stats.getTotalPurchases()));
 
             return view;
         }

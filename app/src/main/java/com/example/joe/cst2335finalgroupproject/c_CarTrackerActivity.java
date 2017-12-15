@@ -9,18 +9,15 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -34,8 +31,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class c_CarTrackerActivity extends Activity {
 
@@ -465,7 +460,6 @@ public class c_CarTrackerActivity extends Activity {
                 data.putDouble("prevMonthGasPriceAvg", getPrevMonthGasStat(AVERAGE));
                 data.putDouble("prevMonthGasPriceTot", getPrevMonthGasStat(TOTAL));
 
-                testMaps();
                 intent.putExtra("data", data);
                 startActivity(intent);
             }
@@ -511,36 +505,9 @@ public class c_CarTrackerActivity extends Activity {
         });
     }
 
-    private void testMaps(){
-
-        LinkedHashMap<String, Double> mappings = new LinkedHashMap<>();
-
-        mappings.put("TEST", 0d);
-        mappings.put("FILLER", -1d);
-
-
-        for (int i = 1; i <= 5; i++){
-            double d = mappings.get("TEST");
-            mappings.put("TEST", d+1);
-        }
-
-        double d = mappings.get("TEST");
-
-        Log.i("TEST MAPS", "*******");
-
-        for (Map.Entry<String, Double> entry : mappings.entrySet()) {
-            String key = entry.getKey();
-            double value = entry.getValue();
-            Log.i(key, String.valueOf(value));
-        }
-    }
-
     //     STATISTICS FUNCTIONS
     private ArrayList<c_FuelStats> getPrevGasPurchasesByMonth(){
-        // LinkedHashMaps are immutable and will keep their order
-        // example mapping: "January 2017" : [233, 5]
-        // int[0] = total price, int[1] is the number of entries for the month year combination
-        LinkedHashMap<String, double[]> mappings = new LinkedHashMap<>();
+        ArrayList<c_FuelStats> purchases = new ArrayList<>();
 
         Calendar calendar = Calendar.getInstance();
         cursor = db.rawQuery(m_GlobalDatabaseHelper.C_SELECT_ALL_SQL, null);
@@ -552,38 +519,26 @@ public class c_CarTrackerActivity extends Activity {
             int year = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH);
 
-            String key = getResources().getStringArray(R.array.c_months)[month] + " " + String.valueOf(year);
+            String monthYear = getResources().getStringArray(R.array.c_months)[month] + " " + String.valueOf(year);
 
-            // if the first entry for the year and month
-            if (mappings.get(key) == null) {
-                mappings.put(key, new double[]{0,0});
+            double purchasePrice = cursor.getDouble(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_PRICE))
+                    * cursor.getDouble(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_LITRES));
+
+            c_FuelStats stats;
+
+            // no entries or current monthYear is different from the last
+            if (purchases.isEmpty() || !purchases.get(purchases.size()-1).getMonthYear().equals(monthYear)){
+                stats = new c_FuelStats(monthYear, purchasePrice);
+                purchases.add(stats);
+            } else {
+                stats = purchases.get(purchases.size()-1);
+                stats.setTotalPurchases(stats.getTotalPurchases() + purchasePrice);
             }
-
-            double[] sumAndNumEntries = mappings.get(key);
-
-            // add price to the running total
-            sumAndNumEntries[0] += cursor.getDouble(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_PRICE));
-
-            // increment the total number of entries
-            sumAndNumEntries[1]++;
-
-            mappings.put(key, sumAndNumEntries);
 
             cursor.moveToNext();
         }
-
-        // Since Android will not preserve order when passing LinkedHashMap to different activities,
-        //   create an array of order c_FuelStats objects which will be passed
-        ArrayList<c_FuelStats> purchases = new ArrayList<>();
-
-        for (Map.Entry<String, double[]> entry : mappings.entrySet()) {
-            String key = entry.getKey();
-            double[] sumAndNumEntries = entry.getValue();
-            purchases.add(new c_FuelStats(key, (sumAndNumEntries[0] / sumAndNumEntries[1])));
-        }
         return purchases;
     }
-
 
     private double getPrevMonthGasStat(String stat){
         String table = m_GlobalDatabaseHelper.FUEL_DETAILS_TABLE;
@@ -595,20 +550,26 @@ public class c_CarTrackerActivity extends Activity {
         };
 
         cursor = db.query(table, columns, where, whereArgs, null, null, null);
-        double total = 0;
-
         cursor.moveToFirst();
+
+        double gasPriceSum = 0;
+        double totalPrice = 0;
+
         while(!cursor.isAfterLast()){
-            total += cursor.getDouble(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_PRICE));
+            double gasPrice = cursor.getDouble(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_PRICE));
+            double litres = cursor.getDouble(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_LITRES));
+
+            gasPriceSum += gasPrice;
+            totalPrice += (gasPrice * litres);
             cursor.moveToNext();
         }
 
-        if (stat == TOTAL){
-            return total;
-        } else if (stat == AVERAGE && cursor.getCount() != 0){
-            return total / (double)cursor.getCount();
+        if (stat == AVERAGE && cursor.getCount() != 0){
+            return (gasPriceSum / cursor.getCount());
         }
-
+        else if (stat == TOTAL){
+            return totalPrice;
+        }
         return -1; // no results
     }
 
