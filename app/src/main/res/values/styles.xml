@@ -8,9 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-
-
-
+    <!-- Car Activity -->
     <style name="c_DetailsEditText">
         <item name="android:textSize">17sp</item>
     </style>
@@ -39,8 +37,6 @@
         <item name="android:paddingBottom">5dp</item>
     </style>
 
-    <!-- Table row colors are set programmatically -->
-
     <style name="c_HeadingCell">
         <item name="android:textAlignment">center</item>
         <item name="android:textSize">17sp</item>
@@ -63,17 +59,22 @@
         <item name="android:layout_width">160dp</item>
     </style>
 
-    <style name="c_PurchaseCell">
+    <!-- Fuel Statistics -->
+    <style name="c_StatCell">
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_columnWeight">1</item>
         <item name="android:layout_gravity">fill</item>
         <item name="android:textSize">17sp</item>
         <item name="android:padding">5dp</item>
     </style>
 
-    <style name="c_PurchaseLabel" parent="c_PurchaseCell">
+    <style name="c_StatLabel" parent="c_StatCell">
+        <item name="android:layout_width">200dp</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="c_StatData" parent="c_StatCell">
+        <item name="android:layout_width">200dp</item>
     </style>
 
 </resources>

@@ -68,7 +68,7 @@
     <string name="c_lastMonthStats">Last Month\'s Statistics</string>
     <string name="c_PriceLastMonth">Average Gas Price:</string>
     <string name="c_PurchasedLastMonth">Total Gas Purchased:</string>
-    <string name="c_avgGasPurchHist">Average Gas Purchase History</string>
+    <string name="c_avgGasPurchHist">Gas Purchase History</string>
     <string name="c_avgGasPurchHistNone">You currently have no gas purchase history</string>
 
 

@@ -30,7 +30,7 @@ public class c_FuelStatisticsActivity extends Activity {
         final TextView tvNoHistory = findViewById(R.id.c_tvNoHistory);
         gasPurchasesPerMonth = data.getParcelableArrayList("gasPurchasesPerMonth");
 
-        if(gasPurchasesPerMonth.isEmpty()){
+        if(gasPurchasesPerMonth == null || gasPurchasesPerMonth.isEmpty()){
             tvNoHistory.setText(getResources().getString(R.string.c_avgGasPurchHistNone));
             tvNoHistory.setVisibility(View.VISIBLE);
         }
@@ -49,15 +49,11 @@ public class c_FuelStatisticsActivity extends Activity {
         final TextView tvPrevMonthTotalGas = findViewById(R.id.tvPrevMonthTotalGas);
         tvPrevMonthTotalGas.setText(String.format("$ %.2f", prevMonthGasPriceTot));
 
-        // TODO TESTING
-        /* for (c_FuelStats cfs : gasPurchasesPerMonth){
-            Log.i(cfs.getMonthYear(), String.valueOf(cfs.getTotalPurchases()));
-        } */
     }
 
     private class FuelStatisticsAdapter extends ArrayAdapter<c_FuelStats> {
 
-        public FuelStatisticsAdapter(Context context) {
+        private FuelStatisticsAdapter(Context context) {
             super(context, 0);
         }
 
@@ -87,7 +83,6 @@ public class c_FuelStatisticsActivity extends Activity {
             } else {
                 glFuelStatRow.setBackgroundColor(getResources().getColor(R.color.c_rowBlue));
             }
-
 
             c_FuelStats stats = getItem(position);
 

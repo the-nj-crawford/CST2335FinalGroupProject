@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +32,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class c_CarTrackerActivity extends Activity {
 
@@ -62,7 +64,7 @@ public class c_CarTrackerActivity extends Activity {
      *
      */
 
-    public static final DateFormat DD_MM_YYYY = new SimpleDateFormat("dd/MM/yyyy");
+    public static final DateFormat DD_MM_YYYY = new SimpleDateFormat("dd/MM/yyyy", Locale.CANADA);
 
     public static final int ADD_DETAILS_REQUEST = 1;
     public static final int EDIT_DETAILS_REQUEST = 2;
@@ -81,7 +83,6 @@ public class c_CarTrackerActivity extends Activity {
     private ProgressBar pbLoadFuelDetails;
     private TextView tvLoadingPercentage;
 
-
     private ArrayList<c_FuelDetails> cFuelDetailsList;
     private FuelDetailsAdapter adapter;
     private m_GlobalDatabaseHelper carDbHelper;
@@ -99,7 +100,7 @@ public class c_CarTrackerActivity extends Activity {
         findControls();
         setUpListeners();
 
-        cFuelDetailsList = new ArrayList<c_FuelDetails>();
+        cFuelDetailsList = new ArrayList<>();
         adapter = new FuelDetailsAdapter(this);
         lvPurchaseHistory.setAdapter(adapter);
 
@@ -114,13 +115,11 @@ public class c_CarTrackerActivity extends Activity {
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig)
-    {
+    public void onConfigurationChanged(Configuration newConfig) {
         if (loadedFragment != null){
-        getFragmentManager().beginTransaction().remove(loadedFragment).commit();
-    }
+            getFragmentManager().beginTransaction().remove(loadedFragment).commit();
+        }
         super.onConfigurationChanged(newConfig);
-
         startActivity(new Intent(this, c_CarTrackerActivity.class));
     }
 
@@ -133,7 +132,6 @@ public class c_CarTrackerActivity extends Activity {
                 Bundle extras = data.getExtras();
                 Bundle fuelDetails = extras.getBundle("fuelDetails");
                 updateFuelDetail(fuelDetails);
-
             }
 
             if (requestCode == ADD_DETAILS_REQUEST){
@@ -141,7 +139,6 @@ public class c_CarTrackerActivity extends Activity {
                 Bundle fuelDetails = extras.getBundle("fuelDetails");
                 addFuelDetail(fuelDetails);
             }
-
         }
     }
 
@@ -219,26 +216,6 @@ public class c_CarTrackerActivity extends Activity {
                 Snackbar.LENGTH_LONG).show();
     }
 
-    private void testFillDB() {
-
-        Date currentDate = Calendar.getInstance().getTime();
-
-        c_FuelDetails[] testData = new c_FuelDetails[]{
-                new c_FuelDetails(1.11, 1, 10, currentDate),
-                new c_FuelDetails(2.22, 2, 20, currentDate),
-                new c_FuelDetails(3.33, 3, 30, currentDate)
-        };
-
-        for (int i = 0, n = testData.length; i < n; i++) {
-            ContentValues values = new ContentValues();
-            values.put("price", testData[i].getPrice());
-            values.put("litres", testData[i].getLitres());
-            values.put("kilometers", testData[i].getKilometers());
-            values.put("date", testData[i].getDate().getTime());
-            db.insert(m_GlobalDatabaseHelper.FUEL_DETAILS_TABLE, null, values);
-        }
-    }
-
     // https://stackoverflow.com/questions/28171256/android-asynctask-that-fills-an-adapter-for-a-listview
     private class DataBaseQuery extends AsyncTask<String, Integer, ArrayList<c_FuelDetails>>{
 
@@ -288,17 +265,14 @@ public class c_CarTrackerActivity extends Activity {
             int progress = value[0];
 
             glLoading.setVisibility(View.VISIBLE);
-            tvLoadingPercentage.setText(String.valueOf(progress) + " %");
+            tvLoadingPercentage.setText(String.valueOf(progress).concat("%"));
             pbLoadFuelDetails.setProgress(progress);
         }
 
         @Override
         protected void onPostExecute(ArrayList<c_FuelDetails> details){
-
             cFuelDetailsList.clear();
-            for (c_FuelDetails fd : details)
-                cFuelDetailsList.add(fd);
-
+            cFuelDetailsList.addAll(details);
             adapter.notifyDataSetChanged();
             glLoading.setVisibility(View.GONE);
             lvPurchaseHistory.setVisibility(View.VISIBLE);
@@ -307,7 +281,7 @@ public class c_CarTrackerActivity extends Activity {
 
     private class FuelDetailsAdapter extends ArrayAdapter<c_FuelDetails> {
 
-        public FuelDetailsAdapter(Context context) {
+        private FuelDetailsAdapter(Context context) {
             super(context, 0);
         }
 
@@ -333,13 +307,14 @@ public class c_CarTrackerActivity extends Activity {
 
         // https://stackoverflow.com/questions/17525886/listview-with-add-and-delete-buttons-in-each-row-in-android
         @Override
+        @NonNull
         public View getView(final int position, View convertView, ViewGroup parent) {
 
             View view = convertView;
 
             if (view == null){
                 LayoutInflater inflater = c_CarTrackerActivity.this.getLayoutInflater();
-                view = inflater.inflate(R.layout.c_fuel_details_summary, null);
+                view = inflater.inflate(R.layout.c_fuel_details_summary, parent, false);
             }
 
             TableRow fuelDetailRow = view.findViewById(R.id.fuelDetailRow);
@@ -376,9 +351,7 @@ public class c_CarTrackerActivity extends Activity {
                     builder.setNegativeButton(getResources().getString(R.string.c_No),
                             new DialogInterface.OnClickListener() {
                                 @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    return;
-                                }
+                                public void onClick(DialogInterface dialogInterface, int i) {}
                             }
                     );
 
@@ -389,18 +362,19 @@ public class c_CarTrackerActivity extends Activity {
 
             c_FuelDetails details = getItem(position);
 
-            TextView tvPrice = view.findViewById(R.id.tvPrice);
-            tvPrice.setText(String.valueOf(details.getPrice()));
+            if (details != null){
+                TextView tvPrice = view.findViewById(R.id.tvPrice);
+                tvPrice.setText(String.valueOf(details.getPrice()));
 
-            TextView tvLitres = view.findViewById(R.id.tvLitres);
-            tvLitres.setText(String.valueOf(details.getLitres()));
+                TextView tvLitres = view.findViewById(R.id.tvLitres);
+                tvLitres.setText(String.valueOf(details.getLitres()));
 
-            TextView tvKilometers = view.findViewById(R.id.tvKilometers);
-            tvKilometers.setText(String.valueOf(details.getKilometers()));
+                TextView tvKilometers = view.findViewById(R.id.tvKilometers);
+                tvKilometers.setText(String.valueOf(details.getKilometers()));
 
-            TextView tvDate = view.findViewById(R.id.tvDate);
-            tvDate.setText(DD_MM_YYYY.format(details.getDate()));
-
+                TextView tvDate = view.findViewById(R.id.tvDate);
+                tvDate.setText(DD_MM_YYYY.format(details.getDate()));
+            }
             return view;
         }
     }
@@ -453,8 +427,6 @@ public class c_CarTrackerActivity extends Activity {
                 Intent intent = new Intent(c_CarTrackerActivity.this,
                         c_FuelStatisticsActivity.class);
 
-                ArrayList<c_FuelStats> testList = new ArrayList<>();
-
                 Bundle data = new Bundle();
                 data.putParcelableArrayList("gasPurchasesPerMonth", getPrevGasPurchasesByMonth());
                 data.putDouble("prevMonthGasPriceAvg", getPrevMonthGasStat(AVERAGE));
@@ -505,7 +477,7 @@ public class c_CarTrackerActivity extends Activity {
         });
     }
 
-    //     STATISTICS FUNCTIONS
+    // STATISTICS FUNCTIONS
     private ArrayList<c_FuelStats> getPrevGasPurchasesByMonth(){
         ArrayList<c_FuelStats> purchases = new ArrayList<>();
 
@@ -542,14 +514,13 @@ public class c_CarTrackerActivity extends Activity {
 
     private double getPrevMonthGasStat(String stat){
         String table = m_GlobalDatabaseHelper.FUEL_DETAILS_TABLE;
-        String[] columns = null; // SELECT *
         String where = m_GlobalDatabaseHelper.KEY_DATE + " >= ? AND " + m_GlobalDatabaseHelper.KEY_DATE + " <= ?";
         String[] whereArgs = {
                 String.valueOf(getFirstTimestampOfPrevMonth()),
                 String.valueOf(getLastTimestampOfPrevMonth())
         };
 
-        cursor = db.query(table, columns, where, whereArgs, null, null, null);
+        cursor = db.query(table, null, where, whereArgs, null, null, null);
         cursor.moveToFirst();
 
         double gasPriceSum = 0;
@@ -564,10 +535,10 @@ public class c_CarTrackerActivity extends Activity {
             cursor.moveToNext();
         }
 
-        if (stat == AVERAGE && cursor.getCount() != 0){
+        if (stat.equals(AVERAGE) && cursor.getCount() != 0){
             return (gasPriceSum / cursor.getCount());
         }
-        else if (stat == TOTAL){
+        else if (stat.equals(TOTAL)){
             return totalPrice;
         }
         return -1; // no results

@@ -19,26 +19,26 @@
             android:text="@string/c_lastMonthStats"
             android:layout_columnSpan="2"
             android:textStyle="bold"
-            style="@style/c_PurchaseCell"
+            style="@style/c_StatData"
             android:background="@color/c_headingBlue"/>
         <TextView
             android:text="@string/c_PriceLastMonth"
-            style="@style/c_PurchaseLabel"
+            style="@style/c_StatLabel"
             android:background="@color/c_rowWhite"/>
 
         <TextView
             android:id="@+id/tvPrevMonthAvgGasPrice"
-            style="@style/c_PurchaseCell"
+            style="@style/c_StatData"
             android:background="@color/c_rowWhite"/>
 
         <TextView
             android:text="@string/c_PurchasedLastMonth"
-            style="@style/c_PurchaseLabel"
+            style="@style/c_StatLabel"
             android:background="@color/c_rowBlue"/>
 
         <TextView
             android:id="@+id/tvPrevMonthTotalGas"
-            style="@style/c_PurchaseCell"
+            style="@style/c_StatData"
             android:background="@color/c_rowBlue"/>
     </GridLayout>
 
@@ -46,7 +46,7 @@
         android:text="@string/c_avgGasPurchHist"
         android:layout_width="match_parent"
         android:textStyle="bold"
-        style="@style/c_PurchaseCell"
+        style="@style/c_StatData"
         android:background="@color/c_headingBlue"/>
 
     <TextView

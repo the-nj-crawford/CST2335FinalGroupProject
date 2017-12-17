@@ -13,7 +13,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.text.ParseException;
 import java.util.Date;
 
 /**
@@ -24,7 +23,7 @@ public class c_EnterFuelDetailsFragment extends Fragment {
 
     private Activity callingActivity;
     Bundle fuelDetails;
-    String alertMsgText;
+    String alertMsgText = "";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState){
@@ -51,6 +50,7 @@ public class c_EnterFuelDetailsFragment extends Fragment {
 
             // Edit request, populate the previous field values
             if (fuelDetails != null){
+                alertMsgText = getResources().getString(R.string.c_AlertFillFieldsEdit);
                 double price = fuelDetails.getDouble("price");
                 double litres = fuelDetails.getDouble("litres");
                 double kilometers = fuelDetails.getDouble("kilometers");
@@ -63,6 +63,7 @@ public class c_EnterFuelDetailsFragment extends Fragment {
             }
             // Add request, just populate today's date
             else {
+                alertMsgText = getResources().getString(R.string.c_AlertFillFieldsAdd);
                 etDate.setText(String.valueOf(c_CarTrackerActivity.DD_MM_YYYY.format(new Date())));
             }
         }
@@ -90,33 +91,31 @@ public class c_EnterFuelDetailsFragment extends Fragment {
                     fuelDetails.putDouble("kilometers", kilometers);
                     fuelDetails.putLong("date", date.getTime());
 
-                    if (fuelDetails != null){
-                        switch(callingActivity.getLocalClassName()){
+                    switch(callingActivity.getLocalClassName()){
 
-                            // The fragment was called from portrait orientation and navigated to a
-                            //   new activity
-                            case "c_EditFuelDetailsActivity":
-                                ((c_EditFuelDetailsActivity)callingActivity).updateFuelDetail(fuelDetails);
-                                break;
-                            case "c_AddFuelDetailsActivity":
-                                ((c_AddFuelDetailsActivity)callingActivity).addFuelDetail(fuelDetails);
-                                break;
+                        // The fragment was called from portrait orientation and navigated to a
+                        //   new activity
+                        case "c_EditFuelDetailsActivity":
+                            ((c_EditFuelDetailsActivity)callingActivity).updateFuelDetail(fuelDetails);
+                            break;
+                        case "c_AddFuelDetailsActivity":
+                            ((c_AddFuelDetailsActivity)callingActivity).addFuelDetail(fuelDetails);
+                            break;
 
-                            // The fragment was called from landscape orientation and was loaded
-                            //  into the FrameLayout view
-                            case "c_CarTrackerActivity":
-                                // no id present, add fuel detail
-                                if (fuelDetails.getLong("id", -1) == -1){
-                                    ((c_CarTrackerActivity)callingActivity).addFuelDetail(fuelDetails);
-                                }
-                                // id present, edit fuel detail
-                                else {
-                                    ((c_CarTrackerActivity)callingActivity).updateFuelDetail(fuelDetails);
-                                }
-                                callingActivity.getFragmentManager().beginTransaction()
-                                        .remove(c_EnterFuelDetailsFragment.this).commit();
-                                break;
-                        }
+                        // The fragment was called from landscape orientation and was loaded
+                        //  into the FrameLayout view
+                        case "c_CarTrackerActivity":
+                            // no id present, add fuel detail
+                            if (fuelDetails.getLong("id", -1) == -1){
+                                ((c_CarTrackerActivity)callingActivity).addFuelDetail(fuelDetails);
+                            }
+                            // id present, edit fuel detail
+                            else {
+                                ((c_CarTrackerActivity)callingActivity).updateFuelDetail(fuelDetails);
+                            }
+                            callingActivity.getFragmentManager().beginTransaction()
+                                    .remove(c_EnterFuelDetailsFragment.this).commit();
+                            break;
                     }
 
                 } catch (Exception e) {
@@ -133,7 +132,7 @@ public class c_EnterFuelDetailsFragment extends Fragment {
                             new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    return;
+
                                 }
                             }
                     );
@@ -157,17 +156,8 @@ public class c_EnterFuelDetailsFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Activity activity){
+    public void onAttach(Activity activity) {
         super.onAttach(activity);
         this.callingActivity = activity;
-
-        switch(callingActivity.getLocalClassName()) {
-            case "c_EditFuelDetailsActivity":
-                alertMsgText = getResources().getString(R.string.c_AlertFillFieldsEdit);
-                break;
-            case "c_AddFuelDetailsActivity":
-                alertMsgText = getResources().getString(R.string.c_AlertFillFieldsAdd);
-                break;
-        }
     }
 }

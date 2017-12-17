@@ -1,13 +1,8 @@
 package com.example.joe.cst2335finalgroupproject;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.FrameLayout;
 
 public class c_EditFuelDetailsActivity extends Activity {
 
@@ -27,7 +22,7 @@ public class c_EditFuelDetailsActivity extends Activity {
             loadedFragment.setArguments(fragmentDetails);
 
             getFragmentManager().beginTransaction().
-                    add(R.id.flEditDetails, loadedFragment).commit();
+                    replace(R.id.flEditDetails, loadedFragment).commit();
         }
     }
 

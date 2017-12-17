@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * Created by Nathan on 2017-12-12.
  */
 
-// Passing an ArrayLis of custom objects to another activity
+// Passing an ArrayList of custom objects to another activity
 // https://stackoverflow.com/questions/6681217/help-passing-an-arraylist-of-objects-to-a-new-activity
     // http://www.parcelabler.com/
 public class c_FuelStats implements Parcelable {
