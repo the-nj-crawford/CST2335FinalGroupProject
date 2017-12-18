@@ -35,7 +35,8 @@ public class c_EnterFuelDetailsFragment extends Fragment {
         final EditText etLitres = view.findViewById(R.id.etLitres);
         final EditText etKilometers = view.findViewById(R.id.etKilometers);
         final EditText etDate = view.findViewById(R.id.etDate);
-        final Button btnEnterDetails = view.findViewById(R.id.btnEnterDetails);
+        final Button btnEnterDetails = view.findViewById(R.id.btnEnterDetailsSubmit);
+        final Button btnEnterDetailsCancel = view.findViewById(R.id.btnEnterDetailsCancel);
 
         Bundle fragmentDetails = getArguments();
 
@@ -142,6 +143,32 @@ public class c_EnterFuelDetailsFragment extends Fragment {
                 }
             }
         });
+
+
+        btnEnterDetailsCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                callingActivity.setResult(Activity.RESULT_CANCELED);
+
+                switch(callingActivity.getLocalClassName()){
+
+                    // Finish the edit and add activities if in portrait orientation
+                    case "c_EditFuelDetailsActivity":
+                    case "c_AddFuelDetailsActivity":
+                        callingActivity.finish();
+                        break;
+
+                    // remove fragment if in landscape orientation
+                    case "c_CarTrackerActivity":
+                        callingActivity.getFragmentManager().beginTransaction()
+                                .remove(c_EnterFuelDetailsFragment.this).commit();
+                        break;
+
+                }
+            }
+        });
+
 
         etDate.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -20,7 +20,7 @@
         </activity>
         <activity android:name=".a_ActivityTrackerActivity" />
         <activity android:name=".t_ThermostatProgramActivity" />
-        <activity android:name=".c_CarTrackerActivity" android:configChanges="orientation|screenSize" />
+        <activity android:name=".c_CarTrackerActivity" android:configChanges="keyboardHidden|orientation" />
         <activity android:name=".a_DetailView" />
         <activity android:name=".t_DetailView" />
         <activity android:name=".c_AddFuelDetailsActivity" />

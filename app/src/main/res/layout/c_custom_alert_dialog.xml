@@ -39,5 +39,4 @@
         android:textAlignment="center"
         android:layout_marginTop="25dp"/>
 
-
 </LinearLayout>

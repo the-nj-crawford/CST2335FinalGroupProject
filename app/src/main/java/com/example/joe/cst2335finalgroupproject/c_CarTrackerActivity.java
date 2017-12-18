@@ -74,6 +74,8 @@ public class c_CarTrackerActivity extends Activity {
 
     private c_EnterFuelDetailsFragment loadedFragment = null;
     private boolean frameLayoutExists;
+    private LinearLayout btnHome;
+    private LinearLayout btnAbout;
     private View parentLayout;
     private ListView lvPurchaseHistory;
     private LinearLayout btnAddPurchase;
@@ -382,6 +384,8 @@ public class c_CarTrackerActivity extends Activity {
     private void findControls(){
         frameLayoutExists = (findViewById(R.id.flEnterFuelDetailsHolder) != null);
         parentLayout = findViewById(R.id.fuelDetailsParent);
+        btnHome = findViewById(R.id.c_BtnHome);
+        btnAbout = findViewById(R.id.c_BtnAbout);
         lvPurchaseHistory = findViewById(R.id.lvPurchaseHistory);
         btnAddPurchase = findViewById(R.id.btnAddPurchase);
         btnViewFuelStats = findViewById(R.id.btnViewFuelStats);
@@ -473,6 +477,42 @@ public class c_CarTrackerActivity extends Activity {
                     intent.putExtra("fuelDetails", fuelDetails);
                     startActivityForResult(intent, EDIT_DETAILS_REQUEST);
                 }
+            }
+        });
+
+        btnHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(
+                        c_CarTrackerActivity.this, m_MainActivity.class
+                        ));
+            }
+        });
+
+        btnAbout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LayoutInflater inflater = getLayoutInflater();
+                LinearLayout rootView
+                        = (LinearLayout) inflater.inflate(R.layout.c_custom_alert_dialog, null);
+
+                TextView tvAlertMsg = rootView.findViewById(R.id.tvCarAlertMsg);
+                tvAlertMsg.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+                tvAlertMsg.setText(getResources().getText(R.string.c_helpMenu));
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(c_CarTrackerActivity.this);
+                builder.setView(rootView);
+                builder.setPositiveButton(getResources().getString(R.string.c_done),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        }
+                );
+
+                AlertDialog alert = builder.create();
+                alert.show();
             }
         });
     }

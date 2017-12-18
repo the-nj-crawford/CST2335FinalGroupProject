@@ -17,13 +17,6 @@
     <string name="m_carTrackerDescriptionText">Record gasoline purchases and view summary information and trends.</string>
 
     //car activity strings
-    <string-array name="c_instructions_array">
-        <item>Instructions:</item>
-        <item>  \u2022 Edit an entry by tapping a row</item>
-        <item>  \u2022 Delete an entry by tapping the red minus icon</item>
-        <item>  \u2022 Add an entry by tapping the green plus icon</item>
-        <item>  \u2022 View past fuel statistics by tapping the graph icon</item>
-    </string-array>
 
     <string name="c_CarTrackerActivity">Car Tracker Activity</string>
     <string name="c_LblLoading">Loading</string>
@@ -86,6 +79,21 @@
         <item>November</item>
         <item>December</item>
     </string-array>
+
+    <string name="c_home">Home</string>
+    <string name="c_help">Help</string>
+    <string name="c_done">Done</string>
+    <string name="c_helpMenu">
+        \t<b>Author:</b>\tNathan Doef\n
+        \t<b>Activity Version Number:</b>\t3\n
+        \t<b>Languages Supported:</b>\tEnglish\tFrench\n\n
+        \t<b>Instructions:</b>\n
+        \t\u2022 Edit an entry by tapping a row\n
+        \t\u2022 Delete an entry by tapping the red minus icon\n
+        \t\u2022 Add an entry by tapping the \'Add Entry\' button\n
+        \t\u2022 Tap the \'View Fuel Purchase Statistics\'\n\t\tto view past fuel statistics\n
+        \t\u2022 Return home by tapping the \'Home\' button
+    </string>
 
     //nutrition strings
 
