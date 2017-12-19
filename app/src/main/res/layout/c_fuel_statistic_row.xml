@@ -2,6 +2,7 @@
 
 <GridLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/c_glFuelStatRow"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:columnCount="2"
@@ -9,9 +10,9 @@
 
     <TextView
         android:id="@+id/c_StatsLabel"
-        style="@style/c_PurchaseLabel"/>
+        style="@style/c_StatLabel"/>
 
     <TextView
         android:id="@+id/c_StatsPurchase"
-        style="@style/c_PurchaseCell"/>
+        style="@style/c_StatData"/>
 </GridLayout>

@@ -26,29 +26,7 @@ public class c_DatePickerFragment extends DialogFragment implements DatePickerDi
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
-        DatePickerDialog datePickerDialog = new DatePickerDialog(parentActivity, this, year, month, day);
-
-        // https://stackoverflow.com/questions/4854492/setting-width-to-wrap-content-for-textview-through-code
-        // https://stackoverflow.com/questions/3060619/how-to-get-the-visible-size-on-an-activity
-        /*
-        int newHeight = (int) (parentActivity.getWindow().getDecorView().getHeight() * 0.65);
-        int newWidth = (int) (parentActivity.getWindow().getDecorView().getWidth() * 0.75);
-        float newScaleX = 1.5f;
-        float newScaleY = 1.6f;
-        float translationFactorY = 0.2857f;
-
-        DatePicker datePicker = datePickerDialog.getDatePicker();
-        datePicker.setTranslationY((int) (translationFactorY * newHeight));
-
-        // increase the size of the DatePicker pop up
-        datePicker.setMinimumHeight(newHeight);
-        datePicker.setMinimumWidth(newWidth);
-
-        // blow up the DatePicker contents so they fill the pop up window
-        datePicker.setScaleX(newScaleX);
-        datePicker.setScaleY(newScaleY);*/
-
-        return datePickerDialog;
+        return new DatePickerDialog(parentActivity, this, year, month, day);
     }
 
     public void onAttach(Activity activity) {

@@ -5,6 +5,8 @@
     android:layout_height="wrap_content"
     android:columnCount="2"
     android:rowCount="6"
+    android:layout_marginTop="65dp"
+    android:background="@color/c_rowWhite"
     tools:context="com.example.joe.cst2335finalgroupproject.c_AddFuelDetailsActivity">
 
     <TextView
@@ -13,7 +15,8 @@
         android:layout_height="wrap_content"
         android:layout_columnSpan="2"
         android:gravity="fill"
-        android:layout_marginBottom="10dp"
+        android:padding="10dp"
+        android:background="@color/c_headingBlue"
         style="@style/c_Title" />
 
     <TextView
@@ -31,6 +34,7 @@
         android:layout_columnWeight="1"
         android:layout_gravity="fill"
         android:inputType="numberDecimal"
+        android:maxLength="4"
         style="@style/c_DetailsEditText" />
 
     <TextView
@@ -48,6 +52,7 @@
         android:layout_columnWeight="1"
         android:layout_gravity="fill"
         android:inputType="numberDecimal"
+        android:maxLength="4"
         style="@style/c_DetailsEditText" />
 
     <TextView
@@ -65,6 +70,7 @@
         android:layout_columnWeight="1"
         android:layout_gravity="fill"
         android:inputType="numberDecimal"
+        android:maxLength="4"
         style="@style/c_DetailsEditText" />
 
     <TextView
@@ -84,13 +90,17 @@
         android:clickable="true"
         android:focusable="false"
         android:inputType="none"
+        android:maxLength="10"
         style="@style/c_DetailsEditText" />
 
     <Button
-        android:id="@+id/btnEnterDetails"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_columnSpan="2"
-        android:layout_gravity="right"
-        android:layout_marginRight="10dp"/>
+        android:id="@+id/btnEnterDetailsCancel"
+        android:text="@string/c_Cancel"
+        android:layout_gravity="start"
+        android:layout_marginTop="10dp"/>
+
+    <Button
+        android:id="@+id/btnEnterDetailsSubmit"
+        android:layout_gravity="end"
+        android:layout_marginTop="10dp"/>
 </GridLayout>

@@ -3,7 +3,6 @@ package com.example.joe.cst2335finalgroupproject;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -19,10 +18,10 @@ public class c_FuelDetails implements Parcelable {
     private Date date;
 
     public c_FuelDetails(double price, double litres, double kilometers, Date date) {
-        this.price = price;
-        this.litres = litres;
-        this.kilometers = kilometers;
-        this.date = date;
+        setPrice(price);
+        setLitres(litres);
+        setKilometers(kilometers);
+        setDate(date);
     }
 
     public double getPrice() {
