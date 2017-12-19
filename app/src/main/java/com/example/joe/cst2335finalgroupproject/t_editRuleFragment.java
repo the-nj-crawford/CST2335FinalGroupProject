@@ -25,6 +25,9 @@ import java.util.List;
 public class t_editRuleFragment extends Fragment {
 
     Activity callingActivity;
+    Bundle info;
+
+
     EditText et;
     View v;
     t_ThermostatRule rule;
@@ -51,8 +54,7 @@ public class t_editRuleFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        Bundle info = getArguments();
-        Log.i("what", "the fuck am i here for?");
+        info = getArguments();
 
         v = inflater.inflate(R.layout.t_edit_rule, container, false);
 
@@ -78,17 +80,34 @@ public class t_editRuleFragment extends Fragment {
     }
 
     public void initializeDiscardButton() {
-        discardButton = v.findViewById(R.id.t_discardAddRuleButton);
-        if (discardButton == null) {
-            discardButton = v.findViewById(R.id.t_discardEditChangesButton);
+        discardButton = v.findViewById(R.id.t_discardEditChangesButton);
+        switch (callingActivity.getLocalClassName()) {
+            case "t_ThermostatProgramActivity": //landscape view - frameLayout in same activity as list
+                discardButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //add confimration dialogalert
+                        Log.i("AddActivity", "discarding New Rule");
+                        ((t_ThermostatProgramActivity) callingActivity).discardMethod();
+                        callingActivity.getFragmentManager()
+                                .beginTransaction()
+                                .remove(t_editRuleFragment.this)
+                                .commit();
+
+
+                    }
+                });
+            case "t_DetailView":    //portrait view - frameLayout was loaded into a new activity t_DetailView
+                discardButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //add confimration dialogalert
+                        Log.i("AddActivity", "discarding New Rule");
+                        callingActivity.setResult(t_ThermostatProgramActivity.DISCARD_RESULT);
+                        callingActivity.finish();
+                    }
+                });
         }
-        discardButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //add confimration dialogalert
-                callingActivity.finish();
-            }
-        });
     }
 
     public void initializeSaveAsNewButton() {
@@ -96,6 +115,7 @@ public class t_editRuleFragment extends Fragment {
         saveAsNewButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.i("AddActivity", "Saving Changes as New Rule");
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("ruleToSave", rule.toString());
                 callingActivity.setResult(t_ThermostatProgramActivity.SAVE_AS_NEW_RESULT, resultIntent);
@@ -105,15 +125,14 @@ public class t_editRuleFragment extends Fragment {
     }
 
     public void initializeSaveButton() {
-        saveButton = v.findViewById(R.id.t_saveAddRuleButton);
-        if (saveButton == null) {
-            saveButton = v.findViewById(R.id.t_saveEditChangesButton);
-        }
+        saveButton = v.findViewById(R.id.t_saveEditChangesButton);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.i("AddActivity", "Saving Changes to Rule");
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("ruleToAdd", rule.toString());
+                resultIntent.putExtra("ruleToDelete", info.getString("rule"));
                 //resultIntent.putExtra("listPosition", listPosition);
                 callingActivity.setResult(t_ThermostatProgramActivity.SAVE_RESULT, resultIntent);
                 callingActivity.finish();   //finish closes this empty activity on phones.

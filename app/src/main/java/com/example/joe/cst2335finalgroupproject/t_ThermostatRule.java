@@ -1,7 +1,5 @@
 package com.example.joe.cst2335finalgroupproject;
 
-import android.util.Log;
-
 /**
  * Created by Joe on 2017-12-06.
  */
@@ -30,9 +28,7 @@ public class t_ThermostatRule {
         //ruleText *should* be in exact format "Monday 9:00 Temp -> 16"
 
         String[] ruleSplit = rawString.split(" ");
-        for (int i = 0; i < ruleSplit.length; i++) {
-            Log.i("contains", ruleSplit[i]);
-        }
+
         String day = ruleSplit[0];
         String time = ruleSplit[1];
         int temp = Integer.valueOf(ruleSplit[4]);

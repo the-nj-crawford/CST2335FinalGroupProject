@@ -244,172 +244,6 @@ public class c_CarTrackerActivity extends Activity {
         }
     }
 
-    // https://stackoverflow.com/questions/28171256/android-asynctask-that-fills-an-adapter-for-a-listview
-    private class DataBaseQuery extends AsyncTask<String, Integer, ArrayList<c_FuelDetails>>{
-
-        @Override
-        protected ArrayList<c_FuelDetails> doInBackground(String[] args){
-
-            //testFillDB();
-            cursor = db.rawQuery(m_GlobalDatabaseHelper.C_SELECT_ALL_SQL, null);
-
-            // build an array list in the background and pass it back to the GUI thread
-            //  after the resource intense processing is complete
-            ArrayList<c_FuelDetails> detailsList = new ArrayList<>();
-
-            // used double to perform division and display overall progress
-            double totalRecords = cursor.getCount();
-            double counter = 0;
-
-            cursor.moveToFirst();
-            while (!cursor.isAfterLast()) {
-
-                try {
-                    double price = cursor.getDouble(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_PRICE));
-                    double litres = cursor.getDouble(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_LITRES));
-                    double kilometers = cursor.getDouble(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_KILOMETERS));
-                    long longDateRepresentation = cursor.getLong(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_DATE));
-                    Date date = new Date(longDateRepresentation);
-
-                    c_FuelDetails details = new c_FuelDetails(price, litres, kilometers, date);
-                    detailsList.add(details);
-
-                    Integer progress = (int )Math.round((++counter / totalRecords) * 100);
-                    publishProgress(progress);
-
-                    Thread.sleep(100);
-
-                    cursor.moveToNext();
-
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            return detailsList;
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer[] value){
-            int progress = value[0];
-
-            glLoading.setVisibility(View.VISIBLE);
-            tvLoadingPercentage.setText(String.valueOf(progress) + " %");
-            pbLoadFuelDetails.setProgress(progress);
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<c_FuelDetails> details){
-
-            cFuelDetailsList.clear();
-            for (c_FuelDetails fd : details)
-                cFuelDetailsList.add(fd);
-
-            adapter.notifyDataSetChanged();
-            glLoading.setVisibility(View.GONE);
-            lvPurchaseHistory.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private class FuelDetailsAdapter extends ArrayAdapter<c_FuelDetails> {
-
-        public FuelDetailsAdapter(Context context) {
-            super(context, 0);
-        }
-
-        @Override
-        public int getCount() {
-            return cFuelDetailsList.size();
-        }
-
-        @Override
-        public c_FuelDetails getItem(int position) {
-            return cFuelDetailsList.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            if (cursor == null)
-                throw new NullPointerException("ERROR: cursor is null");
-
-            cursor = db.rawQuery(m_GlobalDatabaseHelper.C_SELECT_ALL_SQL, null);
-            cursor.moveToPosition(position);
-            return cursor.getLong(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_ID));
-        }
-
-        // https://stackoverflow.com/questions/17525886/listview-with-add-and-delete-buttons-in-each-row-in-android
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-
-            View view = convertView;
-
-            if (view == null){
-                LayoutInflater inflater = c_CarTrackerActivity.this.getLayoutInflater();
-                view = inflater.inflate(R.layout.c_fuel_details_summary, null);
-            }
-
-            TableRow fuelDetailRow = view.findViewById(R.id.fuelDetailRow);
-            if ((position % 2) == 0){   // white blue
-                fuelDetailRow.setBackgroundColor(Color.parseColor("#ECEFF1"));
-            } else { // blue
-                fuelDetailRow.setBackgroundColor(Color.parseColor("#CFD8DC"));
-            }
-
-            ImageView btnDeleteFuelDetails = view.findViewById(R.id.btnDeleteFuelDetails);
-            btnDeleteFuelDetails.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                    LayoutInflater inflater = getLayoutInflater();
-                    LinearLayout rootView
-                            = (LinearLayout) inflater.inflate(R.layout.c_custom_alert_dialog, null);
-
-                    ((TextView)rootView.findViewById(R.id.tvCarAlertMsg))
-                            .setText(getResources().getString(R.string.c_AlertDeleteDetailsMsg));
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(c_CarTrackerActivity.this);
-                    builder.setView(rootView);
-                    builder.setPositiveButton(getResources().getString(R.string.c_Yes),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                long id = adapter.getItemId(position);
-                                deleteFuelDetail(id, position);
-                            }
-                        }
-                    );
-
-                    builder.setNegativeButton(getResources().getString(R.string.c_No),
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    return;
-                                }
-                            }
-                    );
-
-                    AlertDialog alert = builder.create();
-                    alert.show();
-                }
-            });
-
-            c_FuelDetails details = getItem(position);
-
-            TextView tvPrice = view.findViewById(R.id.tvPrice);
-            tvPrice.setText(String.valueOf(details.getPrice()));
-
-            TextView tvLitres = view.findViewById(R.id.tvLitres);
-            tvLitres.setText(String.valueOf(details.getLitres()));
-
-            TextView tvKilometers = view.findViewById(R.id.tvKilometers);
-            tvKilometers.setText(String.valueOf(details.getKilometers()));
-
-            TextView tvDate = view.findViewById(R.id.tvDate);
-            tvDate.setText(DD_MM_YYYY.format(details.getDate()));
-
-            return view;
-        }
-    }
-
     private void findControls(){
         frameLayoutExists = (findViewById(R.id.flEnterFuelDetailsHolder) != null);
         parentLayout = findViewById(R.id.fuelDetailsParent);
@@ -584,7 +418,6 @@ public class c_CarTrackerActivity extends Activity {
         return purchases;
     }
 
-
     private double getPrevMonthGasStat(String stat){
         String table = m_GlobalDatabaseHelper.FUEL_DETAILS_TABLE;
         String[] columns = null; // SELECT *
@@ -645,5 +478,171 @@ public class c_CarTrackerActivity extends Activity {
         calendar.set(Calendar.MONTH, prevMonth);
         calendar.set(Calendar.YEAR, prevYear);
         return calendar;
+    }
+
+    // https://stackoverflow.com/questions/28171256/android-asynctask-that-fills-an-adapter-for-a-listview
+    private class DataBaseQuery extends AsyncTask<String, Integer, ArrayList<c_FuelDetails>> {
+
+        @Override
+        protected ArrayList<c_FuelDetails> doInBackground(String[] args) {
+
+            //testFillDB();
+            cursor = db.rawQuery(m_GlobalDatabaseHelper.C_SELECT_ALL_SQL, null);
+
+            // build an array list in the background and pass it back to the GUI thread
+            //  after the resource intense processing is complete
+            ArrayList<c_FuelDetails> detailsList = new ArrayList<>();
+
+            // used double to perform division and display overall progress
+            double totalRecords = cursor.getCount();
+            double counter = 0;
+
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+
+                try {
+                    double price = cursor.getDouble(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_PRICE));
+                    double litres = cursor.getDouble(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_LITRES));
+                    double kilometers = cursor.getDouble(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_KILOMETERS));
+                    long longDateRepresentation = cursor.getLong(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_DATE));
+                    Date date = new Date(longDateRepresentation);
+
+                    c_FuelDetails details = new c_FuelDetails(price, litres, kilometers, date);
+                    detailsList.add(details);
+
+                    Integer progress = (int) Math.round((++counter / totalRecords) * 100);
+                    publishProgress(progress);
+
+                    Thread.sleep(1000);
+
+                    cursor.moveToNext();
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            return detailsList;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer[] value) {
+            int progress = value[0];
+
+            glLoading.setVisibility(View.VISIBLE);
+            tvLoadingPercentage.setText(String.valueOf(progress) + " %");
+            pbLoadFuelDetails.setProgress(progress);
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<c_FuelDetails> details) {
+
+            cFuelDetailsList.clear();
+            for (c_FuelDetails fd : details)
+                cFuelDetailsList.add(fd);
+
+            adapter.notifyDataSetChanged();
+            glLoading.setVisibility(View.GONE);
+            lvPurchaseHistory.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private class FuelDetailsAdapter extends ArrayAdapter<c_FuelDetails> {
+
+        public FuelDetailsAdapter(Context context) {
+            super(context, 0);
+        }
+
+        @Override
+        public int getCount() {
+            return cFuelDetailsList.size();
+        }
+
+        @Override
+        public c_FuelDetails getItem(int position) {
+            return cFuelDetailsList.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            if (cursor == null)
+                throw new NullPointerException("ERROR: cursor is null");
+
+            cursor = db.rawQuery(m_GlobalDatabaseHelper.C_SELECT_ALL_SQL, null);
+            cursor.moveToPosition(position);
+            return cursor.getLong(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_ID));
+        }
+
+        // https://stackoverflow.com/questions/17525886/listview-with-add-and-delete-buttons-in-each-row-in-android
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+
+            View view = convertView;
+
+            if (view == null) {
+                LayoutInflater inflater = c_CarTrackerActivity.this.getLayoutInflater();
+                view = inflater.inflate(R.layout.c_fuel_details_summary, null);
+            }
+
+            TableRow fuelDetailRow = view.findViewById(R.id.fuelDetailRow);
+            if ((position % 2) == 0) {   // white blue
+                fuelDetailRow.setBackgroundColor(Color.parseColor("#ECEFF1"));
+            } else { // blue
+                fuelDetailRow.setBackgroundColor(Color.parseColor("#CFD8DC"));
+            }
+
+            ImageView btnDeleteFuelDetails = view.findViewById(R.id.btnDeleteFuelDetails);
+            btnDeleteFuelDetails.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    LayoutInflater inflater = getLayoutInflater();
+                    LinearLayout rootView
+                            = (LinearLayout) inflater.inflate(R.layout.c_custom_alert_dialog, null);
+
+                    ((TextView) rootView.findViewById(R.id.tvCarAlertMsg))
+                            .setText(getResources().getString(R.string.c_AlertDeleteDetailsMsg));
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(c_CarTrackerActivity.this);
+                    builder.setView(rootView);
+                    builder.setPositiveButton(getResources().getString(R.string.c_Yes),
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    long id = adapter.getItemId(position);
+                                    deleteFuelDetail(id, position);
+                                }
+                            }
+                    );
+
+                    builder.setNegativeButton(getResources().getString(R.string.c_No),
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    return;
+                                }
+                            }
+                    );
+
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }
+            });
+
+            c_FuelDetails details = getItem(position);
+
+            TextView tvPrice = view.findViewById(R.id.tvPrice);
+            tvPrice.setText(String.valueOf(details.getPrice()));
+
+            TextView tvLitres = view.findViewById(R.id.tvLitres);
+            tvLitres.setText(String.valueOf(details.getLitres()));
+
+            TextView tvKilometers = view.findViewById(R.id.tvKilometers);
+            tvKilometers.setText(String.valueOf(details.getKilometers()));
+
+            TextView tvDate = view.findViewById(R.id.tvDate);
+            tvDate.setText(DD_MM_YYYY.format(details.getDate()));
+
+            return view;
+        }
     }
 }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,6 +27,7 @@ public class t_addRuleFragment extends Fragment {
 
     Activity callingActivity;
     EditText et;
+    TextView tv;
     View v;
     t_ThermostatRule rule;
 
@@ -66,39 +69,76 @@ public class t_addRuleFragment extends Fragment {
 
         et = v.findViewById(R.id.manual_text_entry);
 
+        tv = v.findViewById(R.id.t_frameLayoutPlaceholderTextBox);
+        if (tv != null) {
+            tv.setText("");
+        }
+
+
         return v;
     }
 
     public void initializeDiscardButton() {
         discardButton = v.findViewById(R.id.t_discardAddRuleButton);
-        if (discardButton == null) {
-            discardButton = v.findViewById(R.id.t_discardEditChangesButton);
+        switch (callingActivity.getLocalClassName()) {
+            case "t_ThermostatProgramActivity": //landscape view - frameLayout in same activity as list
+                discardButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //add confimration dialogalert
+                        Log.i("AddActivity", "discarding New Rule");
+                        ((t_ThermostatProgramActivity) callingActivity).discardMethod();
+                        callingActivity.getFragmentManager()
+                                .beginTransaction()
+                                .remove(t_addRuleFragment.this)
+                                .commit();
+
+
+                    }
+                });
+            case "t_DetailView":    //portrait view - frameLayout was loaded into a new activity t_DetailView
+                discardButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //add confimration dialogalert
+                        Log.i("AddActivity", "discarding New Rule");
+                        callingActivity.setResult(t_ThermostatProgramActivity.DISCARD_RESULT);
+                        callingActivity.finish();
+                    }
+                });
         }
-        discardButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //add confimration dialogalert
-                callingActivity.finish();
-            }
-        });
     }
 
 
     public void initializeSaveButton() {
         saveButton = v.findViewById(R.id.t_saveAddRuleButton);
-        if (saveButton == null) {
-            saveButton = v.findViewById(R.id.t_saveEditChangesButton);
+        switch (callingActivity.getLocalClassName()) {
+            case "t_ThermostatProgramActivity": //landscape view - frameLayout in same activity as list
+                saveButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.i("AddActivity", "Saving Rule");
+                        Intent resultIntent = new Intent();
+                        resultIntent.putExtra("ruleToAdd", rule.toString());
+                        //resultIntent.putExtra("listPosition", listPosition);
+                        callingActivity.setResult(t_ThermostatProgramActivity.SAVE_RESULT, resultIntent);
+                        callingActivity.finish();   //finish closes this empty activity on phones.
+                    }
+                });
+            case "t_DetailView":    //portrait view - frameLayout was loaded into a new activity t_DetailView
+                saveButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.i("AddActivity", "Saving Rule");
+                        Intent resultIntent = new Intent();
+                        resultIntent.putExtra("ruleToAdd", rule.toString());
+                        //resultIntent.putExtra("listPosition", listPosition);
+                        callingActivity.setResult(t_ThermostatProgramActivity.SAVE_RESULT, resultIntent);
+                        callingActivity.getFragmentManager().beginTransaction().
+                                remove(t_addRuleFragment.this).commit();
+                    }
+                });
         }
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("ruleToAdd", rule.toString());
-                //resultIntent.putExtra("listPosition", listPosition);
-                callingActivity.setResult(t_ThermostatProgramActivity.SAVE_RESULT, resultIntent);
-                callingActivity.finish();   //finish closes this empty activity on phones.
-            }
-        });
     }
 
     public void initializeDaySpinner() {

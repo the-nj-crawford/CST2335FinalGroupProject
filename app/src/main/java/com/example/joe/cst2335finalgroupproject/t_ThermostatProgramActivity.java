@@ -6,10 +6,13 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,11 +61,15 @@ import java.util.ArrayList;
  */
 
 public class t_ThermostatProgramActivity extends Activity {
+
+    public static final int DISCARD_RESULT = 10;
+
     public static final int SAVE_AS_NEW_RESULT = 20;
     public static final int SAVE_RESULT = 21;
 
-    //TODO: 2.2 - Add a fragment
-    //TODO: 1.3/1.8/2.9 - Create window for rule popup - This will be a very similar popup dialog for add and "details" (ie tapping a row).  Window needs "Save as New Rule" button.  This is my custom dialog.
+    public static final int ADD_METHOD_CODE = 30;
+    public static final int EDIT_METHOD_CODE = 31;
+
     //TODO: 2.9 - Add a Snackbar somewhere.
     //TODO: 3.10 - Help menu (snackbar? custom dialog?) shows author ane, activity version number?, and instructions
     //TODO: 3.11 - Add Translation
@@ -87,6 +94,8 @@ public class t_ThermostatProgramActivity extends Activity {
     TextView pbtv;
     ProgressBar pb;
     RuleAdapter rulesAdapter;
+
+    boolean isTabletOrLandscape;
 
     ViewHolder vh = new ViewHolder();
 
@@ -113,11 +122,12 @@ public class t_ThermostatProgramActivity extends Activity {
         rulesAdapter = new RuleAdapter(this);
         lv.setAdapter(rulesAdapter);
 
+
+        isTabletOrLandscape = findViewById(R.id.t_frameLayout) != null;
+
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.i("Rule Row Clicked", rules_list.get(position));
-                Intent detailsIntent = new Intent(t_ThermostatProgramActivity.this, t_DetailView.class);
 
                 Bundle info = new Bundle();
                 info.putInt("mode", 1);
@@ -125,31 +135,48 @@ public class t_ThermostatProgramActivity extends Activity {
                 info.putInt("listPosition", position);
                 info.putLong("database_id", id);
 
-                detailsIntent.putExtras(info);
+                Log.i("isTabletOrLandscape", String.valueOf(isTabletOrLandscape));
 
-                startActivityForResult(detailsIntent, 13);
+                if (isTabletOrLandscape) {
+                    t_editRuleFragment editFragment = new t_editRuleFragment();
+                    editFragment.setArguments(info);
+                    getFragmentManager().beginTransaction()
+                            .replace(R.id.t_frameLayout, editFragment)
+                            .commit();
+                } else {
+                    Intent detailsIntent = new Intent(t_ThermostatProgramActivity.this, t_DetailView.class);
+                    detailsIntent.putExtras(info);
+                    startActivityForResult(detailsIntent, EDIT_METHOD_CODE);
+                }
+
+
             }
         });
 
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent detailsIntent = new Intent(t_ThermostatProgramActivity.this, t_DetailView.class);
+
 
                 Bundle info = new Bundle();
                 info.putInt("mode", 2);
                 info.putString("rule", "");
                 info.putInt("listPosition", 0);
 
-                detailsIntent.putExtras(info);
-                startActivityForResult(detailsIntent, 12);
-            }
-        });
+                Log.i("isTabletOrLandscape", String.valueOf(isTabletOrLandscape));
 
-        editButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleCheckboxesVisible();
+                if (isTabletOrLandscape) {
+                    t_addRuleFragment addFragment = new t_addRuleFragment();
+                    addFragment.setArguments(info);
+                    getFragmentManager().beginTransaction()
+                            .replace(R.id.t_frameLayout, addFragment)
+                            .commit();
+                } else {
+                    Intent detailsIntent = new Intent(t_ThermostatProgramActivity.this, t_DetailView.class);
+                    detailsIntent.putExtras(info);
+                    startActivityForResult(detailsIntent, ADD_METHOD_CODE);
+                }
+
             }
         });
 
@@ -169,14 +196,23 @@ public class t_ThermostatProgramActivity extends Activity {
             }
         });
 
-//        final FloatingActionButton snackbarLauncher = (FloatingActionButton) findViewById(R.id.launchSnackbar);
-//        snackbarLauncher.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make((new View(findViewById(R.layout.t_activity_program_thermostat))).getContext(), "This is a Snackbar message!", Snackbar.LENGTH_LONG)
-//                        .show();
-//            }
-//        });
+
+        final FloatingActionButton snackbarLauncher = findViewById(R.id.launchSnackbar);
+        snackbarLauncher.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(findViewById(R.id.launchSnackbar), "This is a Snackbar message!", Snackbar.LENGTH_LONG)
+                        .show();
+            }
+        });
+
+
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
+
     }
 
     @Override
@@ -186,46 +222,68 @@ public class t_ThermostatProgramActivity extends Activity {
     }
 
     @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        startActivity(new Intent(this, t_ThermostatProgramActivity.class));
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 12) { //the add button started an activity
-            if (resultCode == SAVE_RESULT) {
-                Bundle extras = data.getExtras();
-                String rule = extras.getString("ruleToAdd");
-                rules_list.add(rule);
-                ContentValues newRule = new ContentValues();
-                newRule.put(m_GlobalDatabaseHelper.RULE_COL_NAME, rule);
 
-                db.insert(m_GlobalDatabaseHelper.THERMOSTAT_TABLE_NAME, null, newRule);
+        if (resultCode != t_ThermostatProgramActivity.DISCARD_RESULT) {
 
-                rulesAdapter.notifyDataSetChanged();
+            if (requestCode == ADD_METHOD_CODE) { //the add button started an activity
+                if (resultCode == SAVE_RESULT) {
+                    Log.i("SaveMethod", "Add Save");
+                    Bundle extras = data.getExtras();
+                    String rule = extras.getString("ruleToAdd");
+                    rules_list.add(rule);
+                    ContentValues newRule = new ContentValues();
+                    newRule.put(m_GlobalDatabaseHelper.RULE_COL_NAME, rule);
+
+                    db.insert(m_GlobalDatabaseHelper.THERMOSTAT_TABLE_NAME, null, newRule);
+
+                    rulesAdapter.notifyDataSetChanged();
+                }
+
+            } else if (requestCode == EDIT_METHOD_CODE) {
+                if (resultCode == SAVE_AS_NEW_RESULT) {
+                    Log.i("SaveMethod", "Edit Save As New");
+                    Bundle extras = data.getExtras();
+                    String rule = extras.getString("ruleToSave");
+                    rules_list.add(rule);
+                    ContentValues newRule = new ContentValues();
+                    newRule.put(m_GlobalDatabaseHelper.RULE_COL_NAME, rule);
+
+                    db.insert(m_GlobalDatabaseHelper.THERMOSTAT_TABLE_NAME, null, newRule);
+
+                    rulesAdapter.notifyDataSetChanged();
+                } else if (resultCode == SAVE_RESULT) { //this functions as save-in-place, ie overwrite
+                    Log.i("SaveMethod", "Edit Save in Place");
+                    Bundle extras = data.getExtras();
+                    String rule = extras.getString("ruleToAdd");
+                    rules_list.remove(extras.getInt("listPosition"));
+                    rules_list.add(rule);
+                    ContentValues newRule = new ContentValues();
+                    newRule.put(m_GlobalDatabaseHelper.RULE_COL_NAME, rule);
+
+                    db.insert(m_GlobalDatabaseHelper.THERMOSTAT_TABLE_NAME, null, newRule);
+                    //still need to add db.remove function
+                    db.delete(m_GlobalDatabaseHelper.THERMOSTAT_TABLE_NAME,
+                            m_GlobalDatabaseHelper.RULE_COL_NAME + " = ?",
+                            new String[]{extras.getString("ruleToDelete")});
+                    rulesAdapter.notifyDataSetChanged();
+
+                }
             }
-        } else if (requestCode == 13) {
-            if (resultCode == SAVE_AS_NEW_RESULT) {
-                Bundle extras = data.getExtras();
-                String rule = extras.getString("ruleToAdd");
-                rules_list.add(rule);
-                ContentValues newRule = new ContentValues();
-                newRule.put(m_GlobalDatabaseHelper.RULE_COL_NAME, rule);
-
-                db.insert(m_GlobalDatabaseHelper.THERMOSTAT_TABLE_NAME, null, newRule);
-
-                rulesAdapter.notifyDataSetChanged();
-            } else if (resultCode == SAVE_RESULT) { //this functions as save-in-place, ie overwrite
-                Bundle extras = data.getExtras();
-                String rule = extras.getString("ruleToAdd");
-                rules_list.remove(extras.getInt("listPosition"));
-                rules_list.add(rule);
-                ContentValues newRule = new ContentValues();
-                newRule.put(m_GlobalDatabaseHelper.RULE_COL_NAME, rule);
-
-                db.insert(m_GlobalDatabaseHelper.THERMOSTAT_TABLE_NAME, null, newRule);
-
-                rulesAdapter.notifyDataSetChanged();
-
-            }
+        } else {
+            discardMethod();
         }
     }
 
+    void discardMethod() {
+        Log.i("Discard Method", "discarding");
+    }
 
     void setCheckboxesVisible() {
         vh.selected.setVisibility(View.VISIBLE);
