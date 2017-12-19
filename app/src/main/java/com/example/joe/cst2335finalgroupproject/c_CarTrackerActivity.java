@@ -13,7 +13,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -34,7 +38,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class c_CarTrackerActivity extends Activity {
+public class c_CarTrackerActivity extends AppCompatActivity {
 
     /**
      * Priorities for each Activity (suggested complete in this order in case Prof
@@ -74,6 +78,7 @@ public class c_CarTrackerActivity extends Activity {
 
     private c_EnterFuelDetailsFragment loadedFragment = null;
     private boolean frameLayoutExists;
+    private Toolbar c_Toolbar;
     private LinearLayout btnHome;
     private LinearLayout btnAbout;
     private View parentLayout;
@@ -107,6 +112,12 @@ public class c_CarTrackerActivity extends Activity {
         lvPurchaseHistory.setAdapter(adapter);
 
         new DataBaseQuery().execute();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.c_menu, menu);
+        return true;
     }
 
     @Override
@@ -383,9 +394,9 @@ public class c_CarTrackerActivity extends Activity {
 
     private void findControls(){
         frameLayoutExists = (findViewById(R.id.flEnterFuelDetailsHolder) != null);
+        c_Toolbar = findViewById(R.id.c_Toolbar);
+        setSupportActionBar(c_Toolbar);
         parentLayout = findViewById(R.id.fuelDetailsParent);
-        btnHome = findViewById(R.id.c_BtnHome);
-        btnAbout = findViewById(R.id.c_BtnAbout);
         lvPurchaseHistory = findViewById(R.id.lvPurchaseHistory);
         btnAddPurchase = findViewById(R.id.btnAddPurchase);
         btnViewFuelStats = findViewById(R.id.btnViewFuelStats);
@@ -479,19 +490,30 @@ public class c_CarTrackerActivity extends Activity {
                 }
             }
         });
+    }
 
-        btnHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(
-                        c_CarTrackerActivity.this, m_MainActivity.class
-                        ));
-            }
-        });
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
 
-        btnAbout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        switch(menuItem.getItemId()){
+
+            case R.id.menu_exercise:
+                startActivity(new Intent(c_CarTrackerActivity.this, a_ActivityTrackerActivity.class));
+                break;
+
+            case R.id.menu_food:
+                startActivity(new Intent(c_CarTrackerActivity.this, n_NutritionTrackerActivity.class));
+                break;
+
+            case R.id.menu_thermostat:
+                startActivity(new Intent(c_CarTrackerActivity.this, t_ThermostatProgramActivity.class));
+                break;
+
+            case R.id.menu_home:
+                startActivity(new Intent(c_CarTrackerActivity.this, m_MainActivity.class));
+                break;
+
+            case R.id.menu_help:
                 LayoutInflater inflater = getLayoutInflater();
                 LinearLayout rootView
                         = (LinearLayout) inflater.inflate(R.layout.c_custom_alert_dialog, null);
@@ -513,8 +535,9 @@ public class c_CarTrackerActivity extends Activity {
 
                 AlertDialog alert = builder.create();
                 alert.show();
-            }
-        });
+                break;
+        }
+        return true;
     }
 
     // STATISTICS FUNCTIONS

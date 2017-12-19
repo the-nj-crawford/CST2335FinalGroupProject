@@ -2,6 +2,12 @@
 
     //app-wide strings
     <string name="m_app_name">CST2335 Final Project</string>
+    <string name="m_toolbar_guide">Toolbar Guide:</string>
+
+    <string name="m_menu_exercise">Activity Tracker</string>
+    <string name="m_menu_food">Food Nutrition Tracker</string>
+    <string name="m_menu_thermostat">House Thermostat</string>
+    <string name="m_menu_automobile">Automobile</string>
 
     //launcher activity strings
     <string name="m_activityTrackerButtonText">Launch Activity Tracker</string>

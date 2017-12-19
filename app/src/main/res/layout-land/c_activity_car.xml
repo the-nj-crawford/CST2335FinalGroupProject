@@ -18,64 +18,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <RelativeLayout
-                android:id="@+id/c_PseudoToolbar"
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/c_Toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true"
-                android:background="@color/c_toolbarGrey">
-
-                <LinearLayout
-                    android:id="@+id/c_BtnHome"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentStart="true"
-                    android:clickable="true"
-                    android:padding="15dp">
-
-                    <ImageView
-                        android:src="@drawable/icons8_home_40"
-                        android:layout_gravity="bottom"
-                        android:layout_marginRight="5dp"
-                        style="@style/c_ToolbarIcon"/>
-
-                    <TextView
-                        android:text="@string/c_home"
-                        android:textSize="15sp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"/>
-
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:id="@+id/c_BtnAbout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/c_BtnHome"
-                    android:layout_marginLeft="5dp"
-                    android:clickable="true"
-                    android:padding="15dp">
-
-                    <ImageView
-                        android:src="@drawable/icons8_help_50"
-                        android:layout_gravity="bottom"
-                        android:layout_marginRight="5dp"
-                        style="@style/c_ToolbarIcon"/>
-
-                    <TextView
-                        android:text="@string/c_help"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="15sp"
-                        android:layout_gravity="bottom"/>
-
-                </LinearLayout>
-
-            </RelativeLayout>
+                android:background="?attr/colorPrimary"
+                android:minHeight="?attr/actionBarSize"
+                android:theme="?attr/actionBarTheme" />
 
             <LinearLayout
                 android:id="@+id/btnAddPurchase"
@@ -85,7 +34,7 @@
                 android:layout_marginBottom="20dp"
                 android:gravity="center_vertical"
                 android:layout_alignParentEnd="true"
-                android:layout_below="@id/c_PseudoToolbar"
+                android:layout_below="@id/c_Toolbar"
                 android:clickable="true"
                 android:background="@drawable/c_custom_button">
 

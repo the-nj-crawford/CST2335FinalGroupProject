@@ -10,79 +10,119 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-
-        <!--TODO: Toolbar must contain icons to launch each activity (Milestone 3)-->
         <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+            android:id="@+id/m_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
             android:minHeight="?attr/actionBarSize"
             android:theme="?attr/actionBarTheme" />
 
-        <Button
-            android:id="@+id/activityTrackerButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/m_activityTrackerButtonText" />
-
         <TextView
-            android:id="@+id/activityTrackerDescription"
+            android:text="@string/m_toolbar_guide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:layout_marginTop="80dp"
+            android:padding="10dp"/>
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/m_activityTrackerDescriptionText"
-            android:textAlignment="center" />
+            android:padding="10dp"
+            android:layout_marginTop="20dp">
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="24dp" />
+            <ImageView
+                android:id="@+id/m_ivActivity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="20dp"
+                android:src="@drawable/icons8_running_50" />
 
-        <Button
-            android:id="@+id/nutritionTrackerButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/m_nutritionTrackerButtonText" />
+            <TextView
+                android:id="@+id/activityTrackerDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_toRightOf="@id/m_ivActivity"
+                android:text="@string/m_activityTrackerDescriptionText" />
+        </RelativeLayout>
 
-        <TextView
-            android:id="@+id/nutritionTrackerDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/m_nutritionTrackerDescriptionText"
-            android:textAlignment="center" />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="24dp" />
-
-        <Button
-            android:id="@+id/thermostatProgramButton"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/m_thermostatProgramButtonText" />
+            android:layout_marginTop="10dp"
+            android:padding="10dp">
 
-        <TextView
-            android:id="@+id/thermostatProgramDescription"
+            <ImageView
+                android:id="@+id/m_ivFood"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="20dp"
+                android:src="@drawable/icons8_vegetarian_food_50" />
+
+            <TextView
+                android:id="@+id/nutritionTrackerDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_toRightOf="@id/m_ivFood"
+                android:text="@string/m_nutritionTrackerDescriptionText" />
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/m_thermostatProgramDescriptionText"
-            android:textAlignment="center" />
+            android:layout_marginTop="10dp"
+            android:padding="10dp">
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="24dp" />
+            <ImageView
+                android:id="@+id/m_ivThermostat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="20dp"
+                android:src="@drawable/icons8_temperature_inside_50" />
 
-        <Button
-            android:id="@+id/carTrackerButton"
+            <TextView
+                android:id="@+id/thermostatProgramDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_toRightOf="@id/m_ivThermostat"
+                android:text="@string/m_thermostatProgramDescriptionText" />
+        </RelativeLayout>
+
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/m_carTrackerButtonText" />
+            android:layout_marginTop="10dp"
+            android:padding="10dp">
 
-        <TextView
-            android:id="@+id/carTrackerDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/m_carTrackerDescriptionText"
-            android:textAlignment="center" />
+            <ImageView
+                android:id="@+id/m_ivAutomobile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="20dp"
+                android:src="@drawable/icons8_gas_station_50" />
+
+            <TextView
+                android:id="@+id/carTrackerDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_toRightOf="@id/m_ivAutomobile"
+                android:text="@string/m_carTrackerDescriptionText" />
+        </RelativeLayout>
 
     </LinearLayout>
 
