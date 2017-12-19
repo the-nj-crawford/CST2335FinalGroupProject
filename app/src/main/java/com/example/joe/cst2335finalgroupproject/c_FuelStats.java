@@ -3,39 +3,37 @@ package com.example.joe.cst2335finalgroupproject;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
-
 /**
  * Created by Nathan on 2017-12-12.
  */
 
-// Passing an ArrayLis of custom objects to another activity
+// Passing an ArrayList of custom objects to another activity
 // https://stackoverflow.com/questions/6681217/help-passing-an-arraylist-of-objects-to-a-new-activity
     // http://www.parcelabler.com/
 public class c_FuelStats implements Parcelable {
 
-    private String month;
-    private double avg;
+    private String monthYear;
+    private double totalPurchases;
 
-    public c_FuelStats(String month, double avg) {
-        this.month = month;
-        this.avg = avg;
+    public c_FuelStats(String monthYear, double totalPurchases) {
+        this.monthYear = monthYear;
+        this.totalPurchases = totalPurchases;
     }
 
-    public String getMonth() {
-        return month;
+    public String getMonthYear() {
+        return monthYear;
     }
 
-    public void setMonth(String month) {
-        this.month = month;
+    public void setMonthYear(String monthYear) {
+        this.monthYear = monthYear;
     }
 
-    public Double getAvg() {
-        return avg;
+    public Double getTotalPurchases() {
+        return totalPurchases;
     }
 
-    public void setAvg(Double avg) {
-        this.avg = avg;
+    public void setTotalPurchases(Double totalPurchases) {
+        this.totalPurchases = totalPurchases;
     }
 
     @Override
@@ -45,13 +43,13 @@ public class c_FuelStats implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.month);
-        dest.writeDouble(this.avg);
+        dest.writeString(this.monthYear);
+        dest.writeDouble(this.totalPurchases);
     }
 
     protected c_FuelStats(Parcel in) {
-        this.month = in.readString();
-        this.avg = in.readDouble();
+        this.monthYear = in.readString();
+        this.totalPurchases = in.readDouble();
     }
 
     public static final Parcelable.Creator<c_FuelStats> CREATOR = new Parcelable.Creator<c_FuelStats>() {

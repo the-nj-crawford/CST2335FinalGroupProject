@@ -2,6 +2,12 @@
 
     //app-wide strings
     <string name="m_app_name">CST2335 Final Project</string>
+    <string name="m_toolbar_guide">Toolbar Guide:</string>
+
+    <string name="m_menu_exercise">Activity Tracker</string>
+    <string name="m_menu_food">Food Nutrition Tracker</string>
+    <string name="m_menu_thermostat">House Thermostat</string>
+    <string name="m_menu_automobile">Automobile</string>
 
     //launcher activity strings
     <string name="m_activityTrackerButtonText">Launch Activity Tracker</string>
@@ -17,13 +23,6 @@
     <string name="m_carTrackerDescriptionText">Record gasoline purchases and view summary information and trends.</string>
 
     //car activity strings
-    <string-array name="c_instructions_array">
-        <item>Instructions:</item>
-        <item>  \u2022 Edit an entry by tapping a row</item>
-        <item>  \u2022 Delete an entry by tapping the red minus icon</item>
-        <item>  \u2022 Add an entry by tapping the green plus icon</item>
-        <item>  \u2022 View past fuel statistics by tapping the graph icon</item>
-    </string-array>
 
     <string name="c_CarTrackerActivity">Car Tracker Activity</string>
     <string name="c_LblLoading">Loading</string>
@@ -39,11 +38,17 @@
 
     <string name="c_BtnAddPurchase">Add Entry</string>
     <string name="c_BtnAdd">Add</string>
+
     <string name="c_BtnViewFuelStats">View Fuel Purchase Statistics</string>
-    <string name="c_LblPrice">Price ($)</string>
+    <string name="c_LblPrice">Price ($/L)</string>
     <string name="c_LblLitres">Liters (L)</string>
-    <string name="c_LblKilometers">Kilometers (km)</string>
+    <string name="c_LblKilometers">Distance (km)</string>
     <string name="c_LblDate">Date (dd/mm/yyyy)</string>
+
+    <string name="c_LblPriceHeading">Price\n($/L)</string>
+    <string name="c_LblLitresHeading">Liters\n(L)</string>
+    <string name="c_LblKilometersHeading">Distance\n(km)</string>
+    <string name="c_LblDateHeading">Date\n(dd/mm/yyyy)</string>
 
     <string name="c_AlertFillFieldsAdd">Please fill in all fields before adding an entry</string>
     <string name="c_AlertFillFieldsEdit">Please fill in all fields before saving an entry</string>
@@ -59,8 +64,11 @@
     <string name="c_DeleteSuccessful">Entry deleted successfully</string>
 
 
-    <string name="c_PriceLastMonth">Average Gas Price Last Month:</string>
-    <string name="c_PurhcasedLastMonth">Gas Purchased Last Month:</string>
+    <string name="c_lastMonthStats">Last Month\'s Statistics</string>
+    <string name="c_PriceLastMonth">Average Gas Price:</string>
+    <string name="c_PurchasedLastMonth">Total Gas Purchased:</string>
+    <string name="c_avgGasPurchHist">Gas Purchase History</string>
+    <string name="c_avgGasPurchHistNone">You currently have no gas purchase history</string>
 
 
     <string-array name="c_months">
@@ -77,6 +85,21 @@
         <item>November</item>
         <item>December</item>
     </string-array>
+
+    <string name="c_home">Home</string>
+    <string name="c_help">Help</string>
+    <string name="c_done">Done</string>
+    <string name="c_helpMenu">
+        \t<b>Author:</b>\tNathan Doef\n
+        \t<b>Activity Version Number:</b>\t3\n
+        \t<b>Languages Supported:</b>\tEnglish\tFrench\n\n
+        \t<b>Instructions:</b>\n
+        \t\u2022 Edit an entry by tapping a row\n
+        \t\u2022 Delete an entry by tapping the red minus icon\n
+        \t\u2022 Add an entry by tapping the \'Add Entry\' button\n
+        \t\u2022 Tap the \'View Fuel Purchase Statistics\'\n\t\tto view past fuel statistics\n
+        \t\u2022 Return home by tapping the \'Home\' button
+    </string>
 
     //nutrition strings
 

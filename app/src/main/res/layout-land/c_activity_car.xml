@@ -4,6 +4,7 @@
     android:id="@+id/fuelDetailsParent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     tools:context="com.example.joe.cst2335finalgroupproject.c_CarTrackerActivity">
 
     <FrameLayout
@@ -17,6 +18,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/c_Toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorPrimary"
+                android:minHeight="?attr/actionBarSize"
+                android:theme="?attr/actionBarTheme" />
+
             <LinearLayout
                 android:id="@+id/btnAddPurchase"
                 android:layout_width="wrap_content"
@@ -25,8 +34,9 @@
                 android:layout_marginBottom="20dp"
                 android:gravity="center_vertical"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true"
-                android:clickable="true">
+                android:layout_below="@id/c_Toolbar"
+                android:clickable="true"
+                android:background="@drawable/c_custom_button">
 
                 <TextView
                     android:text="@string/c_BtnAddPurchase"
@@ -45,12 +55,13 @@
                 android:id="@+id/btnViewFuelStats"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="30dp"
                 android:layout_marginBottom="20dp"
                 android:gravity="center_vertical"
                 android:layout_alignParentBottom="true"
                 android:layout_centerInParent="true"
-                android:clickable="true">
+                android:clickable="true"
+                android:background="@drawable/c_custom_button">
 
                 <ImageView
                     android:src="@drawable/icons8_futures_50"
@@ -77,23 +88,23 @@
                     style="@style/c_HeadingBlue">
 
                     <TextView
-                        android:text="@string/c_LblPrice"
+                        android:text="@string/c_LblPriceHeading"
                         style="@style/c_PriceCell"/>
 
                     <TextView
-                        android:text="@string/c_LblLitres"
+                        android:text="@string/c_LblLitresHeading"
                         style="@style/c_LitresCell" />
 
                     <TextView
-                        android:text="@string/c_LblKilometers"
+                        android:text="@string/c_LblKilometersHeading"
                         style="@style/c_KilometersCell" />
 
                     <TextView
-                        android:text="@string/c_LblDate"
+                        android:text="@string/c_LblDateHeading"
                         style="@style/c_DateCell" />
 
                     <TextView
-                        android:layout_width="30dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAlignment="center" />
 
@@ -146,7 +157,6 @@
                 android:visibility="invisible"/>
         </RelativeLayout>
 
-
     </FrameLayout>
 
     <FrameLayout
@@ -154,7 +164,7 @@
         android:layout_toRightOf="@id/flFuelDetailsSummaryPane"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginLeft="60dp"
+        android:layout_marginLeft="50dp"
         android:layout_marginTop="20dp">
     </FrameLayout>
 

@@ -9,21 +9,24 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,10 +36,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.Locale;
 
-public class c_CarTrackerActivity extends Activity {
+public class c_CarTrackerActivity extends AppCompatActivity {
 
     /**
      * Priorities for each Activity (suggested complete in this order in case Prof
@@ -67,7 +69,7 @@ public class c_CarTrackerActivity extends Activity {
      *
      */
 
-    public static final DateFormat DD_MM_YYYY = new SimpleDateFormat("dd/MM/yyyy");
+    public static final DateFormat DD_MM_YYYY = new SimpleDateFormat("dd/MM/yyyy", Locale.CANADA);
 
     public static final int ADD_DETAILS_REQUEST = 1;
     public static final int EDIT_DETAILS_REQUEST = 2;
@@ -77,6 +79,9 @@ public class c_CarTrackerActivity extends Activity {
 
     private c_EnterFuelDetailsFragment loadedFragment = null;
     private boolean frameLayoutExists;
+    private Toolbar c_Toolbar;
+    private LinearLayout btnHome;
+    private LinearLayout btnAbout;
     private View parentLayout;
     private ListView lvPurchaseHistory;
     private LinearLayout btnAddPurchase;
@@ -85,7 +90,6 @@ public class c_CarTrackerActivity extends Activity {
     private GridLayout glLoading;
     private ProgressBar pbLoadFuelDetails;
     private TextView tvLoadingPercentage;
-
 
     private ArrayList<c_FuelDetails> cFuelDetailsList;
     private FuelDetailsAdapter adapter;
@@ -104,11 +108,17 @@ public class c_CarTrackerActivity extends Activity {
         findControls();
         setUpListeners();
 
-        cFuelDetailsList = new ArrayList<c_FuelDetails>();
+        cFuelDetailsList = new ArrayList<>();
         adapter = new FuelDetailsAdapter(this);
         lvPurchaseHistory.setAdapter(adapter);
 
         new DataBaseQuery().execute();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.c_menu, menu);
+        return true;
     }
 
     @Override
@@ -119,13 +129,11 @@ public class c_CarTrackerActivity extends Activity {
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig)
-    {
+    public void onConfigurationChanged(Configuration newConfig) {
         if (loadedFragment != null){
-        getFragmentManager().beginTransaction().remove(loadedFragment).commit();
-    }
+            getFragmentManager().beginTransaction().remove(loadedFragment).commit();
+        }
         super.onConfigurationChanged(newConfig);
-
         startActivity(new Intent(this, c_CarTrackerActivity.class));
     }
 
@@ -138,7 +146,6 @@ public class c_CarTrackerActivity extends Activity {
                 Bundle extras = data.getExtras();
                 Bundle fuelDetails = extras.getBundle("fuelDetails");
                 updateFuelDetail(fuelDetails);
-
             }
 
             if (requestCode == ADD_DETAILS_REQUEST){
@@ -146,7 +153,6 @@ public class c_CarTrackerActivity extends Activity {
                 Bundle fuelDetails = extras.getBundle("fuelDetails");
                 addFuelDetail(fuelDetails);
             }
-
         }
     }
 
@@ -224,26 +230,6 @@ public class c_CarTrackerActivity extends Activity {
                 Snackbar.LENGTH_LONG).show();
     }
 
-    private void testFillDB() {
-
-        Date currentDate = Calendar.getInstance().getTime();
-
-        c_FuelDetails[] testData = new c_FuelDetails[]{
-                new c_FuelDetails(1.11, 1, 10, currentDate),
-                new c_FuelDetails(2.22, 2, 20, currentDate),
-                new c_FuelDetails(3.33, 3, 30, currentDate)
-        };
-
-        for (int i = 0, n = testData.length; i < n; i++) {
-            ContentValues values = new ContentValues();
-            values.put("price", testData[i].getPrice());
-            values.put("litres", testData[i].getLitres());
-            values.put("kilometers", testData[i].getKilometers());
-            values.put("date", testData[i].getDate().getTime());
-            db.insert(m_GlobalDatabaseHelper.FUEL_DETAILS_TABLE, null, values);
-        }
-    }
-
     // https://stackoverflow.com/questions/28171256/android-asynctask-that-fills-an-adapter-for-a-listview
     private class DataBaseQuery extends AsyncTask<String, Integer, ArrayList<c_FuelDetails>>{
 
@@ -293,17 +279,14 @@ public class c_CarTrackerActivity extends Activity {
             int progress = value[0];
 
             glLoading.setVisibility(View.VISIBLE);
-            tvLoadingPercentage.setText(String.valueOf(progress) + " %");
+            tvLoadingPercentage.setText(String.valueOf(progress).concat("%"));
             pbLoadFuelDetails.setProgress(progress);
         }
 
         @Override
         protected void onPostExecute(ArrayList<c_FuelDetails> details){
-
             cFuelDetailsList.clear();
-            for (c_FuelDetails fd : details)
-                cFuelDetailsList.add(fd);
-
+            cFuelDetailsList.addAll(details);
             adapter.notifyDataSetChanged();
             glLoading.setVisibility(View.GONE);
             lvPurchaseHistory.setVisibility(View.VISIBLE);
@@ -312,7 +295,7 @@ public class c_CarTrackerActivity extends Activity {
 
     private class FuelDetailsAdapter extends ArrayAdapter<c_FuelDetails> {
 
-        public FuelDetailsAdapter(Context context) {
+        private FuelDetailsAdapter(Context context) {
             super(context, 0);
         }
 
@@ -338,23 +321,24 @@ public class c_CarTrackerActivity extends Activity {
 
         // https://stackoverflow.com/questions/17525886/listview-with-add-and-delete-buttons-in-each-row-in-android
         @Override
+        @NonNull
         public View getView(final int position, View convertView, ViewGroup parent) {
 
             View view = convertView;
 
             if (view == null){
                 LayoutInflater inflater = c_CarTrackerActivity.this.getLayoutInflater();
-                view = inflater.inflate(R.layout.c_fuel_details_summary, null);
+                view = inflater.inflate(R.layout.c_fuel_details_summary, parent, false);
             }
 
             TableRow fuelDetailRow = view.findViewById(R.id.fuelDetailRow);
-            if ((position % 2) == 0){   // white blue
-                fuelDetailRow.setBackgroundColor(Color.parseColor("#ECEFF1"));
-            } else { // blue
-                fuelDetailRow.setBackgroundColor(Color.parseColor("#CFD8DC"));
+            if ((position % 2) == 0){
+                fuelDetailRow.setBackgroundColor(getResources().getColor(R.color.c_rowWhite));
+            } else {
+                fuelDetailRow.setBackgroundColor(getResources().getColor(R.color.c_rowBlue));
             }
 
-            ImageView btnDeleteFuelDetails = view.findViewById(R.id.btnDeleteFuelDetails);
+            RelativeLayout btnDeleteFuelDetails = view.findViewById(R.id.btnDeleteFuelDetails);
             btnDeleteFuelDetails.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -381,9 +365,7 @@ public class c_CarTrackerActivity extends Activity {
                     builder.setNegativeButton(getResources().getString(R.string.c_No),
                             new DialogInterface.OnClickListener() {
                                 @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    return;
-                                }
+                                public void onClick(DialogInterface dialogInterface, int i) {}
                             }
                     );
 
@@ -394,24 +376,27 @@ public class c_CarTrackerActivity extends Activity {
 
             c_FuelDetails details = getItem(position);
 
-            TextView tvPrice = view.findViewById(R.id.tvPrice);
-            tvPrice.setText(String.valueOf(details.getPrice()));
+            if (details != null){
+                TextView tvPrice = view.findViewById(R.id.tvPrice);
+                tvPrice.setText(String.valueOf(details.getPrice()));
 
-            TextView tvLitres = view.findViewById(R.id.tvLitres);
-            tvLitres.setText(String.valueOf(details.getLitres()));
+                TextView tvLitres = view.findViewById(R.id.tvLitres);
+                tvLitres.setText(String.valueOf(details.getLitres()));
 
-            TextView tvKilometers = view.findViewById(R.id.tvKilometers);
-            tvKilometers.setText(String.valueOf(details.getKilometers()));
+                TextView tvKilometers = view.findViewById(R.id.tvKilometers);
+                tvKilometers.setText(String.valueOf(details.getKilometers()));
 
-            TextView tvDate = view.findViewById(R.id.tvDate);
-            tvDate.setText(DD_MM_YYYY.format(details.getDate()));
-
+                TextView tvDate = view.findViewById(R.id.tvDate);
+                tvDate.setText(DD_MM_YYYY.format(details.getDate()));
+            }
             return view;
         }
     }
 
     private void findControls(){
         frameLayoutExists = (findViewById(R.id.flEnterFuelDetailsHolder) != null);
+        c_Toolbar = findViewById(R.id.c_Toolbar);
+        setSupportActionBar(c_Toolbar);
         parentLayout = findViewById(R.id.fuelDetailsParent);
         lvPurchaseHistory = findViewById(R.id.lvPurchaseHistory);
         btnAddPurchase = findViewById(R.id.btnAddPurchase);
@@ -458,14 +443,11 @@ public class c_CarTrackerActivity extends Activity {
                 Intent intent = new Intent(c_CarTrackerActivity.this,
                         c_FuelStatisticsActivity.class);
 
-                ArrayList<c_FuelStats> testList = new ArrayList<>();
-
                 Bundle data = new Bundle();
                 data.putParcelableArrayList("gasPurchasesPerMonth", getPrevGasPurchasesByMonth());
                 data.putDouble("prevMonthGasPriceAvg", getPrevMonthGasStat(AVERAGE));
                 data.putDouble("prevMonthGasPriceTot", getPrevMonthGasStat(TOTAL));
 
-                testMaps();
                 intent.putExtra("data", data);
                 startActivity(intent);
             }
@@ -511,36 +493,57 @@ public class c_CarTrackerActivity extends Activity {
         });
     }
 
-    private void testMaps(){
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
 
-        LinkedHashMap<String, Double> mappings = new LinkedHashMap<>();
+        switch(menuItem.getItemId()){
 
-        mappings.put("TEST", 0d);
-        mappings.put("FILLER", -1d);
+            case R.id.menu_exercise:
+                startActivity(new Intent(c_CarTrackerActivity.this, a_ActivityTrackerActivity.class));
+                break;
 
+            case R.id.menu_food:
+                startActivity(new Intent(c_CarTrackerActivity.this, n_NutritionTrackerActivity.class));
+                break;
 
-        for (int i = 1; i <= 5; i++){
-            double d = mappings.get("TEST");
-            mappings.put("TEST", d+1);
+            case R.id.menu_thermostat:
+                startActivity(new Intent(c_CarTrackerActivity.this, t_ThermostatProgramActivity.class));
+                break;
+
+            case R.id.menu_home:
+                startActivity(new Intent(c_CarTrackerActivity.this, m_MainActivity.class));
+                break;
+
+            case R.id.menu_help:
+                LayoutInflater inflater = getLayoutInflater();
+                LinearLayout rootView
+                        = (LinearLayout) inflater.inflate(R.layout.c_custom_alert_dialog, null);
+
+                TextView tvAlertMsg = rootView.findViewById(R.id.tvCarAlertMsg);
+                tvAlertMsg.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+                tvAlertMsg.setText(getResources().getText(R.string.c_helpMenu));
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(c_CarTrackerActivity.this);
+                builder.setView(rootView);
+                builder.setPositiveButton(getResources().getString(R.string.c_done),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        }
+                );
+
+                AlertDialog alert = builder.create();
+                alert.show();
+                break;
         }
-
-        double d = mappings.get("TEST");
-
-        Log.i("TEST MAPS", "*******");
-
-        for (Map.Entry<String, Double> entry : mappings.entrySet()) {
-            String key = entry.getKey();
-            double value = entry.getValue();
-            Log.i(key, String.valueOf(value));
-        }
+        return true;
     }
 
-    //     STATISTICS FUNCTIONS
+    // STATISTICS FUNCTIONS
     private ArrayList<c_FuelStats> getPrevGasPurchasesByMonth(){
-        // LinkedHashMaps are immutable and will keep their order
-        // example mapping: "January 2017" : [233, 5]
-        // int[0] = total price, int[1] is the number of for the month year combination
-        LinkedHashMap<String, double[]> mappings = new LinkedHashMap<>();
+        ArrayList<c_FuelStats> purchases = new ArrayList<>();
 
         Calendar calendar = Calendar.getInstance();
         cursor = db.rawQuery(m_GlobalDatabaseHelper.C_SELECT_ALL_SQL, null);
@@ -552,63 +555,56 @@ public class c_CarTrackerActivity extends Activity {
             int year = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH);
 
-            String key = getResources().getStringArray(R.array.c_months)[month] + " " + String.valueOf(year);
+            String monthYear = getResources().getStringArray(R.array.c_months)[month] + " " + String.valueOf(year);
 
-            // if the first entry for the year and month
-            if (mappings.get(key) == null) {
-                mappings.put(key, new double[]{0,0});
+            double purchasePrice = cursor.getDouble(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_PRICE))
+                    * cursor.getDouble(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_LITRES));
+
+            c_FuelStats stats;
+
+            // no entries or current monthYear is different from the last
+            if (purchases.isEmpty() || !purchases.get(purchases.size()-1).getMonthYear().equals(monthYear)){
+                stats = new c_FuelStats(monthYear, purchasePrice);
+                purchases.add(stats);
+            } else {
+                stats = purchases.get(purchases.size()-1);
+                stats.setTotalPurchases(stats.getTotalPurchases() + purchasePrice);
             }
 
-            double[] sumAndNumEntries = mappings.get(key);
-
-            // add price to the running total
-            sumAndNumEntries[0] += cursor.getDouble(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_PRICE));
-
-            // increment the total number of entries
-            sumAndNumEntries[1]++;
-
-            mappings.put(key, sumAndNumEntries);
-
             cursor.moveToNext();
-        }
-
-        // Since Android will not preserve order when passing LinkedHashMap to different activities,
-        //   create an array of order c_FuelStats objects which will be passed
-        ArrayList<c_FuelStats> purchases = new ArrayList<>();
-
-        for (Map.Entry<String, double[]> entry : mappings.entrySet()) {
-            String key = entry.getKey();
-            double[] sumAndNumEntries = entry.getValue();
-            purchases.add(new c_FuelStats(key, (sumAndNumEntries[0] / sumAndNumEntries[1])));
         }
         return purchases;
     }
 
-
     private double getPrevMonthGasStat(String stat){
         String table = m_GlobalDatabaseHelper.FUEL_DETAILS_TABLE;
-        String[] columns = null; // SELECT *
         String where = m_GlobalDatabaseHelper.KEY_DATE + " >= ? AND " + m_GlobalDatabaseHelper.KEY_DATE + " <= ?";
         String[] whereArgs = {
                 String.valueOf(getFirstTimestampOfPrevMonth()),
                 String.valueOf(getLastTimestampOfPrevMonth())
         };
 
-        cursor = db.query(table, columns, where, whereArgs, null, null, null);
-        double total = 0;
-
+        cursor = db.query(table, null, where, whereArgs, null, null, null);
         cursor.moveToFirst();
+
+        double gasPriceSum = 0;
+        double totalPrice = 0;
+
         while(!cursor.isAfterLast()){
-            total += cursor.getDouble(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_PRICE));
+            double gasPrice = cursor.getDouble(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_PRICE));
+            double litres = cursor.getDouble(cursor.getColumnIndex(m_GlobalDatabaseHelper.KEY_LITRES));
+
+            gasPriceSum += gasPrice;
+            totalPrice += (gasPrice * litres);
             cursor.moveToNext();
         }
 
-        if (stat == TOTAL){
-            return total;
-        } else if (stat == AVERAGE){
-            return total / (double)cursor.getCount();
+        if (stat.equals(AVERAGE) && cursor.getCount() != 0){
+            return (gasPriceSum / cursor.getCount());
         }
-
+        else if (stat.equals(TOTAL)){
+            return totalPrice;
+        }
         return -1; // no results
     }
 
