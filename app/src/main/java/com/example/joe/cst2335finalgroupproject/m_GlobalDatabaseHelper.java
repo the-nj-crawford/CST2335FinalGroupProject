@@ -68,7 +68,7 @@ public class m_GlobalDatabaseHelper extends SQLiteOpenHelper {
             + TYPE_COL_NAME + " INTEGER, "
             + DURATION_COL_NAME + " INTEGER, "
             + NOTE_COL_NAME + " INTEGER, "
-            + TIME_COL_NAME + " DATETIME DEFAULT CURRENT_TIMESTAMP "
+            + TIME_COL_NAME + " INTEGER "//consider changing to real
             + " );";
     //Database Version Number
     private static final int DATABASE_VERSION_NUM = 1;  //WARNING: AVOID ALTERING THIS VALUE UNLESS REQUIRED. THIS WILL CLEAR ALL TABLES FOR ALL ACTIVITIES.

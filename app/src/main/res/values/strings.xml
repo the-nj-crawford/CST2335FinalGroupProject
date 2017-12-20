@@ -65,6 +65,29 @@
     <string name="t_degreesLabel">°C</string>
 
     //activity tracker strings
+    <string-array name="a_typeArray">
+        <item>Running</item>
+        <item>Walking</item>
+        <item>Biking</item>
+        <item>Swimming</item>
+        <item>Skating</item>
+    </string-array>
+    <string name="a_details_activityType">Activity: </string>
+    <string name="a_details_Duration">Duration: </string>
+    <string name="a_details_Comments">Comments: </string>
+    <string name="a_details_confirmButton">Confirm</string>
+    <string name="a_details_deleteButton">Delete</string>
+    <string name="a_details_cancelButton">Cancel</string>
+    <string name="a_main_addButton">Add New Activity</string>
+    <string name="a_main_snackbarText">Message Deleted</string>
+    <string name="a_main_toastText">Successfully added acitivty!</string>
+    <string name="a_main_statsButton">Monthly statistics</string>
+    <string name="a_alert_statsString">Monthly Average Activity: %1$f\nTotal this Month: %2$f</string>
+    <string name="a_alert_title">Statistics</string>
+    <string name="a_help_title">Activity Tracker Help</string>
+    <string name="a_help_content">Activity Tracker v1 \nby Nicholas Crawford\nPress the add button to add a new activity \nTap on an activity to see details. From here you can edit the activity or delete it
+        \nTap on the statistics button to see monthly statistics</string>
+    <string name="a_ok">OK</string>
 
 
 
