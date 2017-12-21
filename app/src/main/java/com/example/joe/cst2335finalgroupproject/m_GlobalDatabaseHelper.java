@@ -39,6 +39,7 @@ public class m_GlobalDatabaseHelper extends SQLiteOpenHelper {
             + RULE_COL_NAME + " TEXT "
             + " );";
     //Nurition Database and Column Names
+    //Nurition Database and Column Names
     static final String NUTRITION_TABLE_NAME = "NUTRITION_INFO";
     public static final String DROP_NUTRITION_TABLE_SQL = "DROP TABLE IF EXISTS " + NUTRITION_TABLE_NAME;
     static final String FOOD_ID = "FOOD_ID";
@@ -46,6 +47,9 @@ public class m_GlobalDatabaseHelper extends SQLiteOpenHelper {
     static final String CALORIES_COL_NAME = "CALORIES";
     static final String CARB_COL_NAME = "CARBOHYDRATE";
     static final String FAT_COL_NAME = "FAT";
+    static final String COMMENTS_COL_NAME = "COMMENTS";
+    static final String FOOD_DATE_COL_NAME = "DATE";
+
     public static final String CREATE_NUTRITION_TABLE_SQL
             = "CREATE TABLE " + NUTRITION_TABLE_NAME + " ( "
             + FOOD_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -53,7 +57,12 @@ public class m_GlobalDatabaseHelper extends SQLiteOpenHelper {
             + CALORIES_COL_NAME + " INTEGER, "
             + CARB_COL_NAME + " INTEGER, "
             + FAT_COL_NAME + " INTEGER "
+            + COMMENTS_COL_NAME + " TEXT "
+            + FOOD_DATE_COL_NAME + " DATETIME DEFAULT CURRENT_TIMESTAMP "
+
             + " );";
+
+
     //Activity Database and Column Names
     static final String ACTIVITY_TABLE_NAME = "ACTIVITY_LOG";
     public static final String DROP_ACTIVITY_TABLE_SQL = "DROP TABLE IF EXISTS " + ACTIVITY_TABLE_NAME;

@@ -5,12 +5,11 @@
     android:layout_height="match_parent"
     tools:context="com.example.joe.cst2335finalgroupproject.n_NutritionTrackerActivity">
 
-
     <TextView
         android:id="@+id/nutrition_name_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Food Name or Description:" />
+        android:text="@string/n_FoodNameOrDesc" />
 
     <EditText
         android:id="@+id/nutrition_name_field"
@@ -23,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/nutrition_name_field"
-        android:text="Calories:" />
+        android:text="@string/n_Calories" />
 
     <EditText
         android:id="@+id/nutrition_calories_field"
@@ -37,7 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/nutrition_calories_field"
-        android:text="Carbohydrates:" />
+        android:text="@string/n_Carbs" />
 
     <EditText
         android:id="@+id/nutrition_carbs_field"
@@ -51,7 +50,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/nutrition_carbs_field"
-        android:text="Fat:" />
+        android:text="@string/n_Fat" />
 
     <EditText
         android:id="@+id/nutrition_fat_field"
@@ -60,21 +59,31 @@
         android:layout_below="@+id/nutrition_fat_header"
         android:inputType="number" />
 
+    <TextView
+        android:id="@+id/nutrition_comment_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/nutrition_fat_field"
+        android:text="@string/n_Comments" />
+
+    <EditText
+        android:id="@+id/nutrition_comment_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/nutrition_comment_header" />
+
     <Button
         android:id="@+id/nutrition_log_new_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/nutrition_fat_field"
-        android:layout_centerInParent="true"
-        android:text="Log Food" />
+        android:layout_below="@+id/nutrition_comment_field"
+        android:text="@string/n_LogFood" />
 
     <Button
         android:id="@+id/nutrition_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/nutrition_log_new_button"
-        android:layout_centerInParent="true"
-        android:text="Cancel" />
-
+        android:text="@string/n_Cancel" />
 
 </RelativeLayout>

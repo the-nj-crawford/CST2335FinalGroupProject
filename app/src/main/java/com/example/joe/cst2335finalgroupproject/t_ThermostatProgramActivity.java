@@ -78,7 +78,7 @@ public class t_ThermostatProgramActivity extends AppCompatActivity {
 
     public static final int ADD_METHOD_CODE = 30;
     public static final int EDIT_METHOD_CODE = 31;
-    
+
     //local ArrayList to handle the rules_list being read from the database and displayed on screen
     final ArrayList<String> rules_list = new ArrayList<>();
     final ArrayList<RelativeLayout> button_list = new ArrayList<>();
