@@ -1,6 +1,6 @@
 <resources>
 
-    //app-wide strings
+    <!--region APP-WIDE/TOOLBAR STRINGS-->
     <string name="m_app_name">CST2335 Final Project</string>
     <string name="m_toolbar_guide">Toolbar Guide:</string>
 
@@ -8,8 +8,9 @@
     <string name="m_menu_food">Food Nutrition Tracker</string>
     <string name="m_menu_thermostat">House Thermostat</string>
     <string name="m_menu_automobile">Automobile</string>
+    <!--endregion-->
 
-    //launcher activity strings
+    <!--region MAIN/LAUNCHER ACTIVITY STRINGS-->
     <string name="m_activityTrackerButtonText">Launch Activity Tracker</string>
     <string name="m_activityTrackerDescriptionText">Enter and track your workouts, including duration.</string>
 
@@ -21,8 +22,9 @@
 
     <string name="m_carTrackerButtonText">Launch Car Fuel Tracker</string>
     <string name="m_carTrackerDescriptionText">Record gasoline purchases and view summary information and trends.</string>
+    <!--endregion-->
 
-    //car activity strings
+    <!--region CAR/FUEL TRACKER ACTIVITY STRINGS-->
 
     <string name="c_CarTrackerActivity">Car Tracker Activity</string>
     <string name="c_LblLoading">Loading</string>
@@ -101,15 +103,29 @@
         \t\u2022 Return home by tapping the \'Home\' button
     </string>
 
-    //nutrition strings
+    <!--endregion-->
 
+    <!--region NUTRITION TRACKER ACTIVITY STRINGS-->
+    <!--endregion-->
 
-    //thermostat strings
+    <!--region THERMOSTAT RULE ACTIVITY STRINGS-->
     <!-- for thermostat activity layouts -->
-    <string name="t_currentActivityText"> </string>
-    <string name="t_addButtonText">Add</string>
-    <string name="t_editButtonText">Edit</string>
+    <string name="t_currentActivityText" translatable="false"> </string>
+    <string name="t_addButtonText">Add New Rule To List</string>
+    <string name="t_editButtonText">Delete Rule(s) From List</string>
     <string name="t_ruleText">test</string>
+    <string name="t_helpMenuTitleText">Thermostat Rule Manager Help Menu</string>
+    <string name="t_helpMenuText">
+        \t<b>Author:</b>\tJoe Ireland\n
+        \t<b>Activity Version Number:</b>\t2\n
+        \t<b>Languages Supported:</b>\tEnglish\tFrench\n\n
+        \t<b>Instructions:</b>\n
+        \t\u2022 Edit Rule:\t Tap the rule in the list.\n
+        \t\u2022 Delete Rule:\t Tap the red \'minus\' button\n\t\tto the left of the rule.\n
+        \t\u2022 Add Rule:\t Tap \'Add Rule\' button\n
+        \t\u2022 Return home by tapping the \'Home\' button
+    </string>
+    <string name="t_helpDoneButtonText">Done</string>
 
     <!-- for landscape thermostat activity -->
     <string name="t_frameLayoutPlaceholderText">Rule Details will\nbe displayed here.\n\n
@@ -142,9 +158,9 @@
     <!-- for add dialog -->
     <string name="t_saveAddRuleButtonText">Save\nNew Rule</string>
     <string name="t_discardAddRuleButtonText">Discard\nNew Rule</string>
-    <string name="help">help</string>
 
+    <!--endregion-->
 
-    //activity tracker strings
-
+    <!--region ACTIVITY TRACKER ACTIVITY STRINGS-->
+    <!--endregion-->
 </resources>

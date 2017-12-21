@@ -101,8 +101,35 @@
         \t\u2022 Appuyez sur le bouton «Afficher les statistiques d'achat de carburant»\n\t tpour afficher les statistiques sur les carburants passés\n
         \t\u2022 Rentrez chez vous en appuyant sur le bouton «Accueil»
     </string>
-
-
+    <string name="t_addButtonText">Ajouter une nouvelle règle à la liste</string>
+    <string name="t_ruleText">test</string>
+    <string name="t_helpMenuTitleText">Menu d\'aide du gestionnaire du thermostat</string>
+    <string name="t_helpMenuText">
+        \t<b>Auteur:</b>\tJoe Ireland\n
+        \t<b>Numéro de version de l\'activité:</b>\t2\n
+        \t<b>Langues supportées:</b>\tAnglais\tFrançais\n\n
+        \t<b>Instructions:</b>\n
+        \t\u2022 Modifier Règle:\t Tap the rule in the list.\n
+        \t\u2022 Supprimer Règle:\t Tap the red \'minus\' button\n\t\tto the left of the rule.\n
+        \t\u2022 Ajouter Règle:\t Tap \'Add Rule\' button\n
+        \t\u2022 Rentrez chez vous en appuyant sur le bouton «Accueil»
+    </string>
+    <string name="t_helpDoneButtonText">terminé</string>
+    <string name="t_frameLayoutPlaceholderText">Les détails de la règle seront affichés ici.\n\n
+                                                Cliquez sur Ajouter ou sélectionnez une ligne dans la liste sur la gauche.</string>
+    <string name="t_dayLabel">Sur:</string>
+    <string name="t_timeLabel">À:</string>
+    <string name="t_separatorLabel">:</string>
+    <string name="t_setTempLabel">Réglez la température sur</string>
+    <string name="t_degreesLabel">°C</string>
+    <string name="t_manualEntryLabelText">Ou tapez la règle manuellement:</string>
+    <string name="t_manualEntryHintText">Lundi 6:00 Temp -> 20</string>
+    <string name="t_manualEntryFormatLabelText">Suivez le format: lundi 6:00 Temp -> 20</string>
+    <string name="t_saveEditChangesButtonText">Sauvegarder</string>
+    <string name="t_discardEditChangesButtonText">Jeter</string>
+    <string name="t_saveNewRuleEditChangesButtonText">Enregistrer comme nouveau</string>
+    <string name="t_saveAddRuleButtonText">Sauvegarder</string>
+    <string name="t_discardAddRuleButtonText">Jeter</string>
 
 
 </resources>

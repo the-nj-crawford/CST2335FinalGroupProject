@@ -52,20 +52,17 @@ public class t_addRuleFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        Bundle info = getArguments();
-
         v = inflater.inflate(R.layout.t_add_rule, container, false);
 
         rule = new t_ThermostatRule();
-
-        initializeDiscardButton();
-        initializeSaveButton();
 
         initializeDaySpinner();
         initializeHourSpinner();
         initializeMinuteSpinner();
         initializeTempSpinner();
 
+        initializeDiscardButton();
+        initializeSaveButton();
 
         et = v.findViewById(R.id.manual_text_entry);
 
@@ -73,7 +70,6 @@ public class t_addRuleFragment extends Fragment {
         if (tv != null) {
             tv.setText("");
         }
-
 
         return v;
     }
@@ -86,14 +82,12 @@ public class t_addRuleFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         //add confimration dialogalert
-                        Log.i("AddActivity", "discarding New Rule");
+                        Log.i("AddActivity - Tablet", "discarding Rule");
                         ((t_ThermostatProgramActivity) callingActivity).discardMethod();
                         callingActivity.getFragmentManager()
                                 .beginTransaction()
                                 .remove(t_addRuleFragment.this)
                                 .commit();
-
-
                     }
                 });
             case "t_DetailView":    //portrait view - frameLayout was loaded into a new activity t_DetailView
@@ -101,7 +95,7 @@ public class t_addRuleFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         //add confimration dialogalert
-                        Log.i("AddActivity", "discarding New Rule");
+                        Log.i("AddActivity - Phone", "discarding Rule");
                         callingActivity.setResult(t_ThermostatProgramActivity.DISCARD_RESULT);
                         callingActivity.finish();
                     }
@@ -109,33 +103,36 @@ public class t_addRuleFragment extends Fragment {
         }
     }
 
-
     public void initializeSaveButton() {
         saveButton = v.findViewById(R.id.t_saveAddRuleButton);
+
         switch (callingActivity.getLocalClassName()) {
             case "t_ThermostatProgramActivity": //landscape view - frameLayout in same activity as list
                 saveButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.i("AddActivity", "Saving Rule");
-                        Intent resultIntent = new Intent();
-                        resultIntent.putExtra("ruleToAdd", rule.toString());
-                        //resultIntent.putExtra("listPosition", listPosition);
-                        callingActivity.setResult(t_ThermostatProgramActivity.SAVE_RESULT, resultIntent);
-                        callingActivity.finish();   //finish closes this empty activity on phones.
+                        final Bundle extrasBundle = new Bundle();
+                        extrasBundle.putString("ruleToAdd", rule.toString());
+                        Log.i("going to add rule", rule.toString());
+                        Log.i("AddActivity - Tablet", "Saving Changes as New Rule");
+                        ((t_ThermostatProgramActivity) callingActivity).add_SaveRule(extrasBundle);
+                        callingActivity.getFragmentManager()
+                                .beginTransaction()
+                                .remove(t_addRuleFragment.this)
+                                .commit();
                     }
                 });
             case "t_DetailView":    //portrait view - frameLayout was loaded into a new activity t_DetailView
                 saveButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.i("AddActivity", "Saving Rule");
-                        Intent resultIntent = new Intent();
-                        resultIntent.putExtra("ruleToAdd", rule.toString());
-                        //resultIntent.putExtra("listPosition", listPosition);
+                        final Bundle extrasBundle = new Bundle();
+                        extrasBundle.putString("ruleToAdd", rule.toString());
+                        Log.i("going to add rule", rule.toString());
+                        Log.i("AddActivity - Phone", "Saving Rule");
+                        Intent resultIntent = new Intent().putExtras(extrasBundle);
                         callingActivity.setResult(t_ThermostatProgramActivity.SAVE_RESULT, resultIntent);
-                        callingActivity.getFragmentManager().beginTransaction().
-                                remove(t_addRuleFragment.this).commit();
+                        callingActivity.finish();   //finish closes this empty activity on phones.
                     }
                 });
         }

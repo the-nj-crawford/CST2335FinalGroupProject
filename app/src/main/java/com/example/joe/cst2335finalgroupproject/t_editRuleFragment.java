@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,10 +26,13 @@ public class t_editRuleFragment extends Fragment {
     Activity callingActivity;
     Bundle info;
 
-
     EditText et;
     View v;
+
     t_ThermostatRule rule;
+    String ruleText;
+    int rulePosition;
+    long ruleDatabaseID;
 
     Spinner daySpinner;
     Spinner hourSpinner;
@@ -40,10 +42,6 @@ public class t_editRuleFragment extends Fragment {
     Button discardButton;
     Button saveAsNewButton;
     Button saveButton;
-
-    public t_editRuleFragment() {
-
-    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -58,20 +56,20 @@ public class t_editRuleFragment extends Fragment {
 
         v = inflater.inflate(R.layout.t_edit_rule, container, false);
 
-        String ruleText = info.getString("rule");
-        int listPosition = info.getInt("listPosition");
+        ruleText = info.getString("rule");
+        rulePosition = info.getInt("listPosition");
+        ruleDatabaseID = info.getLong("databaseID");
 
         rule = t_ThermostatRule.valueOf(ruleText);
-
-        initializeDiscardButton();
-        initializeSaveAsNewButton();
-        initializeSaveButton();
 
         initializeDaySpinner();
         initializeHourSpinner();
         initializeMinuteSpinner();
         initializeTempSpinner();
 
+        initializeDiscardButton();
+        initializeSaveAsNewButton();
+        initializeSaveButton();
 
         et = v.findViewById(R.id.manual_text_entry);
         et.setText(ruleText);
@@ -87,14 +85,11 @@ public class t_editRuleFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         //add confimration dialogalert
-                        Log.i("AddActivity", "discarding New Rule");
                         ((t_ThermostatProgramActivity) callingActivity).discardMethod();
                         callingActivity.getFragmentManager()
                                 .beginTransaction()
                                 .remove(t_editRuleFragment.this)
                                 .commit();
-
-
                     }
                 });
             case "t_DetailView":    //portrait view - frameLayout was loaded into a new activity t_DetailView
@@ -102,7 +97,6 @@ public class t_editRuleFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         //add confimration dialogalert
-                        Log.i("AddActivity", "discarding New Rule");
                         callingActivity.setResult(t_ThermostatProgramActivity.DISCARD_RESULT);
                         callingActivity.finish();
                     }
@@ -112,32 +106,70 @@ public class t_editRuleFragment extends Fragment {
 
     public void initializeSaveAsNewButton() {
         saveAsNewButton = v.findViewById(R.id.t_saveNewRuleEditChangesButton);
-        saveAsNewButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i("AddActivity", "Saving Changes as New Rule");
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("ruleToSave", rule.toString());
-                callingActivity.setResult(t_ThermostatProgramActivity.SAVE_AS_NEW_RESULT, resultIntent);
-                callingActivity.finish();   //finish closes this empty activity on phones.
-            }
-        });
+
+        switch (callingActivity.getLocalClassName()) {
+            case "t_ThermostatProgramActivity": //landscape view - frameLayout in same activity as list
+                saveAsNewButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final Bundle extrasBundle = new Bundle();
+                        extrasBundle.putString("ruleToAdd", rule.toString());
+                        ((t_ThermostatProgramActivity) callingActivity).edit_SaveAsNew(extrasBundle);
+                        callingActivity.getFragmentManager()
+                                .beginTransaction()
+                                .remove(t_editRuleFragment.this)
+                                .commit();
+                    }
+                });
+            case "t_DetailView":    //portrait view - frameLayout was loaded into a new activity t_DetailView
+                saveAsNewButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final Bundle extrasBundle = new Bundle();
+                        extrasBundle.putString("ruleToAdd", rule.toString());
+                        Intent resultIntent = new Intent().putExtras(extrasBundle);
+                        callingActivity.setResult(t_ThermostatProgramActivity.SAVE_AS_NEW_RESULT, resultIntent);
+                        callingActivity.finish();   //finish closes this empty activity on phones.
+                    }
+                });
+        }
     }
 
     public void initializeSaveButton() {
         saveButton = v.findViewById(R.id.t_saveEditChangesButton);
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i("AddActivity", "Saving Changes to Rule");
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("ruleToAdd", rule.toString());
-                resultIntent.putExtra("ruleToDelete", info.getString("rule"));
-                //resultIntent.putExtra("listPosition", listPosition);
-                callingActivity.setResult(t_ThermostatProgramActivity.SAVE_RESULT, resultIntent);
-                callingActivity.finish();   //finish closes this empty activity on phones.
-            }
-        });
+
+        switch (callingActivity.getLocalClassName()) {
+            case "t_ThermostatProgramActivity": //landscape view - frameLayout in same activity as list
+                saveButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final Bundle extrasBundle = new Bundle();
+                        extrasBundle.putString("ruleToAdd", rule.toString());
+                        extrasBundle.putInt("deletePosition", rulePosition);
+                        extrasBundle.putString("ruleToDelete", info.getString("rule"));
+                        extrasBundle.putLong("deleteID", ruleDatabaseID);
+                        ((t_ThermostatProgramActivity) callingActivity).edit_SaveChanges(extrasBundle);
+                        callingActivity.getFragmentManager()
+                                .beginTransaction()
+                                .remove(t_editRuleFragment.this)
+                                .commit();
+                    }
+                });
+            case "t_DetailView":    //portrait view - frameLayout was loaded into a new activity t_DetailView
+                saveButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final Bundle extrasBundle = new Bundle();
+                        extrasBundle.putString("ruleToAdd", rule.toString());
+                        extrasBundle.putInt("listPosition", rulePosition);
+                        extrasBundle.putString("ruleToDelete", info.getString("rule"));
+                        extrasBundle.putLong("deleteID", ruleDatabaseID);
+                        Intent resultIntent = new Intent().putExtras(extrasBundle);
+                        callingActivity.setResult(t_ThermostatProgramActivity.SAVE_RESULT, resultIntent);
+                        callingActivity.finish();   //finish closes this empty activity on phones.
+                    }
+                });
+        }
     }
 
     public void initializeDaySpinner() {
