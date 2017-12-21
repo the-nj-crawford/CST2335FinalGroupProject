@@ -6,81 +6,11 @@
     android:orientation="vertical"
     tools:context="com.example.joe.cst2335finalgroupproject.a_DetailView">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:id="@+id/a_detailsFrameLayout">
 
-        <TextView
-            android:id="@+id/tv1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Activity" />
-
-        <EditText
-            android:id="@+id/a_detailTypeText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Running" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Duration:" />
-
-        <EditText
-            android:id="@+id/a_detailDurationText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            android:text="5" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Comments:" />
-
-        <EditText
-            android:id="@+id/a_detailCommentText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="easy" />
-
-        <TextView
-            android:id="@+id/a-detailTimeText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Today's date!" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/a_detailConfirmButton"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Confirm" />
-
-        <Button
-            android:id="@+id/a_detailDeleteButton"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Delete" />
-
-        <Button
-            android:id="@+id/a_detailCancelButton"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Cancel" />
-
-    </LinearLayout>
+    </FrameLayout>
 
 </RelativeLayout>

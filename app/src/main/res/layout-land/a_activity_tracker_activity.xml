@@ -7,30 +7,29 @@
     android:layout_height="match_parent"
     tools:context="com.example.joe.cst2335finalgroupproject.a_ActivityTrackerActivity">
 
-
     <ListView
         android:id="@+id/a_listView"
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
         android:layout_marginStart="8dp"
         app:layout_constraintBottom_toTopOf="@id/a_addButton"
-         />
+        app:layout_constraintStart_toStartOf="parent" />
+    <Button
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/a_main_statsButton"
+        android:text="@string/a_main_statsButton"
+        app:layout_constraintBottom_toTopOf="@id/a_addButton"/>
 
-   <Button
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:id="@+id/a_main_statsButton"
-       android:text="@string/a_main_statsButton"
-       app:layout_constraintBottom_toTopOf="@id/a_addButton"/>
     <Button
         android:id="@+id/a_addButton"
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-
         android:text="@string/a_main_addButton"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+       />
 
     <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"
@@ -43,5 +42,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/a_tabletFrameLayout"
+        android:layout_width="280dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></FrameLayout>
 
 </android.support.constraint.ConstraintLayout>
