@@ -1,15 +1,21 @@
 package com.example.joe.cst2335finalgroupproject;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -17,50 +23,19 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import static com.example.joe.cst2335finalgroupproject.m_GlobalDatabaseHelper.NUTRITION_TABLE_NAME;
-
-public class n_NutritionTrackerActivity extends Activity {
-
-    /**
-     * Priorities for each Activity (suggested complete in this order in case Prof
-     * pulls us for review with no warning.)
-     *
-     * Milestone 1 (Must be demonstrated December 7th):
-     *          3.	Each Activity must have a ListView to present items. Selecting an item from the ListView must show detailed information about the item selected.
-     *          7.	Each activity must have at least 1 button
-     *          8.	Each activity must have at least 1 edit text with appropriate text input method.
-     * Milestone 2 (Must be demonstrated December 14th):
-     *          2.	Each Activity must use a fragment in its graphical interface.
-     *          5.	Each activity must use an AsyncTask in the code. This can be to open a Database, retrieve data from a server, save data, or any other reasonable circumstance.
-     *          6.	Each activity must have at least 1 progress bar
-     *          9.	Each activity must have at least 1 Toast, Snackbar, and custom dialog notification.
-     *
-     * Milestone 3 (Must be demonstrated December 21st):
-     *          1.  The software must have 1 different activity written by each person in your group. The activity must be accessible by selecting a graphical icon from a Toolbar.
-     *          4.  The items listed in the ListView must be stored by the application so that appear the next time the application is launched. The user must be able to add and delete items, which would then also be stored.
-     *          10.	A help menu item that displays a dialog with the author’s name, Activity version number, and instructions for how to use the interface.
-     *          11.	There must be at least 1 other language supported by your Activity. If you are not bilingual, then you must support both British and American English (words like colour, color, neighbour, neighbor, etc).
-     *          If you know a language other than English, then you can support that language in your application and don’t need to support American English.
-     *
-     * Activity Specific Requirements:
-     •	Allow the user to enter nutritional information about food that they have eaten. It should include normal items that are found on a nutrition label: Calories, Total Fat, Total Carbohydrate. When the user enters the information, the database should also store the time and day that the user entered the information.
-     •	You should use fragments to show a ListView displays the items eaten, either ordered by time or as a daily summary of total calories, fat and carbohydrates. Users should be able to delete or edit previous entries, like changing the number of calories or carbohydrates.
-     •	The application should calculate the average calories eaten per day, and show how many calories were eaten in the last day that information was entered.
-     *
-     */
+public class n_NutritionTrackerActivity extends AppCompatActivity {
 
     protected final static String ACTIVITY_NAME = "NutritionTracker";
-    Button newFoodButton;
     ListView nutritionListView;
-
     m_GlobalDatabaseHelper globalDatabaseHelper;
     SQLiteDatabase db;
     FoodAdapter listViewAdapter;
-
     ArrayList<String> foodArrayList = new ArrayList<>();
 
     @Override
@@ -68,214 +43,210 @@ public class n_NutritionTrackerActivity extends Activity {
         Log.i(ACTIVITY_NAME, "In onCreate()");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.n_activity_nutrition);
-        newFoodButton = findViewById(R.id.nutrition_add_new_food);
         nutritionListView = findViewById(R.id.nutrition_listview);
-
-        // READ IN DB
-
         globalDatabaseHelper = new m_GlobalDatabaseHelper(this);
         db = globalDatabaseHelper.getWritableDatabase();
         listViewAdapter = new FoodAdapter(this);
         nutritionListView.setAdapter(listViewAdapter);
 
-        Cursor cursor = db.query(NUTRITION_TABLE_NAME, new String[]{m_GlobalDatabaseHelper.FOOD_ITEM_COL_NAME}, null, null, null, null, null);
+        AddItemQuery populateList = new AddItemQuery();
+        populateList.execute();
+
+        Toolbar myToolbar = findViewById(R.id.appToolbar);
+        setSupportActionBar(myToolbar);
+
+
+        // FRAGMENT PREAMBLE -----------------------------------------------------------------------
+
+        boolean frameLayoutExists = false;
+
+        if (findViewById(R.id.wideScreenFrameLayout) != null) {
+            frameLayoutExists = true;
+            Log.i(ACTIVITY_NAME, "Tablet - FrameLayout is visible.");
+        } else {
+            Log.i(ACTIVITY_NAME, "Under 600dp - FrameLayout is NOT visible.");
+        }
+
+        final boolean frameLayoutExistsFinal = frameLayoutExists;
+
+
+        // LISTVIEW ONCLICK ------------------------------------------------------------------------
+
+        nutritionListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.i(ACTIVITY_NAME, "ListView was clicked");
+
+                final int foodPosition = position + 1;
+
+                Cursor cursor = db.query(m_GlobalDatabaseHelper.NUTRITION_TABLE_NAME, new String[]{m_GlobalDatabaseHelper.FOOD_ID,
+                                m_GlobalDatabaseHelper.FOOD_ITEM_COL_NAME, m_GlobalDatabaseHelper.CALORIES_COL_NAME, m_GlobalDatabaseHelper.CARB_COL_NAME, m_GlobalDatabaseHelper.FAT_COL_NAME}, m_GlobalDatabaseHelper.FOOD_ID + "=?",
+                        new String[]{String.valueOf(foodPosition)}, null, null, null, null);
+
+                if (cursor != null)
+                    cursor.moveToFirst();
+
+                Bundle bundle = new Bundle();
+
+                bundle.putString("id", cursor.getString(0));
+
+                bundle.putString("item", cursor.getString(1));
+
+                if (!cursor.getString(2).isEmpty()) {
+                    bundle.putString("calories", cursor.getString(2));
+                } else {
+                    bundle.putString("calories", "");
+                }
+                if (!cursor.getString(3).isEmpty()) {
+                    bundle.putString("carbs", cursor.getString(3));
+                } else {
+                    bundle.putString("carbs", "");
+                }
+                if (!cursor.getString(4).isEmpty()) {
+                    bundle.putString("fat", cursor.getString(4));
+                } else {
+                    bundle.putString("fat", "");
+                }
+
+                bundle.putString("comment", ""); // DELETE ME - SEE BELOW
+                /*
+                if (!cursor.getString(5).isEmpty()) {
+                    bundle.putString("comment", cursor.getString(5));
+                } else {
+                    bundle.putString("comment", cursor.getString(5));
+                }*/
+
+                if (!frameLayoutExistsFinal) {
+                    n_NutritionFragment fragment = new n_NutritionFragment();
+                    fragment.setArguments(bundle);
+                    getFragmentManager().beginTransaction().replace(R.id.myRelativeLayout, fragment).commit();
+                } else {
+                    n_NutritionFragment nutritionFragment = new n_NutritionFragment();
+                    nutritionFragment.setArguments(bundle);
+                    getFragmentManager().beginTransaction()
+                            .replace(R.id.wideScreenFrameLayout, nutritionFragment).commit();
+                }
+            }
+        });
+    }
+
+
+    // TOOLBAR -------------------------------------------------------------------------------------
+
+    public boolean onCreateOptionsMenu(Menu m) {
+        getMenuInflater().inflate(R.menu.n_nutrition_toolbar, m);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem mi) {
+        switch (mi.getItemId()) {
+
+            case R.id.n_action_return:
+                Toast.makeText(this, "Version 1.0 by Neil Gagne", Toast.LENGTH_LONG).show();
+                break;
+
+            case R.id.n_action_rotate:
+                Toast.makeText(this, "Version 1.0 by Neil Gagne", Toast.LENGTH_LONG).show();
+
+                break;
+
+            case R.id.n_action_add:
+                addItem();
+                break;
+
+            case R.id.n_action_about:
+                final AlertDialog aboutDialog = new AlertDialog.Builder(n_NutritionTrackerActivity.this).create();
+                aboutDialog.setTitle(R.string.n_AboutTitle);
+                aboutDialog.setMessage(getResources().getString(R.string.n_AboutMessage));
+                aboutDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getResources().getString(R.string.n_OK),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                aboutDialog.dismiss();
+                            }
+                        });
+                aboutDialog.show();
+        }
+        return true;
+    }
+
+
+    // ADD ITEM TO LISTVIEW ------------------------------------------------------------------------
+
+    public void addItem() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(n_NutritionTrackerActivity.this);
+        final View logView = getLayoutInflater().inflate(R.layout.n_activity_nutrition_dialog, null);
+
+        builder.setView(logView);
+        final AlertDialog dialog = builder.create();
+        final EditText nameField = logView.findViewById(R.id.nutrition_name_field);
+
+        Button submitNewActivity = logView.findViewById(R.id.nutrition_log_new_button);
+        Button cancelNewActivity = logView.findViewById(R.id.nutrition_cancel);
+        final ProgressBar myProgressBar = logView.findViewById(R.id.progressBar);
+
+        submitNewActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (nameField.getText().toString().length() < 1) {
+                    showValidationDialog();
+                } else {
+                    EditText namefield = logView.findViewById(R.id.nutrition_name_field);
+                    EditText caloriesfield = logView.findViewById(R.id.nutrition_calories_field);
+                    EditText carbsfield = logView.findViewById(R.id.nutrition_carbs_field);
+                    EditText fatfield = logView.findViewById(R.id.nutrition_fat_field);
+                    //EditText commentfield = logView.findViewById(R.id.nutrition_comment_field);
+
+                    String itemName = namefield.getText().toString();
+                    String itemCalories = caloriesfield.getText().toString();
+                    String itemCarbs = carbsfield.getText().toString();
+                    String itemFat = fatfield.getText().toString();
+                    //String itemComment = commentfield.getText().toString();
+
+                    ContentValues values = new ContentValues();
+                    values.put(m_GlobalDatabaseHelper.FOOD_ITEM_COL_NAME, itemName);
+                    values.put(m_GlobalDatabaseHelper.CALORIES_COL_NAME, itemCalories);
+                    values.put(m_GlobalDatabaseHelper.CARB_COL_NAME, itemCarbs);
+                    values.put(m_GlobalDatabaseHelper.FAT_COL_NAME, itemFat);
+                    //values.put(m_GlobalDatabaseHelper.COMMENTS_COL_NAME, itemComment);
+
+                    db.insert(m_GlobalDatabaseHelper.NUTRITION_TABLE_NAME, null, values);
+
+                    updateNutrition();
+
+                    dialog.dismiss();
+                    Toast.makeText(getApplicationContext(), R.string.n_FoodAddedToast,
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        cancelNewActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+
+    }
+
+
+    // UPDATE LISTVIEW -----------------------------------------------------------------------------
+
+    public void updateNutrition() {
+        Log.i(ACTIVITY_NAME, "In updateNutrition");
+        Cursor cursor = db.query(m_GlobalDatabaseHelper.NUTRITION_TABLE_NAME, new String[]{m_GlobalDatabaseHelper.FOOD_ITEM_COL_NAME}, null, null, null, null, null);
         int colIndex = cursor.getColumnIndex(m_GlobalDatabaseHelper.FOOD_ITEM_COL_NAME);
 
-        Cursor c = db.rawQuery("SELECT  * FROM " + NUTRITION_TABLE_NAME + ";", null);
+        Cursor c = db.rawQuery("SELECT  * FROM " + m_GlobalDatabaseHelper.NUTRITION_TABLE_NAME + ";", null);
         int cnt = c.getCount();
         if (cnt > 0) {
-            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            for (cursor.moveToLast(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 String value = cursor.getString(colIndex);
                 foodArrayList.add(value);
                 listViewAdapter.notifyDataSetChanged();
             }
             c.close();
         }
-
-        // ADD NEW FOOD ITEM
-
-        newFoodButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(n_NutritionTrackerActivity.this);
-                final View logView = getLayoutInflater().inflate(R.layout.n_activity_nutrition_dialog, null);
-
-                builder.setView(logView);
-                final AlertDialog dialog = builder.create();
-                final EditText nameField = logView.findViewById(R.id.nutrition_name_field);
-
-                Button submitNewActivity = logView.findViewById(R.id.nutrition_log_new_button);
-                Button cancelNewActivity = logView.findViewById(R.id.nutrition_cancel);
-
-                // VALIDATE ENTRY
-
-                submitNewActivity.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (nameField.getText().toString().length() < 1) {
-
-                            // INVALID ENTRY. MUST ADD TITLE
-
-
-                            final AlertDialog validateDialog = new AlertDialog.Builder(n_NutritionTrackerActivity.this).create();
-                            validateDialog.setTitle("Please try again.");
-                            validateDialog.setMessage("You must enter a food name/description.");
-                            validateDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            validateDialog.dismiss();
-                                        }
-                                    });
-                            validateDialog.show();
-
-                        } else {
-
-                            // VALID ENTRY. ADD TO DB
-
-                            EditText namefield = logView.findViewById(R.id.nutrition_name_field);
-                            EditText caloriesfield = logView.findViewById(R.id.nutrition_calories_field);
-                            EditText carbsfield = logView.findViewById(R.id.nutrition_carbs_field);
-                            EditText fatfield = logView.findViewById(R.id.nutrition_fat_field);
-
-                            String itemName = namefield.getText().toString();
-                            String itemCalories = caloriesfield.getText().toString();
-                            String itemCarbs = carbsfield.getText().toString();
-                            String itemFat = fatfield.getText().toString();
-
-                            ContentValues values = new ContentValues();
-                            values.put(m_GlobalDatabaseHelper.FOOD_ITEM_COL_NAME, itemName);
-                            values.put(m_GlobalDatabaseHelper.CALORIES_COL_NAME, itemCalories);
-                            values.put(m_GlobalDatabaseHelper.CARB_COL_NAME, itemCarbs);
-                            values.put(m_GlobalDatabaseHelper.FAT_COL_NAME, itemFat);
-
-                            db.insert(NUTRITION_TABLE_NAME, null, values);
-
-                            // UPDATE THE LISTVIEW
-
-                            Cursor cursor = db.query(NUTRITION_TABLE_NAME, new String[]{m_GlobalDatabaseHelper.FOOD_ITEM_COL_NAME}, null, null, null, null, null);
-                            int colIndex = cursor.getColumnIndex(m_GlobalDatabaseHelper.FOOD_ITEM_COL_NAME);
-
-                            Cursor c = db.rawQuery("SELECT  * FROM " + NUTRITION_TABLE_NAME + ";", null);
-                            int cnt = c.getCount();
-                            if (cnt > 0) {
-                                for (cursor.moveToLast(); !cursor.isAfterLast(); cursor.moveToNext()) {
-                                    String value = cursor.getString(colIndex);
-                                    foodArrayList.add(value);
-                                }
-                                c.close();
-                            }
-
-                            // CLOSE DIALOG AFTER UPDATING DB AND LISTVIEW
-
-                            dialog.dismiss();
-                        }
-                    }
-                });
-
-                cancelNewActivity.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                    }
-                });
-
-                dialog.show();
-            }
-        });
-
-        // TODO: ONCLICKLISTENER ON LISTVIEW ITEMS OPENING n_activity_nutrition_details DIALOG WITH READ INFO
-        //I copied the "new" dialog from above.  It can be retooled to read the item that was clicked and load it's properites into this window
-        nutritionListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                final AlertDialog.Builder builder = new AlertDialog.Builder(n_NutritionTrackerActivity.this);
-                final View logView = getLayoutInflater().inflate(R.layout.n_activity_nutrition_dialog, null);
-
-                builder.setView(logView);
-                final AlertDialog dialog = builder.create();
-                final EditText nameField = logView.findViewById(R.id.nutrition_name_field);
-
-                Button submitNewActivity = logView.findViewById(R.id.nutrition_log_new_button);
-                Button cancelNewActivity = logView.findViewById(R.id.nutrition_cancel);
-
-                // VALIDATE ENTRY
-
-                submitNewActivity.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (nameField.getText().toString().length() < 1) {
-
-                            // INVALID ENTRY. MUST ADD TITLE
-
-
-                            final AlertDialog validateDialog = new AlertDialog.Builder(n_NutritionTrackerActivity.this).create();
-                            validateDialog.setTitle("Please try again.");
-                            validateDialog.setMessage("You must enter a food name/description.");
-                            validateDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            validateDialog.dismiss();
-                                        }
-                                    });
-                            validateDialog.show();
-
-                        } else {
-
-                            // VALID ENTRY. ADD TO DB
-
-                            EditText namefield = logView.findViewById(R.id.nutrition_name_field);
-                            EditText caloriesfield = logView.findViewById(R.id.nutrition_calories_field);
-                            EditText carbsfield = logView.findViewById(R.id.nutrition_carbs_field);
-                            EditText fatfield = logView.findViewById(R.id.nutrition_fat_field);
-
-                            String itemName = namefield.getText().toString();
-                            String itemCalories = caloriesfield.getText().toString();
-                            String itemCarbs = carbsfield.getText().toString();
-                            String itemFat = fatfield.getText().toString();
-
-                            ContentValues values = new ContentValues();
-                            values.put(m_GlobalDatabaseHelper.FOOD_ITEM_COL_NAME, itemName);
-                            values.put(m_GlobalDatabaseHelper.CALORIES_COL_NAME, itemCalories);
-                            values.put(m_GlobalDatabaseHelper.CARB_COL_NAME, itemCarbs);
-                            values.put(m_GlobalDatabaseHelper.FAT_COL_NAME, itemFat);
-
-                            db.insert(NUTRITION_TABLE_NAME, null, values);
-
-                            // UPDATE THE LISTVIEW
-
-                            Cursor cursor = db.query(NUTRITION_TABLE_NAME, new String[]{m_GlobalDatabaseHelper.FOOD_ITEM_COL_NAME}, null, null, null, null, null);
-                            int colIndex = cursor.getColumnIndex(m_GlobalDatabaseHelper.FOOD_ITEM_COL_NAME);
-
-                            Cursor c = db.rawQuery("SELECT  * FROM " + NUTRITION_TABLE_NAME + ";", null);
-                            int cnt = c.getCount();
-                            if (cnt > 0) {
-                                for (cursor.moveToLast(); !cursor.isAfterLast(); cursor.moveToNext()) {
-                                    String value = cursor.getString(colIndex);
-                                    foodArrayList.add(value);
-                                }
-                                c.close();
-                            }
-
-                            // CLOSE DIALOG AFTER UPDATING DB AND LISTVIEW
-
-                            dialog.dismiss();
-                        }
-                    }
-                });
-
-                cancelNewActivity.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                    }
-                });
-
-                dialog.show();
-            }
-
-
-        });
     }
 
     public void onDestroy() {
@@ -283,6 +254,101 @@ public class n_NutritionTrackerActivity extends Activity {
         super.onDestroy();
         Log.i(ACTIVITY_NAME, "In onDestroy()");
     }
+
+
+    // EDIT LISTVIEW -------------------------------------------------------------------------------
+
+    public void editItem(int id) {
+        final int itemID = id;
+        final AlertDialog.Builder builder = new AlertDialog.Builder(n_NutritionTrackerActivity.this);
+        final View logView = getLayoutInflater().inflate(R.layout.n_activity_nutrition_dialog, null);
+
+        builder.setView(logView);
+        final AlertDialog dialog = builder.create();
+        final EditText nameField = logView.findViewById(R.id.nutrition_name_field);
+
+        Button submitNewActivity = logView.findViewById(R.id.nutrition_log_new_button);
+        Button cancelNewActivity = logView.findViewById(R.id.nutrition_cancel);
+
+        submitNewActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (nameField.getText().toString().length() < 1) {
+                    showValidationDialog();
+                } else {
+
+                    // VALID ENTRY. ADD TO DB
+
+                    EditText namefield = logView.findViewById(R.id.nutrition_name_field);
+                    EditText caloriesfield = logView.findViewById(R.id.nutrition_calories_field);
+                    EditText carbsfield = logView.findViewById(R.id.nutrition_carbs_field);
+                    EditText fatfield = logView.findViewById(R.id.nutrition_fat_field);
+                    //EditText commentfield = logView.findViewById(R.id.nutrition_comment_field);
+
+                    String itemName = namefield.getText().toString();
+                    String itemCalories = caloriesfield.getText().toString();
+                    String itemCarbs = carbsfield.getText().toString();
+                    String itemFat = fatfield.getText().toString();
+                    //String itemComment = commentfield.getText().toString();
+
+                    ContentValues values = new ContentValues();
+                    values.put(m_GlobalDatabaseHelper.FOOD_ITEM_COL_NAME, itemName);
+                    values.put(m_GlobalDatabaseHelper.CALORIES_COL_NAME, itemCalories);
+                    values.put(m_GlobalDatabaseHelper.CARB_COL_NAME, itemCarbs);
+                    values.put(m_GlobalDatabaseHelper.FAT_COL_NAME, itemFat);
+                    //values.put(m_GlobalDatabaseHelper.COMMENTS_COL_NAME, itemComment);
+
+                    String strFilter = "FOOD_ID=" + itemID;
+
+                    db.update(m_GlobalDatabaseHelper.NUTRITION_TABLE_NAME, values, strFilter, null);
+
+                    // UPDATE THE LISTVIEW BY REFRESHING ACTIVITY
+
+                    Intent intent = getIntent();
+                    finish();
+                    startActivity(intent);
+
+                    // CLOSE DIALOG AFTER UPDATING DB AND LISTVIEW
+
+                    Toast.makeText(getApplicationContext(), R.string.n_EditToastMessage,
+                            Toast.LENGTH_LONG).show();
+                    dialog.dismiss();
+                }
+            }
+        });
+        cancelNewActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    public void deleteItem(int id) {
+        final int itemID = id;
+        db.execSQL("DELETE FROM " + m_GlobalDatabaseHelper.NUTRITION_TABLE_NAME + " WHERE " + m_GlobalDatabaseHelper.FOOD_ID + " = " + id + ";");
+        updateNutrition();
+    }
+
+
+    // DELETE ITEM ---------------------------------------------------------------------------------
+
+    public void showValidationDialog() {
+        final AlertDialog validateDialog = new AlertDialog.Builder(n_NutritionTrackerActivity.this).create();
+        validateDialog.setTitle(R.string.n_ValidateDialogTitle);
+        validateDialog.setMessage(getResources().getString(R.string.n_ValidateDialogMessage));
+        validateDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getResources().getString(R.string.n_OK),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        validateDialog.dismiss();
+                    }
+                });
+        validateDialog.show();
+    }
+
+
+    // ASYNC TASK ----------------------------------------------------------------------------------
 
     protected class FoodAdapter extends ArrayAdapter<String> {
         public FoodAdapter(Context c) {
@@ -303,6 +369,54 @@ public class n_NutritionTrackerActivity extends Activity {
             TextView message = result.findViewById(R.id.message_text);
             message.setText(getItem(position));
             return result;
+        }
+    }
+
+
+    // ADD ITEM VALIDATION -------------------------------------------------------------------------
+
+    protected class AddItemQuery extends AsyncTask<String, Integer, String> {
+        String recent = "";
+        ProgressBar pBar = findViewById(R.id.progressBar);
+
+        @Override
+        protected String doInBackground(String... strings) {
+            Log.i(ACTIVITY_NAME, "In AddItemQuery");
+            pBar.setProgress(25);
+            Cursor cursor = db.query(m_GlobalDatabaseHelper.NUTRITION_TABLE_NAME, new String[]{m_GlobalDatabaseHelper.FOOD_ITEM_COL_NAME}, null, null, null, null, null);
+            int colIndex = cursor.getColumnIndex(m_GlobalDatabaseHelper.FOOD_ITEM_COL_NAME);
+
+            Cursor c = db.rawQuery("SELECT  * FROM " + m_GlobalDatabaseHelper.NUTRITION_TABLE_NAME + ";", null);
+            int cnt = c.getCount();
+            pBar.setProgress(50);
+            if (cnt > 0) {
+                for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                    String value = cursor.getString(colIndex);
+                    foodArrayList.add(value);
+                    listViewAdapter.notifyDataSetChanged();
+                    if (cursor.isLast()) {
+                        pBar.setProgress(75);
+                        recent = cursor.getString(colIndex);
+                    }
+                }
+                c.close();
+                pBar.setProgress(100);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... value) {
+            pBar.setVisibility(View.VISIBLE);
+            pBar.setProgress(0);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Snackbar snackbar = Snackbar
+                    .make(findViewById(android.R.id.content), "Most recently logged food: " + recent, Snackbar.LENGTH_LONG);
+
+            snackbar.show();
         }
     }
 }

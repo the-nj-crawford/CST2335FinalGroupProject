@@ -22,14 +22,15 @@ public class m_GlobalDatabaseHelper extends SQLiteOpenHelper {
             + KEY_DATE + " INTEGER"
             + " );";  // can convert to timestamp later
     public static final String DROP_FUEL_TABLE_SQL = "DROP TABLE IF EXISTS " + FUEL_DETAILS_TABLE;
-    public static final String SELECT_ALL_SQL
-            = String.format("SELECT %s, %s, %s, %s, %s FROM %s",
-            KEY_ID, KEY_PRICE, KEY_LITRES, KEY_KILOMETERS, KEY_DATE, FUEL_DETAILS_TABLE);
+    public static final String C_SELECT_ALL_SQL
+            = String.format("SELECT * FROM %s ORDER BY %s", FUEL_DETAILS_TABLE, KEY_DATE);
     //Database and Table Names
     static final String DATABASE_NAME = "GlobalDatabase.db";
     //Thermostat Database and Column Names
     static final String THERMOSTAT_TABLE_NAME = "THERMOSTAT_RULES";
     public static final String DROP_THERMOSTAT_TABLE_SQL = "DROP TABLE IF EXISTS " + THERMOSTAT_TABLE_NAME;
+    public static final String THERMOSTAT_SELECT_ALL_SQL
+            = String.format("SELECT * FROM %s", THERMOSTAT_TABLE_NAME);
     static final String RULE_ID = "RULE_ID";
     static final String RULE_COL_NAME = "RULES";
     public static final String CREATE_THERMOSTAT_TABLE_SQL
@@ -38,6 +39,7 @@ public class m_GlobalDatabaseHelper extends SQLiteOpenHelper {
             + RULE_COL_NAME + " TEXT "
             + " );";
     //Nurition Database and Column Names
+    //Nurition Database and Column Names
     static final String NUTRITION_TABLE_NAME = "NUTRITION_INFO";
     public static final String DROP_NUTRITION_TABLE_SQL = "DROP TABLE IF EXISTS " + NUTRITION_TABLE_NAME;
     static final String FOOD_ID = "FOOD_ID";
@@ -45,6 +47,9 @@ public class m_GlobalDatabaseHelper extends SQLiteOpenHelper {
     static final String CALORIES_COL_NAME = "CALORIES";
     static final String CARB_COL_NAME = "CARBOHYDRATE";
     static final String FAT_COL_NAME = "FAT";
+    static final String COMMENTS_COL_NAME = "COMMENTS";
+    static final String FOOD_DATE_COL_NAME = "DATE";
+
     public static final String CREATE_NUTRITION_TABLE_SQL
             = "CREATE TABLE " + NUTRITION_TABLE_NAME + " ( "
             + FOOD_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -52,7 +57,11 @@ public class m_GlobalDatabaseHelper extends SQLiteOpenHelper {
             + CALORIES_COL_NAME + " INTEGER, "
             + CARB_COL_NAME + " INTEGER, "
             + FAT_COL_NAME + " INTEGER "
+            + COMMENTS_COL_NAME + " TEXT "
+            + FOOD_DATE_COL_NAME + " DATETIME DEFAULT CURRENT_TIMESTAMP "
+
             + " );";
+
 
     //Activity Database and Column Names
     static final String ACTIVITY_TABLE_NAME = "ACTIVITY_LOG";
@@ -71,9 +80,7 @@ public class m_GlobalDatabaseHelper extends SQLiteOpenHelper {
             + TIME_COL_NAME + " INTEGER "//consider changing to real
             + " );";
     //Database Version Number
-    private static final int DATABASE_VERSION_NUM = 1;  //WARNING: AVOID ALTERING THIS VALUE UNLESS REQUIRED. THIS WILL CLEAR ALL TABLES FOR ALL ACTIVITIES.
-
-
+    private static final int DATABASE_VERSION_NUM = 2;  //WARNING: AVOID ALTERING THIS VALUE UNLESS REQUIRED. THIS WILL CLEAR ALL TABLES FOR ALL ACTIVITIES.
     m_GlobalDatabaseHelper(Context ctx) {
         super(ctx, DATABASE_NAME, null, DATABASE_VERSION_NUM);
     }
@@ -103,5 +110,4 @@ public class m_GlobalDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(DROP_ACTIVITY_TABLE_SQL);
         onCreate(db);
     }
-
 }

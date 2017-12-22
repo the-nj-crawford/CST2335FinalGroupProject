@@ -3,14 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     tools:context="com.example.joe.cst2335finalgroupproject.n_NutritionTrackerActivity">
-
 
     <TextView
         android:id="@+id/nutrition_detail_name_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Food Name or Description:" />
+        android:layout_marginTop="56dp"
+        android:text="@string/n_FoodNameOrDesc" />
 
     <TextView
         android:id="@+id/nutrition_detail_name_value"
@@ -23,57 +24,73 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/nutrition_detail_name_value"
-        android:text="Calories:" />
+        android:text="@string/n_Calories" />
 
     <TextView
         android:id="@+id/nutrition_detail_calories_value"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/nutrition_detail_calories_header"
-        android:inputType="number" />
+        android:layout_below="@+id/nutrition_detail_calories_header" />
 
     <TextView
         android:id="@+id/nutrition_detail_carbs_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/nutrition_detail_calories_value"
-        android:text="Carbohydrates:" />
+        android:text="@string/n_Carbs" />
 
     <TextView
         android:id="@+id/nutrition_detail_carbs_value"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/nutrition_detail_carbs_header"
-        android:inputType="number" />
+        android:layout_below="@+id/nutrition_detail_carbs_header" />
 
     <TextView
         android:id="@+id/nutrition_detail_fat_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/nutrition_detail_carbs_value"
-        android:text="Fat:" />
+        android:text="@string/n_Fat" />
 
     <TextView
         android:id="@+id/nutrition_detail_fat_value"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/nutrition_detail_fat_header"
-        android:inputType="number" />
+        android:layout_below="@+id/nutrition_detail_fat_header" />
 
-    <Button
-        android:id="@+id/nutrition_detail_log_new_button"
+    <TextView
+        android:id="@+id/nutrition_detail_comment_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/nutrition_detail_fat_value"
-        android:layout_centerInParent="true"
-        android:text="Edit (To Do)" />
+        android:text="@string/n_Comments" />
+
+    <TextView
+        android:id="@+id/nutrition_detail_comment_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/nutrition_detail_comment_header" />
+
+
+    <Button
+        android:id="@+id/nutrition_detail_edit_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/nutrition_detail_comment_value"
+        android:text="@string/n_Edit" />
 
     <Button
         android:id="@+id/nutrition_detail_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/nutrition_log_new_button"
-        android:layout_centerInParent="true"
-        android:text="Close" />
+        android:layout_below="@+id/nutrition_detail_edit_button"
+        android:text="@string/n_Close" />
+
+    <Button
+        android:id="@+id/nutrition_detail_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/nutrition_detail_cancel"
+        android:text="@string/n_Delete" />
 
 </RelativeLayout>

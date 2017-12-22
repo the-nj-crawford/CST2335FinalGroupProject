@@ -1,59 +1,89 @@
 package com.example.joe.cst2335finalgroupproject;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageView;
 
-public class m_MainActivity extends Activity {
+public class m_MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.m_activity_main);
 
+        final Toolbar m_toolbar = findViewById(R.id.m_toolbar);
+        setSupportActionBar(m_toolbar);
 
-        //TODO: Add methods to add icons to toolbar, and tie each icon to launch the same activities below.
+        setButtonListeners();
+    }
 
-        //TODO: Do we want to have these buttons on the screen as well as the expandable toolbar?
+    private void setButtonListeners() {
 
-        Button launchActivityTracker = findViewById(R.id.activityTrackerButton);
-        launchActivityTracker.setOnClickListener(new View.OnClickListener() {
+        ImageView activityButton = findViewById(R.id.m_ivActivity);
+        activityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(m_MainActivity.this, a_ActivityTrackerActivity.class);
-                startActivityForResult(intent, 10);
+                startActivity(new Intent(m_MainActivity.this, a_ActivityTrackerActivity.class));
             }
         });
 
-        Button launchNutritionTracker = findViewById(R.id.nutritionTrackerButton);
-        launchNutritionTracker.setOnClickListener(new View.OnClickListener() {
+        ImageView nutritionButton = findViewById(R.id.m_ivFood);
+        nutritionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(m_MainActivity.this, n_NutritionTrackerActivity.class);
-                startActivityForResult(intent, 10);
+                startActivity(new Intent(m_MainActivity.this, n_NutritionTrackerActivity.class));
             }
         });
 
-        Button launchThermostatProgramActivity = findViewById(R.id.thermostatProgramButton);
-        launchThermostatProgramActivity.setOnClickListener(new View.OnClickListener() {
+        ImageView thermostatButton = findViewById(R.id.m_ivThermostat);
+        thermostatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(m_MainActivity.this, t_ThermostatProgramActivity.class);
-                startActivityForResult(intent, 10);
+                startActivity(new Intent(m_MainActivity.this, t_ThermostatProgramActivity.class));
             }
         });
 
-        Button launchCarTrackerActivity = findViewById(R.id.carTrackerButton);
-        launchCarTrackerActivity.setOnClickListener(new View.OnClickListener() {
+        ImageView automobileButton = findViewById(R.id.m_ivAutomobile);
+        automobileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(m_MainActivity.this, c_CarTrackerActivity.class);
-                startActivityForResult(intent, 10);
+                startActivity(new Intent(m_MainActivity.this, c_CarTrackerActivity.class));
             }
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.m_menu, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+
+        switch(menuItem.getItemId()){
+
+            case R.id.menu_exercise:
+                startActivity(new Intent(m_MainActivity.this, a_ActivityTrackerActivity.class));
+                break;
+
+            case R.id.menu_food:
+                startActivity(new Intent(m_MainActivity.this, n_NutritionTrackerActivity.class));
+                break;
+
+            case R.id.menu_thermostat:
+                startActivity(new Intent(m_MainActivity.this, t_ThermostatProgramActivity.class));
+                break;
+
+            case R.id.menu_automobile:
+                startActivity(new Intent(m_MainActivity.this, c_CarTrackerActivity.class));
+                break;
+        }
+        return true;
+    }
 }

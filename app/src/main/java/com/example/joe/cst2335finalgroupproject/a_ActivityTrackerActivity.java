@@ -1,6 +1,5 @@
 package com.example.joe.cst2335finalgroupproject;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.FragmentTransaction;
@@ -13,8 +12,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -36,8 +39,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class a_ActivityTrackerActivity extends Activity {
+public class a_ActivityTrackerActivity extends AppCompatActivity {
 
+    public static final DateFormat ddmmyy = new SimpleDateFormat(" HH:mm dd/MM/yyyy");
     /**
      * Milestone 1 (Must be demonstrated December 7th):
      * 3.	Each Activity must have a ListView to present items. Selecting an item from the ListView must show detailed information about the item selected.
@@ -66,35 +70,72 @@ public class a_ActivityTrackerActivity extends Activity {
      */
 
     final static ArrayList<a_TrackedActivity> activityList = new ArrayList<>();
-    public static final DateFormat ddmmyy=new SimpleDateFormat(" HH:mm dd/MM/yyyy");
-    //handles on screen object
-    ProgressBar pb;
     static ListView activityListView;
     static ActivityAdapter aa;
-    boolean isPhone;
-    private static Context context;
     static View parentLayout;
+    //handles database references
+    static m_GlobalDatabaseHelper dbHelper;
+    static SQLiteDatabase db;
+    private static Context context;
+    //handles on screen object
+    ProgressBar pb;
+    boolean isPhone;
     boolean firstRun=true;
     //handle async reader
     AsyncReader aRead;
     Button addButton;
     Button statsButton;
     Spinner newTypeSpinner;
-
-    //handles database references
-    static m_GlobalDatabaseHelper dbHelper;
-    static SQLiteDatabase db;
+    Toolbar a_Toolbar;
     Cursor c;
+
+    protected static void updateActivity(Bundle activityDetailsBundle) {
+        String type = activityDetailsBundle.getString("confirmType");
+        String comment = activityDetailsBundle.getString("confirmComment");
+        int duration = activityDetailsBundle.getInt("confirmDuration");
+        long id = activityDetailsBundle.getLong("confirmID");
+        int pos = activityDetailsBundle.getInt("confirmPos");
+        long longDate = activityDetailsBundle.getLong("confirmDate");
+        Date date = new Date(longDate);
+
+        ContentValues cv = new ContentValues();
+
+        cv.put(m_GlobalDatabaseHelper.TYPE_COL_NAME, type);
+        cv.put(m_GlobalDatabaseHelper.DURATION_COL_NAME, duration);
+        cv.put(m_GlobalDatabaseHelper.NOTE_COL_NAME, comment);
+        cv.put(m_GlobalDatabaseHelper.TIME_COL_NAME, longDate);
+
+        db.update(m_GlobalDatabaseHelper.ACTIVITY_TABLE_NAME, cv, m_GlobalDatabaseHelper.WORKOUT_ID + "=" + id, null);
+
+        a_TrackedActivity ta = new a_TrackedActivity(1, type, duration, comment, date);
+        activityList.set(pos, ta);
+        aa.notifyDataSetChanged();
+    }
+
+    protected static void deleteEntry(Long IDtoDelete, int posToRemove) {
+        String[] whereargs = {String.valueOf(IDtoDelete)};
+        Log.i("DELETING", "Attempt to delete ID " + IDtoDelete);
+        int done = db.delete(m_GlobalDatabaseHelper.ACTIVITY_TABLE_NAME, m_GlobalDatabaseHelper.WORKOUT_ID + "=" + IDtoDelete, null);
+        Log.i("activity tacker", "Rows affected: " + done);
+        activityList.remove(posToRemove);
+        aa.notifyDataSetChanged();
+
+        Snackbar.make(parentLayout.findViewById(R.id.a_addButton), R.string.a_main_snackbarText, Snackbar.LENGTH_SHORT).show();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.context=getApplicationContext();
+        context = getApplicationContext();
         setContentView(R.layout.a_activity_tracker_activity);
-        FrameLayout fl = (FrameLayout)findViewById(R.id.a_tabletFrameLayout);
+        FrameLayout fl = findViewById(R.id.a_tabletFrameLayout);
         parentLayout=findViewById(R.id.a_activityParent);
         if(fl==null){isPhone=true;}
-         pb = (ProgressBar) findViewById(R.id.a_progressBar);
+        pb = findViewById(R.id.a_progressBar);
         pb.setIndeterminate(true);
+
+        a_Toolbar = findViewById(R.id.a_toolbar);
+        setSupportActionBar(a_Toolbar);
 
         dbHelper=new m_GlobalDatabaseHelper(this);
         db=dbHelper.getWritableDatabase();
@@ -144,6 +185,40 @@ public class a_ActivityTrackerActivity extends Activity {
             }
         });
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.a_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+
+        switch (menuItem.getItemId()) {
+
+            case R.id.menu_thermostat:
+                startActivity(new Intent(a_ActivityTrackerActivity.this, t_ThermostatProgramActivity.class));
+                break;
+
+            case R.id.menu_food:
+                startActivity(new Intent(a_ActivityTrackerActivity.this, n_NutritionTrackerActivity.class));
+                break;
+
+            case R.id.menu_car:
+                startActivity(new Intent(a_ActivityTrackerActivity.this, c_CarTrackerActivity.class));
+                break;
+
+            case R.id.menu_home:
+                startActivity(new Intent(a_ActivityTrackerActivity.this, m_MainActivity.class));
+                break;
+
+            case R.id.menu_help:
+                launchHelp();
+                break;
+        }
+        return true;
     }
 
     protected void onActivityResult(int requestCode, int responseCode, Intent data){
@@ -207,10 +282,10 @@ public class a_ActivityTrackerActivity extends Activity {
 
 
                 initSpinner(dia);
-                final EditText newDurationEdit = (EditText)dia.findViewById(R.id.a_newDurationText);
-                final EditText newCommentEdit = (EditText)dia.findViewById(R.id.a_newCommentText);
-                Button newCancelButton =(Button)dia.findViewById(R.id.a_newCancelButton);
-                Button newConfirmButton=(Button)dia.findViewById(R.id.a_newConfirmButton);
+                final EditText newDurationEdit = dia.findViewById(R.id.a_newDurationText);
+                final EditText newCommentEdit = dia.findViewById(R.id.a_newCommentText);
+                Button newCancelButton = dia.findViewById(R.id.a_newCancelButton);
+                Button newConfirmButton = dia.findViewById(R.id.a_newConfirmButton);
 
                 newCancelButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -224,11 +299,11 @@ public class a_ActivityTrackerActivity extends Activity {
                         a_TrackedActivity newAct = new a_TrackedActivity(1, newTypeSpinner.getSelectedItem().toString(), Integer.valueOf(newDurationEdit.getText().toString()), newCommentEdit.getText().toString(), new Date());
                         activityList.add(newAct);
                         ContentValues insertCV=new ContentValues();
-                        insertCV.put(dbHelper.TYPE_COL_NAME,newAct.getType());
-                        insertCV.put(dbHelper.DURATION_COL_NAME,newAct.getDuration());
-                        insertCV.put(dbHelper.NOTE_COL_NAME,newAct.getNotes());
-                        insertCV.put(dbHelper.TIME_COL_NAME,newAct.getTimeStamp().getTime());
-                        db.insert(dbHelper.ACTIVITY_TABLE_NAME,null,insertCV);
+                        insertCV.put(m_GlobalDatabaseHelper.TYPE_COL_NAME, newAct.getType());
+                        insertCV.put(m_GlobalDatabaseHelper.DURATION_COL_NAME, newAct.getDuration());
+                        insertCV.put(m_GlobalDatabaseHelper.NOTE_COL_NAME, newAct.getNotes());
+                        insertCV.put(m_GlobalDatabaseHelper.TIME_COL_NAME, newAct.getTimeStamp().getTime());
+                        db.insert(m_GlobalDatabaseHelper.ACTIVITY_TABLE_NAME, null, insertCV);
 
 
                         aa.notifyDataSetChanged();
@@ -265,29 +340,6 @@ public class a_ActivityTrackerActivity extends Activity {
         });
     }
 
-    protected static void updateActivity(Bundle activityDetailsBundle){
-        String type=activityDetailsBundle.getString("confirmType");
-        String comment = activityDetailsBundle.getString("confirmComment");
-        int duration = activityDetailsBundle.getInt("confirmDuration");
-        long id = activityDetailsBundle.getLong("confirmID");
-        int pos =activityDetailsBundle.getInt("confirmPos");
-        long longDate=activityDetailsBundle.getLong("confirmDate");
-        Date date=new Date(longDate);
-
-        ContentValues cv = new ContentValues();
-
-        cv.put(dbHelper.TYPE_COL_NAME,type);
-        cv.put(dbHelper.DURATION_COL_NAME,duration);
-        cv.put(dbHelper.NOTE_COL_NAME,comment);
-        cv.put(dbHelper.TIME_COL_NAME,longDate);
-
-        db.update(dbHelper.ACTIVITY_TABLE_NAME,cv,dbHelper.WORKOUT_ID+"="+id,null);
-
-        a_TrackedActivity ta=new a_TrackedActivity(1,type,duration,comment,date);
-        activityList.set(pos,ta);
-        aa.notifyDataSetChanged();
-    }
-
     protected double calcAvgDuration(){
         int total=0;
         int count=0;
@@ -307,17 +359,6 @@ public class a_ActivityTrackerActivity extends Activity {
         }
 
         return total;
-    }
-
-    protected static void deleteEntry(Long IDtoDelete, int posToRemove){
-        String[] whereargs={String.valueOf(IDtoDelete)};
-        Log.i("DELETING","Attempt to delete ID "+IDtoDelete);
-        int done=db.delete(dbHelper.ACTIVITY_TABLE_NAME,dbHelper.WORKOUT_ID+"="+IDtoDelete,null);
-        Log.i("activity tacker","Rows affected: "+done);
-        activityList.remove(posToRemove);
-        aa.notifyDataSetChanged();
-
-        Snackbar.make(parentLayout.findViewById(R.id.a_addButton),R.string.a_main_snackbarText,Snackbar.LENGTH_SHORT).show();
     }
 
     private class ActivityAdapter extends ArrayAdapter<a_TrackedActivity> {
@@ -361,7 +402,7 @@ public class a_ActivityTrackerActivity extends Activity {
             //an array list of activities to pass back to the GUI thread
             ArrayList<a_TrackedActivity> details = new ArrayList<a_TrackedActivity>();
 
-            c=db.query(false,dbHelper.ACTIVITY_TABLE_NAME,new String[] {dbHelper.WORKOUT_ID,dbHelper.TYPE_COL_NAME,dbHelper.DURATION_COL_NAME,dbHelper.NOTE_COL_NAME, dbHelper.TIME_COL_NAME},null,null,null,null,null,null);
+            c = db.query(false, m_GlobalDatabaseHelper.ACTIVITY_TABLE_NAME, new String[]{m_GlobalDatabaseHelper.WORKOUT_ID, m_GlobalDatabaseHelper.TYPE_COL_NAME, m_GlobalDatabaseHelper.DURATION_COL_NAME, m_GlobalDatabaseHelper.NOTE_COL_NAME, m_GlobalDatabaseHelper.TIME_COL_NAME}, null, null, null, null, null, null);
 
             double totalRecords = c.getCount();
             double count=0;
@@ -370,11 +411,11 @@ public class a_ActivityTrackerActivity extends Activity {
             while(!c.isAfterLast()){
                 try{
                 //grab all the data, put into new objects, save to list
-                int toBeCol =c.getInt(c.getColumnIndex(dbHelper.WORKOUT_ID));
-                String toBeType = c.getString(c.getColumnIndex(dbHelper.TYPE_COL_NAME));
-                int toBeDuration=c.getInt(c.getColumnIndex(dbHelper.DURATION_COL_NAME));
-                String toBeComments=c.getString(c.getColumnIndex(dbHelper.NOTE_COL_NAME)) ;
-                Long toBeLongDate=c.getLong(c.getColumnIndex(dbHelper.TIME_COL_NAME));
+                    int toBeCol = c.getInt(c.getColumnIndex(m_GlobalDatabaseHelper.WORKOUT_ID));
+                    String toBeType = c.getString(c.getColumnIndex(m_GlobalDatabaseHelper.TYPE_COL_NAME));
+                    int toBeDuration = c.getInt(c.getColumnIndex(m_GlobalDatabaseHelper.DURATION_COL_NAME));
+                    String toBeComments = c.getString(c.getColumnIndex(m_GlobalDatabaseHelper.NOTE_COL_NAME));
+                    Long toBeLongDate = c.getLong(c.getColumnIndex(m_GlobalDatabaseHelper.TIME_COL_NAME));
                 Date toBeDate=new Date(toBeLongDate);
                 a_TrackedActivity newActivity = new a_TrackedActivity(toBeCol,toBeType,toBeDuration,toBeComments,toBeDate);
                 details.add(newActivity);
