@@ -8,6 +8,9 @@ import android.util.Log;
 public class a_DetailView extends Activity {
 
     @Override
+    /**
+     * Create a activity to hold the detail fragment when user is using a phone
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.a_activity_detail);

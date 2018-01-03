@@ -36,6 +36,11 @@ public class a_DetailFragment extends Fragment {
     Bundle passedInfo;
     int pos;
     Spinner typeSpinner;
+
+    /**
+     * function to be run when fragment attaches. Loads values from tbe bundle passed into the fragment into class variables
+     * @param activity the activity that called this fragment
+     */
     public void onAttach(Activity activity){
         super.onAttach(activity);
         passedInfo = getArguments();
@@ -53,6 +58,13 @@ public class a_DetailFragment extends Fragment {
         parent=activity;
     }
 
+    /**
+     * on creation of fragment, assign function to the confirm, delete and cancel buttons
+     * @param inflater inflater to inflate layout
+     * @param container View group
+     * @param savedInstanceState
+     * @return
+     */
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         v = inflater.inflate(R.layout.a_detail_fragment,null);
         Button deleteButton = (Button) v.findViewById(R.id.a_detailDeleteButton);
@@ -153,6 +165,10 @@ public class a_DetailFragment extends Fragment {
         }
         return v;
     }
+
+    /**
+     * initialize the spinner that contains the possible activities to choose from
+     */
     public void initializeTypeSpinner(){
          typeSpinner = v.findViewById(R.id.a_typeSpinner);
         List<String> types = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.a_typeArray)));
